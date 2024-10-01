@@ -1,0 +1,1099 @@
+@extends('layouts.auth')
+<link rel="stylesheet" href="https://cdn.plyr.io/3.2.4/plyr.css">
+<link rel="stylesheet" href="{{ asset('assets/front/twitter/messages.css') }}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{{ asset('assets/front/twitter/responsive.css') }}">
+@section('content')
+<div class="page-content">
+<div class="chat-area-content">
+<div class="chat-area-inner">
+	<div class="chat-header-area">
+		<div class="chat-header-inner">
+			<div class="thumb">
+				<img class="profile-image " src="{{ asset('assets/front/img/' . $to->avatar) }}" alt="{{ $to->name }}">
+			</div>
+			<a href="/profile/{{ $to->username }}" class="user">
+				<h4 class="name">{{ $to->name }} @if($to->verified == 1)<span class="verified"><i class="fa fa-check-circle"></i></span>@endif</h4>
+			</a>
+			<span class="post">{{ $to->position }}</span>
+		</div>
+	</div>
+	<div class="chat-body-area">
+		<div class="chat-body-inner comment-list" id="chat-body-inner" style="overflow-y: scroll;">
+			@foreach($messages as $message)
+			@if($message->from != $from->id)
+			@if($message->type == 'image')
+			<div class="single-chat-box msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<img src="{{ asset('assets/front/content/' . $message->link) }}" class="img-responsive">
+					</div>
+				</div>
+			</div>
+			@elseif($message->type == 'youtube')
+			<div class="single-chat-box msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<div class="plyr__video-embed player">
+							<iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $message->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+			@elseif($message->type == 'vimeo')
+			<div class="single-chat-box msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<div class="plyr__video-embed player">
+							<iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $message->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+			@else
+			<div class="single-chat-box msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<p>{{ $message->content }}</p>
+					</div>
+				</div>
+			</div>
+			@endif
+			@else
+			@if($message->type == 'image')
+			<div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<img src="{{ asset('assets/front/content/' . $message->link) }}" class="img-responsive">
+					</div>
+				</div>
+			</div>
+			@elseif($message->type == 'youtube')
+			<div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<div class="plyr__video-embed player">
+							<iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $message->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+			@elseif($message->type == 'vimeo')
+			<div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<div class="plyr__video-embed player">
+							<iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $message->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+			@else
+			<div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+				<div class="bottom-content">
+					<div class="bubble">
+						<p>{{ $message->content }}</p>
+					</div>
+				</div>
+			</div>
+			@endif
+			@endif
+			@endforeach
+		</div>
+	</div>
+	<div class="chat-bottom-area">
+		<div class="chat-bottom-inner">
+			<div id="comment-reply" class="comment-reply">
+				<form id="message_form" method="post">
+					@csrf
+					<input type="hidden" name="from" value="{{ $from->id }}">
+					<input type="hidden" name="to" value="{{ $to->id }}">
+					<div class="form-group">
+						<!--<div class="bottom-content-comments-area message-page">
+							<div class="left-content">
+							
+							    <ul>
+							
+							        <li>
+							
+							            <div class="single-input-wrapper">
+							
+							                <label for="image"><i class="fa fa-image"></i></label>
+							
+							                <input type="file" name="image" id="image">
+							
+							            </div>
+							
+							        </li>
+							
+							        <li>
+							
+							            <div class="single-input-wrapper">
+							
+							                <label for="youtube"><i class="fa fa-youtube"></i></label>
+							
+							                <input type="text" name="youtube" id="youtube">
+							
+							            </div>
+							
+							        </li>
+							
+							        <li>
+							
+							            <div class="single-input-wrapper">
+							
+							                <label for="vimeo"><i class="fa fa-vimeo"></i></label>
+							
+							                <input type="text" name="vimeo" id="vimeo">
+							
+							            </div>
+							
+							        </li>
+							
+							    </ul>
+							
+							</div>
+							
+							</div>-->
+						<textarea  id="msgText" name="message"></textarea>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+@auth
+<script src="{{ asset('assets/front/twitter/emojionearea.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.plyr.io/3.2.4/plyr.js"></script>
+<script src="{{ asset('assets/front/js/jscroll.message.js') }}"></script>
+<script>
+	(function ($) {
+	
+	    $(document).ready(function () {
+	
+	
+	
+	    	var pla = document.querySelectorAll('.player');
+	
+	  pla.forEach(function(item) {
+	
+	
+	
+	      new Plyr(item);
+	
+	
+	
+	  });
+	
+	
+	
+	        @if($errors->any())
+	
+	        @foreach($errors->all() as $error)
+	
+	        toastr.error("{{ $error }}");
+	
+	        @endforeach
+	
+	        @endif
+	
+	
+	
+	        @if(session('success'))
+	
+	        toastr.success("{{ session('success') }}");
+	
+	        @endif
+	
+	
+	
+	        @if(session('alert'))
+	
+	        toastr.warning("{{ session('alert') }}");
+	
+	        @endif
+	
+	    });
+	
+	})(jQuery);
+	
+</script>
+<script>
+	$(document).on('click', 'label[for="youtube"]', function(e) {
+	
+	
+	
+	    swal("Enter Youtube Video ID (Like 2X9eJF1nLiY)", {
+	
+	        content: "input",
+	
+	    }).then((value) => {
+	
+	
+	
+	        if (value != '') {
+	
+	
+	
+	            $('#youtube').val(value);
+	
+	            $('#type').val('youtube');
+	
+	
+	
+	            // var html = '<div id="player" data-plyr-provider="youtube" data-plyr-embed-id="' + value + '"></div>\n';
+	
+	
+	
+	            $.ajax({
+	
+	                type:"POST",
+	
+	                url:"{{ route('user.message.store') }}",
+	
+	                data: {
+	
+	                    _token: '{{ csrf_token() }}',
+	
+	                    type: 'youtube',
+	
+	                    link: value,
+	
+	                    from: '{{ $from->id }}',
+	
+	                    to: '{{ $to->id }}'
+	
+	                }
+	
+	            });
+	
+	
+	
+	            $('.emojionearea-editor').html('');
+	
+	
+	
+	        }
+	
+	
+	
+	    });
+	
+	
+	
+	});
+	
+	
+	
+	$(document).on('click', 'label[for="vimeo"]', function(e) {
+	
+	
+	
+	    swal("Enter Vimeo Video ID (Like 114042185)", {
+	
+	        content: "input",
+	
+	    }).then((value) => {
+	
+	
+	
+	        if (value != '') {
+	
+	
+	
+	            $('#vimeo').val(value);
+	
+	            $('#type').val('vimeo');
+	
+	
+	
+	            // var html = '<div id="player" data-plyr-provider="vimeo" data-plyr-embed-id="' + value + '"></div>\n';
+	
+	            $.ajax({
+	
+	                type:"POST",
+	
+	                url:"{{ route('user.message.store') }}",
+	
+	                data: {
+	
+	                    _token: '{{ csrf_token() }}',
+	
+	                    type: 'vimeo',
+	
+	                    link: value,
+	
+	                    from: '{{ $from->id }}',
+	
+	                    to: '{{ $to->id }}'
+	
+	                }
+	
+	            });
+	
+	
+	
+	            $('.emojionearea-editor').html('');
+	
+	
+	
+	        }
+	
+	
+	
+	
+	
+	    });
+	
+	
+	
+	});
+	
+	
+	
+	$(document).on('change', '#image', function(e) {
+	
+	
+	
+	 if (this.files.length) {
+	
+	
+	
+	     var file = this.files[0];
+	
+	
+	
+	var formdata = new FormData();
+	
+	     formdata.append("_token", "{{ csrf_token() }}");
+	
+	     formdata.append("file", file);
+	
+	     formdata.append("type", 'image');
+	
+	     formdata.append("from", '{{ $from->id }}');
+	
+	     formdata.append("to", '{{ $to->id }}');
+	
+	
+	
+	     var ajax = new XMLHttpRequest();
+	
+	     ajax.open("POST", "{{ route('user.message.store') }}");
+	
+	     ajax.send(formdata);
+	
+	
+	
+	     $('.emojionearea-editor').html('');
+	
+	
+	
+	 }
+	
+	
+	
+	});
+	
+	
+	
+	$(window).on('load', function (){
+	
+	   var winHight =  $(window).height();
+	
+	   $('#people-available-list').height(parseInt(winHight -51));
+	
+	   $('#chat-friend-details').height(parseInt(winHight -51));
+	
+	   $('#chat-body-inner').height(parseInt(winHight - 260))
+	
+	
+	
+	});
+	
+	
+	
+	//const emo = $("#msgText").emojioneArea();
+	
+	
+	
+	$(document).on('keyup', '#msgText', function (e) {
+	
+	
+	
+	    if (e.which == 13) {
+	
+	
+	
+	var cb = function(){
+	
+	$('#msgText').val('');
+	
+	}
+	
+	
+	
+	       // $('#msgText').val(emo[0].emojioneArea.getText());
+	
+	       // $('#message_form').submit();
+	
+	
+	
+	$.ajax({
+	
+	                type:"POST",
+	
+	                url:"{{ route('user.message.store') }}",
+	
+	complete: cb,
+	
+	                data: {from: '{{ $from->id }}',to: '{{ $to->id }}','message':$('#msgText').val(), _token: '{{ csrf_token() }}'},
+	
+	            });
+	
+	
+	
+	
+	
+	                    
+	
+	
+	
+	
+	
+	    }
+	
+	});
+	
+	
+	
+	var newmsg_top = parseInt($('.comment-list')[0].scrollHeight );
+	
+	$('.comment-list').scrollTop(newmsg_top);
+	
+	
+	
+	setInterval(function(){
+	
+	
+	
+	    var last = $('.comment-list .msg').last();
+	
+	    var lastId = last.data('id');
+	
+	
+	
+	    if (last && lastId) {
+	
+	
+	
+	        var filast = lastId;
+	
+	
+	
+	    } else {
+	
+	
+	
+	        var filast = 0;
+	
+	
+	
+	    }
+	
+	
+	
+	    var myAvatar = '{{ asset('assets/front/img/' . $from->avatar) }}';
+	
+	    var partAvatar = '{{ asset('assets/front/img/' . $to->avatar) }}';
+	
+	
+	
+	    var myName = '{{ $from->name }}';
+	
+	    var partName = '{{ $to->name }}';
+	
+	
+	
+	    $.ajax({
+	
+	        type:"POST",
+	
+	        url:"{{ route('user.message.update') }}",
+	
+	        data: {
+	
+	            from: '{{ $from->id }}',
+	
+	            to: '{{ $to->id }}',
+	
+	            last: filast,
+	
+	            _token: '{{ csrf_token() }}'
+	
+	        },
+	
+	        success:function(data){
+	
+	            if (data.success && data.success == 1) {
+	
+	                data.messages.forEach(function (item, index) {
+	
+	
+	
+	                    var me = '{{ Auth::user()->id }}';
+	
+	                    var id = Math.random().toString(36).substring(7);
+	
+	
+	
+	                    if (item.from == me) {
+	
+	
+	
+	                    	if (item.type == 'image') {
+	
+	
+	
+	                    		var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+					'                                                                        <div class="thumb">\n' +
+	
+					'                                                                            <img class="profile-image " src="' + myAvatar + '" alt="' + myName + '">\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                        <div class="content">\n' +
+	
+					'                                                                            <h4 class="name">' + myName + '</h4>\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <img src="{{ asset('assets/front/content/') }}/' + item.link + '" class="img-responsive" />' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	
+	
+	                    	} else if (item.type == 'youtube') {
+	
+	
+	
+	                    		var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+					'                                                                        <div class="thumb">\n' +
+	
+					'                                                                            <img class="profile-image " src="' + myAvatar + '" alt="' + myName + '">\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                        <div class="content">\n' +
+	
+					'                                                                            <h4 class="name">' + myName + '</h4>\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://www.youtube.com/embed/' + item.link + '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	
+	
+	                    	} else if (item.type == 'vimeo') {
+	
+	
+	
+	                    		var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+					'                                                                        <div class="thumb">\n' +
+	
+					'                                                                            <img class="profile-image " src="' + myAvatar + '" alt="' + myName + '">\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                        <div class="content">\n' +
+	
+					'                                                                            <h4 class="name">' + myName + '</h4>\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://player.vimeo.com/video/' + item.link + '?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	
+	
+	                    	} else {
+	
+		var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+					'                                                                        <div class="thumb">\n' +
+	
+					'                                                                            <img class="profile-image " src="' + myAvatar + '" alt="' + myName + '">\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                        <div class="content">\n' +
+	
+					'                                                                            <h4 class="name">' + myName + '</h4>\n' +
+	
+					'                                                                        </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <p>' + item.content + '</p>\n' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	                    	}
+	
+	
+	
+	                    } else {
+	
+	
+	
+	                    	if (item.type == 'image') {
+	
+	
+	
+	                    		var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+	                                    '                                                                        <div class="thumb">\n' +
+	
+	                                    '                                                                            <img class="profile-image " src="' + partAvatar + '" alt="' + partName + '">\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                        <div class="content">\n' +
+	
+	                                    '                                                                            <h4 class="name">' + partName + '</h4>\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <img src="{{ asset('assets/front/content/') }}/' + item.link + '" class="img-responsive" />' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	
+	
+	                    	} else if (item.type == 'youtube') {
+	
+	
+	
+	                    		var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+	                                    '                                                                        <div class="thumb">\n' +
+	
+	                                    '                                                                            <img class="profile-image " class="profile-image " src="' + partAvatar + '" alt="' + partName + '">\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                        <div class="content">\n' +
+	
+	                                    '                                                                            <h4 class="name">' + partName + '</h4>\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://www.youtube.com/embed/' + item.link + '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	
+	
+	                    	} else if (item.type == 'vimeo') {
+	
+	
+	
+	                    		var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+	
+					'                                                                   <div class="top-content">\n' +
+	
+	                                    '                                                                        <div class="thumb">\n' +
+	
+	                                    '                                                                            <img class="profile-image " src="' + partAvatar + '" alt="' + partName + '">\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                        <div class="content">\n' +
+	
+	                                    '                                                                            <h4 class="name">' + partName + '</h4>\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                   </div>\n' +
+	
+					'                                                                   <div class="bottom-content">\n' +
+	
+					'                                                                       <div class="bubble">\n' +
+	
+					'                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://player.vimeo.com/video/' + item.link + '?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+	
+					'                                                                       </div>\n' +
+	
+					'                                                                   </div>\n' +
+	
+					'                                                                </div>';
+	
+	
+	
+	                    	} else {
+	
+		var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+	
+	                                    '                                                                   <div class="top-content">\n' +
+	
+	                                    '                                                                        <div class="thumb">\n' +
+	
+	                                    '                                                                            <img class="profile-image " src="' + partAvatar + '" alt="' + partName + '">\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                        <div class="content">\n' +
+	
+	                                    '                                                                            <h4 class="name">' + partName + '</h4>\n' +
+	
+	                                    '                                                                        </div>\n' +
+	
+	                                    '                                                                   </div>\n' +
+	
+	                                    '                                                                   <div class="bottom-content">\n' +
+	
+	                                    '                                                                       <div class="bubble">\n' +
+	
+	                                    '                                                                           <p>' + item.content + '</p>\n' +
+	
+	                                    '                                                                       </div>\n' +
+	
+	                                    '                                                                   </div>\n' +
+	
+	                                    '                                                                </div>';
+	
+	                    	}
+	
+	
+	
+	                    }
+	
+	
+	
+	                    $('.comment-list').append(html);
+	
+	
+	
+	                    var newmsg_top = parseInt($('.comment-list')[0].scrollHeight );
+	
+	                    $('.comment-list').scrollTop(newmsg_top);
+	
+	
+	
+	                });
+	
+	
+	
+	            }
+	
+	        }
+	
+	    });
+	
+	
+	
+	}, 2500);
+	
+	
+	
+	(function ($) {
+	
+	    $(window).load(function(e) {
+	
+	       var newmsg_top = parseInt($('.comment-list')[0].scrollHeight );
+	
+	        $('.comment-list').scrollTop(newmsg_top);
+	
+	        $(".comment-list").niceScroll({
+	
+	            cursorcolor:"#07cb79",
+	
+	            cursorwidth:"10px",
+	
+	            background:"rgba(26, 39, 53, 0.3)",
+	
+	            cursorborder:"1px solid aquamarine",
+	
+	            cursorborderradius:10
+	
+	        });
+	
+	    });
+	
+	     $(window).resize(function(e){
+	
+	         var windowWidth = $(window).width();
+	
+	        if(windowWidth < 767){
+	
+	            $(document).on('click','#people-available-list',function(e){
+	
+	            $(this).css({
+	
+	                'margin-left':'0',
+	
+	                'z-index': '9999',
+	
+	                'width' : '240px',
+	
+	                'left' : '-15px',
+	
+	            });
+	
+	            $(this).attr('id','people-available-list-opened');
+	
+	        })
+	
+	        $(document).on('click','#people-available-list-opened',function(e){
+	
+	             $(this).css({
+	
+	                'margin-left':'-222px',
+	
+	            });
+	
+	            $(this).attr('id','people-available-list');
+	
+	        })
+	
+	        
+	
+	        
+	
+	       
+	
+	        
+	
+	        
+	
+	        }
+	
+	    })
+	
+	    $(document).ready(function () {
+	
+	         var windowWidth = $(window).width();
+	
+	        if(windowWidth < 767){
+	
+	            $(document).on('click','#people-available-list',function(e){
+	
+	            $(this).css({
+	
+	                'margin-left':'0',
+	
+	                'z-index': '9999',
+	
+	                'width' : '240px',
+	
+	                'left' : '-15px',
+	
+	            });
+	
+	            $(this).attr('id','people-available-list-opened');
+	
+	        })
+	
+	        $(document).on('click','#people-available-list-opened',function(e){
+	
+	             $(this).css({
+	
+	                'margin-left':'-222px',
+	
+	            });
+	
+	            $(this).attr('id','people-available-list');
+	
+	        })
+	
+	       
+	
+	        }
+	
+	        $(document).on('click','#get_search-form',function(e){
+	
+	            e.preventDefault();
+	
+	            $('.search-area-mobile').css('display','block');
+	
+	            $(this).attr('id','get_search_clicked')
+	
+	        }) 
+	
+	        $(document).on('click','#get_search_clicked',function(e){
+	
+	            e.preventDefault();
+	
+	            $('.search-area-mobile').css('display','none');
+	
+	            $(this).attr('id','get_search-form')
+	
+	        })
+	
+	        $(document).on('click','#get_search-form',function(e){
+	
+	            e.preventDefault();
+	
+	            $('.search-area-mobile').css('display','block');
+	
+	            $(this).attr('id','get_search_clicked')
+	
+	        }) 
+	
+	        $(document).on('click','#get_search_clicked',function(e){
+	
+	            e.preventDefault();
+	
+	            $('.search-area-mobile').css('display','none');
+	
+	            $(this).attr('id','get_search-form')
+	
+	        })
+	
+	        $(document).on('click','#mobile-right-nav-icon',function(){
+	
+	            $('.mobile-nav-header-right .sidebar-area').css('display','block');
+	
+	            $(this).attr('id','mobile-right-nav-icon-opened');
+	
+	        });
+	
+	        $(document).on('click','#mobile-right-nav-icon-opened',function(){
+	
+	            $('.mobile-nav-header-right .sidebar-area').css('display','none');
+	
+	            $(this).attr('id','mobile-right-nav-icon');
+	
+	        });
+	
+	        var newmsg_top = parseInt($('.comment-list')[0].scrollHeight );
+	
+	        $('.comment-list').scrollTop(newmsg_top);
+	
+	
+	
+	        $(document).on('submit', '#message_form', function (e) {
+	
+	            e.preventDefault();
+	
+	
+	
+	            var fromData = $(this).serialize();
+	
+	
+	
+	//_token: '{{ csrf_token() }}'
+	
+	console.log(fromData);
+	
+	
+	
+	           /* $.ajax({
+	
+	                type:"POST",
+	
+	                url:"{{ route('user.message.store') }}",
+	
+	                data: fromData
+	
+	            });*/
+	
+	
+	
+	            //$('.emojionearea-editor').html('');
+	
+	
+	
+	        });
+	
+	    });
+	
+	})(jQuery);
+	
+	
+	
+</script>
+@endauth
+@endsection

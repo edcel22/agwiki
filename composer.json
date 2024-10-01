@@ -1,0 +1,5 @@
+{
+    "require": {
+        "znck/belongs-to-through": "^2.3"
+    }
+}

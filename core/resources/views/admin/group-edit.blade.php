@@ -1,0 +1,42 @@
+@extends('admin.layout.master')
+
+@section('body') 
+
+    <div class="single page-content page-content-wrapper">
+    <div class="page-content">
+        <h4 class="text-center">Group Topic</h4>
+
+        <form method="post" action="{{ route('admin.group.store') }}" enctype="multipart/form-data">
+
+            @csrf
+            <input type="hidden" name="id" value="{{$group->id}}">
+
+        
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group crossposting-input input-style-1">
+                        <label for="name" class="control-label">Name*</label>
+                        <input type="text" value="{{$group->name}}" id="name" name="name" class="form-control input-style-1" required>
+                    </div>
+                    
+           		</div>
+               
+                    
+           		
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-lg btn-success btn-block button button-full button-s shadow-large button-round-small bg-green1-dark top-10" type="submit">Save Feed</button>
+                </div>
+            </div>
+            <br><br>
+
+        </form>
+    
+    
+    
+</div>
+</div>
+@endsection
+

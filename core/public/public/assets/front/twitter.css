@@ -1,0 +1,70 @@
+.nav .active a, .nav li a:hover {
+    background: transparent !important;
+    position: relative;
+    color: #1DA1F2 !important;
+}
+.nav .active a::after, .nav li a:hover::after {
+    background: #1DA1F2;
+    height: 3px;
+    width: 100%;
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 0
+}
+.count {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 12px;
+    background: #1DA1F2;
+    border-radius: 50%;
+    color: #fff;
+    z-index: 9;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+.profile-img {
+
+}
+.profile-img a{
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+.profile-img a img{
+    width: 41px;
+    height: 40px;
+    border-radius: 50%;
+}
+.new-post {
+    font-size: 22px;
+    color: #333;
+}
+.profile-img-new-article {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+#cont {
+    position: relative;
+}
+#cont::after {
+    position: absolute;
+    content: 'X';
+    top: -5%;
+    left: 98%;
+    color: #E50000;
+    background: #000;
+    border-radius: 50%;
+    padding: 0px 5px;
+    cursor: pointer;
+}
+body {
+    padding-top: 60px;
+}
+@media (max-width: 979px) {
+    body {
+        padding-top: 0px;
+    }
+}

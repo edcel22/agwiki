@@ -1,0 +1,815 @@
+@extends('layouts.user')
+
+@section('css')
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+@auth
+<link rel="stylesheet" href="https://cdn.plyr.io/3.2.4/plyr.css">
+@endauth
+<style>
+	a.delete-comment{
+	    color: #07cb79 !important;
+	    cursor: pointer;
+	    float: right;
+	    margin-top: 5px;
+	    font-weight: bold;
+	}
+#imgmodalwidth .modal-footer{border-color: rgba(255,255,255,.1);}
+</style>
+@endsection
+<!-- change by dinsesh start -->
+@section('meta')
+    <meta name="description" content="{{ $og_description }}">
+    <meta property="og:url" content="{{ $og_url }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ $og_title }}" />
+    <meta property="og:description" content="{{ $og_description }}" />
+    <meta property="og:image" content="{{ $og_image }}"/>
+    <meta property="fb:admins" content="100003019746911" />
+    <meta property="fb:app_id" content="153590602171657" />
+    <meta property="og:image:width" content="200" />
+    <meta property="og:image:height" content="200" />
+    <meta property="og:site_name" content="crossposting" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{{ $og_title }}" />
+    <meta name="twitter:description" content="{{ $og_description }}" />
+    <meta name="twitter:image" content="{{ $og_image }}" />
+@endsection
+<!-- change by dinsesh end -->
+@section('content')
+
+<div class="post-loop-inner infinite-scroll">
+    <div class="single-post-item">
+        <div class="thumb">
+            <img src="{{ asset('assets/front/img/' . optional($post->user)->avatar) }}" alt="{{ optional($post->user)->name }}">
+        </div>
+        <div class="content">
+            <h4 class="name"><a href="{{ route('profile', optional($post->user)->username) }}">{{ optional($post->user)->name }} @if(optional($post->user)->verified == 1)<span class="varifed"><i class="fa fa-check-circle"></i></span>@endif</a>@if($post->group) &#8658;
+                <a href="{{ route('user.groups', $post->group->slug) }}">{{ $post->group->name }}</a>@endif <span class="days"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ $post->created_at->diffForHumans() }}</span></h4>
+            <article>
+                @if($post->type == 'article')
+                <p>
+                    @auth
+
+                        @if($post->scrabingcontent!='')
+                            {!! str_replace('assets/front/', '../assets/front/',$post->scrabingcontent)  !!}
+                        @else
+                            {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                        @endif
+
+                    @endauth
+                    @guest
+                        @if($post->scrabingcontent!='')
+                            {!! str_replace('assets/front/', '../assets/front/',$post->scrabingcontent)  !!}
+                        @else
+                            {!! excerpt($post, 'login') !!}
+                        @endif
+                    
+                    @endguest
+                </p>
+                @elseif($post->type == 'image')
+                <p>
+                    @auth
+                    {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                    @endauth
+                    @guest
+                    {!! excerpt($post, 'login') !!}
+                    @endguest
+                </p>
+                <img src="{{ asset('assets/front/content/' . $post->link) }}" class="img-responsive imgclickcls" data-toggle="modal" data-target="#imageModal">
+                @elseif($post->type == 'video')
+                <p>
+                    @auth
+                    {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                    @endauth
+                    @guest
+                    {!! excerpt($post, 'login') !!}
+                    @endguest
+                </p>
+                <video class="player" playsinline controls id="{{ str_random(20) }}" style="width: 100%;">
+                    <source src="{{ asset('assets/front/content/' . $post->link) }}" type="video/mp4">
+                    </video>
+                    @elseif($post->type == 'audio')
+                    <p>
+                        @auth
+                        {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                        @endauth
+                        @guest
+                        {!! excerpt($post, 'login') !!}
+                        @endguest
+                    </p>
+                    <audio class="player" controls id="{{ str_random(20) }}" style="width: 100%;">
+                        <source src="{{ asset('assets/front/content/' . $post->link) }}" type="audio/mp3">
+                        </audio>
+                        @elseif($post->type == 'youtube')
+                        <p>
+                            @auth
+                            {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                            @endauth
+                            @guest
+                            {!! excerpt($post, 'login') !!}
+                            @endguest
+                        </p>
+                        <div class="plyr__video-embed player">
+                            <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $post->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                        </div>
+                        @elseif($post->type == 'vimeo')
+                        <p>
+                            @auth
+                            {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                            @endauth
+                            @guest
+                            {!! excerpt($post, 'login') !!}
+                            @endguest
+                        </p>
+                        <div class="plyr__video-embed player">
+                            <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $post->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                        </div>
+                        @elseif($post->type == 'doc')
+                        <p>
+                            @auth
+                            {!! preg_replace('/(?:^|\s)#(\w+)/', ' <a href="' . url('tag') . '/$1" style="font-weight: bold;">#$1</a>', $post->content) !!}
+                            <div class="doc" style="border: 1px solid aliceblue;padding: 15px;"><div style="max-width: 75%;overflow: hidden;">{{ $post->link }}</div> <a href="{{ asset('assets/front/content/' . $post->link) }}" class="pull-right btn btn-default btn-xs" download style="color: #0c0c0c !important;">Download</a></div>
+                            @endauth
+                            @guest
+                            {!! excerpt($post, 'login') !!}
+                            @endguest
+                        </p>
+                        @endif
+                        
+                        <ul class="post-action-ul">
+                            @auth
+                                <li>
+                                    <div class="single-post-action">
+                                        
+                                        <i class="fa fa-thumbs-up post-action{{ $post->isLiked()?' actv':'' }} like" data-post="{{ $post->id }}"></i> 
+                                        <a href="{{ route('view.like', $post->id) }}" class="post-action-count">{{ number_format_short($post->likeCount()) }}</a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="single-post-action">
+                                        
+                                        <span><a href="{{ route('user.post.single', $post->id) }}"><i class="fa fa-comments post-action comment"></i></a></span>
+                                        <a class="post-action-count">{{ number_format_short($post->commentCount()) }}</a>
+                                    </div>
+                                </li>
+                            @endauth
+                            <li>
+                                <div class="single-post-action">
+                                    <div class="btn-group share-group home-page-share-btn">
+                                        <button href="#" data-toggle="dropdown" class="btn btn-info dropdown-toggle">
+                                            <i class="fa fa-share"></i> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a data-original-title="Timeline" rel="tooltip"  href="#" class="btn btn-timeline share" data-placement="left"  data-post="{{ $post->id }}">
+                                                    <i class="fa fa-share-alt"></i> {{ number_format_short($post->shareCount()) }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Twitter" rel="tooltip"  href="{{ route('social.share', [$post->id, 'twitter']) }}" target="_blank" class="btn btn-twitter" data-placement="left">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Facebook" rel="tooltip"  href="{{ route('social.share', [$post->id, 'facebook']) }}" target="_blank" class="btn btn-facebook" data-placement="left">
+                                                    <i class="fa fa-facebook"></i>
+                                                </a>
+                                            </li>                   
+                                            <li>
+                                                <a data-original-title="Google+" rel="tooltip"  href="{{ route('social.share', [$post->id, 'google']) }}" target="_blank" class="btn btn-google" data-placement="left">
+                                                    <i class="fa fa-google-plus"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="LinkedIn" rel="tooltip"  href="{{ route('social.share', [$post->id, 'linkedin']) }}" target="_blank" class="btn btn-linkedin" data-placement="left">
+                                                    <i class="fa fa-linkedin"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a data-original-title="Pinterest" rel="tooltip" href="{{ route('social.share', [$post->id, 'pinterest']) }}" target="_blank" class="btn btn-pinterest" data-placement="left">
+                                                    <i class="fa fa-pinterest"></i>
+                                                </a>
+                                            </li>
+                                            {{--<li>
+                                                <a data-original-title="Email" rel="tooltip" class="btn btn-mail mail-share" data-placement="left" data-id="{{ $post->id }}">
+                                                    <i class="fa fa-envelope"></i>
+                                                </a>
+                                            </li>--}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            @auth
+                            <li>
+                                <div class="single-post-action">
+                                    <span><a href="{{ route('user.post.report', $post->id) }}"><i class="fa fa-flag post-action report"></i></a></span>
+                                </div> 
+                            </li>
+                            @if($post->user_id == Auth::user()->id || Auth::user()->id == 9)
+                            <li>
+                                <div class="single-post-action">
+                                    <i class="fa fa-trash post-action delete-post" data-post="{{ $post->id }}"></i>
+                                </div>
+                            </li>
+                            @endif
+                        @endauth
+                        </ul>
+                            
+                    </article>
+                </div>
+            </div>
+        </div>
+        
+        @auth
+<div class="col-md-12 remove-col-padding">
+    <div class="comments-area">
+        <h4 class="leave-comment-title">Leave A Comment</h4>
+        <form id="comment_form" method="post" action="{{ route('user.comment.store') }}">
+            @csrf
+            <div class="single-comment-input-area">
+                <input type="hidden" name="comment_post" value="{{ $post->id }}">
+                <div class="form-group">
+                    <div class="bottom-content-comments-area">
+                        <div class="left-content">
+                            <ul class="pull-right">
+                                <li>
+                                    <div class="single-input-wrapper">
+                                        <label for="image"><i class="fa fa-image"></i></label>
+                                        <input type="file" name="image" id="image">
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="single-input-wrapper">
+                                        <label for="youtube"><i class="fa fa-youtube"></i></label>
+                                        <input type="text" name="youtube" id="youtube">
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="single-input-wrapper">
+                                        <label for="vimeo"><i class="fa fa-vimeo"></i></label>
+                                        <input type="text" name="vimeo" id="vimeo">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <input type="text" name="comment_content" placeholder="Type your comments" class="form-control comments-emoji-activate">
+                    <div class="comments-submit-area">
+                        <input class="comment-submit-btn" type="submit" value="Submit">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <h2 class="title">Comments (<span id="countComment">{{ $post->commentCount()?number_format_short($post->commentCount()):0 }}</span>)</h2>
+       
+        <div class="all-comments-warpper comment-list">
+            @if(isset($comments))
+            @foreach($comments as $comment) 
+            
+            @if($comment->type == 'image')
+
+            <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+                <div class="thumb">
+                    <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+                </div>
+                <div class="content">
+                    <h4><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                    <div class="descriptoin">
+                        <img src="{{ asset('assets/front/content/' . $comment->link) }}" class="img-responsive">
+                    </div>
+                    @if($comment->user_id == Auth::user()->id || $post->user_id == Auth::user()->id || Auth::user()->id == 9)<a class="delete-comment" data-comment="{{ $comment->id }}" data-post="{{ $post->id }}"><i class="fa fa-trash"></i></a>@endif
+                </div>
+            </div>
+
+            @elseif($comment->type == 'youtube')
+            <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+                <div class="thumb">
+                    <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+                </div>
+                <div class="content">
+                    <h4><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                    <div class="descriptoin">
+                        <div class="plyr__video-embed player">
+                            <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $comment->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                        </div>
+                    </div>
+                    @if($comment->user_id == Auth::user()->id || $post->user_id == Auth::user()->id || Auth::user()->id == 9)<a class="delete-comment" data-comment="{{ $comment->id }}" data-post="{{ $post->id }}"><i class="fa fa-trash"></i></a>@endif
+                </div>
+            </div>
+
+            @elseif($comment->type == 'vimeo')
+            <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+                <div class="thumb">
+                    <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+                </div>
+                <div class="content">
+                    <h4><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                    <div class="descriptoin">
+                        <div class="plyr__video-embed player">
+                            <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $comment->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                        </div>
+                    </div>
+                    @if($comment->user_id == Auth::user()->id || $post->user_id == Auth::user()->id || Auth::user()->id == 9)<a class="delete-comment" data-comment="{{ $comment->id }}" data-post="{{ $post->id }}"><i class="fa fa-trash"></i></a>@endif
+                </div>
+            </div>
+
+            @else
+            <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+                <div class="thumb">
+                    <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+                </div>
+                <div class="content">
+                    <h4><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                    <div class="descriptoin">
+                        <p>{!! $comment->content !!}</p>
+                    </div>
+                    @if($comment->user_id == Auth::user()->id || $post->user_id == Auth::user()->id || Auth::user()->id == 9)<a class="delete-comment" data-comment="{{ $comment->id }}" data-post="{{ $post->id }}"><i class="fa fa-trash"></i></a>@endif
+                </div>
+            </div>
+            
+             {{--<!--Comments of Comments-->    
+            
+            
+             <ul>
+                <li>
+                    <div class="single-post-action">
+                        <span class="comment-of-comment" data-comment="commnetof{{ $comment->id }}"><i class="fa fa-comments"></i></span>
+                        <a class="post-action-count"></a>
+                    </div>
+                </li>
+                
+            </ul>
+            <div id="commnetof{{ $comment->id }}" style="display:none;">
+                <form id="comment_form" method="post" action="{{ route('user.comment.store') }}">
+                @csrf
+                <div class="single-comment-input-area">
+                    <input type="hidden" name="comment_post" value="{{ $post->id }}">
+                    <input type="hidden" name="comment_comment" value="{{ $comment->id }}">
+                    <div class="form-group">
+                        <div class="bottom-content-comments-area">
+                            <div class="left-content">
+                                <ul class="pull-right">
+                                    <li>
+                                        <div class="single-input-wrapper">
+                                            <label for="image"><i class="fa fa-image"></i></label>
+                                            <input type="file" name="image" id="image">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="single-input-wrapper">
+                                            <label for="youtube"><i class="fa fa-youtube"></i></label>
+                                            <input type="text" name="youtube" id="youtube">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="single-input-wrapper">
+                                            <label for="vimeo"><i class="fa fa-vimeo"></i></label>
+                                            <input type="text" name="vimeo" id="vimeo">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="text" name="comment_content" placeholder="Type your comments" class="form-control comments-emoji-activate">
+                        <div class="comments-submit-area">
+                            <input class="comment-submit-btn" type="submit" value="Submit">
+                        </div>
+                    </div>
+                    
+                </div>
+             </form>
+            </div>
+            
+           
+     @php $commentCom = \App\Comment::where('post_id', $post->id)->where('comment_id',$comment->id)->get(); @endphp   
+<div class="row commnet-of-commen">
+@foreach($commentCom as $comment)
+
+<div class="col-md-10 col-md-offset-2">
+    @if($comment->type == 'image')
+
+        <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+            <div class="thumb">
+                <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+            </div>
+            <div class="content">
+                    <h4 ><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                <div class="descriptoin">
+                    <img src="{{ asset('assets/front/content/' . $comment->link) }}" class="img-responsive">
+                </div>
+            </div>
+        </div>
+
+    @elseif($comment->type == 'youtube')
+        <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+            <div class="thumb">
+                <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+            </div>
+            <div class="content">
+                    <h4 ><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                <div class="descriptoin">
+                    <div class="plyr__video-embed player">
+                        <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $comment->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+    @elseif($comment->type == 'vimeo')
+        <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+            <div class="thumb">
+                <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+            </div>
+            <div class="content">
+                    <h4 ><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                <div class="descriptoin">
+                    <div class="plyr__video-embed player">
+                        <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $comment->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    @else
+        <div class="sinlge-comment-show-item" data-id="{{ $comment->id }}">
+            <div class="thumb">
+                <img src="{{ asset('assets/front/img/' . optional($comment->user)->avatar) }}" alt="{{ optional($comment->user)->name }}">
+            </div>
+            <div class="content">
+                    <h4 ><a href="{{ route('profile', optional($comment->user)->username) }}" class="name">{{ optional($comment->user)->name }}</a> @if(optional($comment->user)->verified == 1)<span class="varified"><i class="fa fa-check-circle"></i></span>@endif <span class="days">{{ $comment->created_at->format('M d, Y') }} at {{ $comment->created_at->format('g:i a') }}</span></h4>
+                <div class="descriptoin">
+                    <p>{!! $comment->content !!}</p>
+                </div>
+            </div>
+        </div>
+
+    @endif
+       <div class="sinlge-comment-show-item-separator"></div>
+    
+    </div>
+ 
+@endforeach
+</div>
+         <!--Comments of Comments-->--}}
+            
+            
+            
+            @endif
+
+                <div class="sinlge-comment-show-item-separator"></div>
+
+        @endforeach
+@endif
+            </div>
+        </div>
+    </div>
+
+
+
+@endauth
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5b028cce69cdbe02"></script>
+@endsection
+
+@section('js')
+@auth
+{{--<script>
+// // Alert a message when the user shares somewhere
+// function shareEventHandler(evt) {
+//     if (evt.type == 'addthis.menu.share') {
+
+//         $.ajax({
+//             type:"POST",
+//             url:"{{ route('user.socialShare.pay') }}",
+//             data: {
+//                 _token: '{{ csrf_token() }}'
+//             },
+//             success:function(data){
+//                 if (data.success && data.success == 1) {
+//                     toastr.success('You got ' + data.amount + ' ' + data.currency);
+//                 }
+//             }
+//         });
+
+//     }
+// }
+
+// // Listen for the share event
+// addthis.addEventListener('addthis.menu.share', shareEventHandler);
+</script>--}}
+<script src="https://cdn.plyr.io/3.2.4/plyr.js"></script>
+<script>
+
+(function($) {
+
+	$(document).ready(function() {
+
+	    $(document).on('click', '.delete-comment', function(e) {
+
+	        e.preventDefault();
+
+	        var post = $(this).data('post');
+	        var comment = $(this).data('comment');
+	        $(this).addClass('removable');
+
+	        swal({
+	          title: "Are you sure? You Want To Delete This Comment.",
+	          text: "Once deleted, you will not be able to recover this comment.",
+	          icon: "warning",
+	          buttons: true,
+	          dangerMode: true,
+	        })
+	        .then((willDelete) => {
+	          if (willDelete) {
+
+	                $.ajax({
+	                    data: {
+	                        _token: '{{ csrf_token() }}',
+	                        post_id: post,
+	                        comment_id: comment
+	                    },
+	                    url: '{{ route('user.comment.delete') }}', 
+	                    type: 'POST',
+	                    success: function(response) {
+	                        if (response.success && response.success == 1) {
+
+	                            $('.removable').parent().parent().next('.sinlge-comment-show-item-separator').remove();
+	                            $('.removable').parent().parent().slideUp().remove();
+
+	                            swal("Comment has been deleted!", {
+	                              icon: "success",
+	                            });
+
+	                            var commentIncrease = $('#countComment').text();
+	                            var result = parseInt(commentIncrease) - 1;
+	                            $('#countComment').text(result);
+
+	                        } else {
+	                            $('.removable').removeClass('removable');
+	                        }
+	                    }
+	                });
+	          }
+	        });
+
+	    });
+
+	});
+
+})(jQuery);
+
+$(document).ready(function(){
+$(".comment-of-comment").click(function(){
+var comment =  '#'+$(this).data('comment');
+$(comment).toggle();
+});
+
+
+$(document).on('click', 'label[for="youtube"]', function(e) {
+
+swal("Enter Youtube Video ID (Like 2X9eJF1nLiY)", {
+content: "input",
+}).then((value) => {
+
+if (value != '') {
+
+$('#youtube').val(value);
+$('#type').val('youtube');
+
+// var html = '<div id="player" data-plyr-provider="youtube" data-plyr-embed-id="' + value + '"></div>\n';
+
+$.ajax({
+type:"POST",
+url:"{{ route('user.comment.store') }}",
+data: {
+_token: '{{ csrf_token() }}',
+type: 'youtube',
+link: value,
+comment_post: '{{ $post->id }}'
+}
+});
+
+$('.emojionearea-editor').html('');
+
+}
+
+});
+
+});
+
+$(document).on('click', 'label[for="vimeo"]', function(e) {
+
+swal("Enter Vimeo Video ID (Like 114042185)", {
+content: "input",
+}).then((value) => {
+
+if (value != '') {
+
+$('#vimeo').val(value);
+$('#type').val('vimeo');
+
+// var html = '<div id="player" data-plyr-provider="vimeo" data-plyr-embed-id="' + value + '"></div>\n';
+$.ajax({
+type:"POST",
+url:"{{ route('user.comment.store') }}",
+data: {
+_token: '{{ csrf_token() }}',
+type: 'vimeo',
+link: value,
+comment_post: '{{ $post->id }}'
+}
+});
+
+$('.emojionearea-editor').html('');
+
+}
+
+
+});
+
+});
+
+$(document).on('change', '#image', function(e) {
+
+if (this.files.length) {
+
+var file = this.files[0];
+
+var formdata = new FormData();
+formdata.append("_token", "{{ csrf_token() }}");
+formdata.append("file", file);
+formdata.append("type", 'image');
+formdata.append("comment_post", '{{ $post->id }}');
+
+var ajax = new XMLHttpRequest();
+ajax.open("POST", "{{ route('user.comment.store') }}");
+ajax.send(formdata);
+
+$('.emojionearea-editor').html('');
+
+}
+
+});
+
+$(".comments-emoji-activate").emojioneArea();
+});
+$("input.article").emojioneArea();
+
+var pla = document.querySelectorAll('.player');
+pla.forEach(function(item) {
+
+new Plyr(item);
+
+});
+
+
+$(document).on('submit', '#comment_form', function (e) {
+e.preventDefault();
+
+var data = $(this).serialize();
+
+$.ajax({
+type:"POST",
+url:"{{ route('user.comment.store') }}",
+data: data
+});
+
+$('.emojionearea-editor').html('');
+
+});
+
+
+
+
+
+setInterval(function(){
+
+var last = $('.sinlge-comment-show-item').last();
+
+var lastId = last.data('id');
+
+if (last && lastId) {
+
+var filast = lastId;
+
+} else {
+
+var filast = 0;
+
+}
+
+$.ajax({
+type:"POST",
+url:"{{ route('user.comment.update', $post->id) }}",
+data: {
+last: filast,
+_token: '{{ csrf_token() }}'
+},
+success:function(data){
+if (data.success && data.success == 1) {
+data.comments.forEach(function (item, index) {
+if(item.comment_id==0)
+{ 
+
+if (item.user.verified == 1) {
+var v = '<span class="varified"><i class="fa fa-check-circle"></i></span>';
+} else {
+var v = '';
+}
+
+if (item.user.id == {{ Auth::user()->id }} || {{ Auth::user()->id }} == {{ $post->id }} || {{ Auth::user()->id }} == 9) {
+	var deleteOp = '<a class="delete-comment" data-comment="' + item.id + '" data-post="{{ $post->id }}"><i class="fa fa-trash"></i></a>';
+} else {
+	var deleteOp = '';
+}
+
+var id = Math.random().toString(36).substring(7);
+if (item.type == 'image') {
+
+var html = '<div class="sinlge-comment-show-item" data-id="' + item.id + '">'+
+'                        <div class="thumb">'+
+'                            <img src="{{ asset('assets/front/img/') }}/' + item.user.avatar + '" alt="' + item.user.name + '">'+
+'                        </div>'+
+'                        <div class="content">'+
+'                                <h4 ><a href="{{ url('profile') }}/' + item.user.username + '" class="name">' + item.user.name + '</a> ' + v + '</h4>'+
+'                            <div class="descriptoin">'+
+'                                <img class="img-responsive" src="{{ asset('assets/front/content/') }}/' + item.link + '" />'+
+'                            </div>'+ deleteOp +
+'                        </div>'+
+'                    </div>'+
+'                    <div class="sinlge-comment-show-item-separator"></div>';
+
+} else if (item.type == 'youtube') {
+
+var html = '<div class="sinlge-comment-show-item" data-id="' + item.id + '">'+
+'            <div class="thumb">'+
+'                <img src="{{ asset('assets/front/img/') }}/' + item.user.avatar + '" alt="' + item.user.name + '">'+
+'            </div>'+
+'            <div class="content">'+
+'                    <h4 ><a href="{{ url('profile') }}/' + item.user.username + '" class="name">' + item.user.name + '</a> ' + v + '</h4>'+
+'                <div class="descriptoin">'+
+'                    <div class="plyr__video-embed player">'+
+'                        <iframe id="' + id + '" src="https://www.youtube.com/embed/' + item.link + '?origin=https://plyr.io&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>'+
+'                    </div>'+
+'                </div>'+ deleteOp +
+'            </div>'+
+'        </div>'+
+'        <div class="sinlge-comment-show-item-separator"></div>';
+
+} else if (item.type == 'vimeo') {
+
+var html = '<div class="sinlge-comment-show-item" data-id="' + item.id + '">'+
+'            <div class="thumb">'+
+    '                <img src="{{ asset('assets/front/img/') }}/' + item.user.avatar + '" alt="' + item.user.name + '">'+
+    '            </div>'+
+    '            <div class="content">'+
+        '                    <h4 ><a href="{{ url('profile') }}/' + item.user.username + '" class="name">' + item.user.name + '</a> ' + v + '</h4>'+
+        '                <div class="descriptoin">'+
+            '<div class="plyr__video-embed player">'+
+                '                        <iframe id="' + id + '" src="https://player.vimeo.com/video/' + item.link + '?loop=false&byline=false&portrait=false&title=false&speed=true&transparent=0&gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>'+
+                '                    </div>'+
+                '                </div>'+ deleteOp +
+                '            </div>'+
+                '        </div>'+
+                '        <div class="sinlge-comment-show-item-separator"></div>';
+                
+            } else {
+                var html = '<div class="sinlge-comment-show-item" data-id="' + item.id + '">'+
+                    '                        <div class="thumb">'+
+                        '                            <img src="{{ asset('assets/front/img/') }}/' + item.user.avatar + '" alt="' + item.user.name + '">'+
+                        '                        </div>'+
+                        '                        <div class="content">'+
+                            '                                <h4 ><a href="{{ url('profile') }}/' + item.user.username + '" class="name">' + item.user.name + '</a> ' + v + '</h4>'+
+                            '                            <div class="descriptoin">'+
+                                '                                <p>' + item.content + '</p>'+
+                                '                            </div>'+ deleteOp +
+                                '                        </div>'+
+                                '                    </div>'+
+                                '                    <div class="sinlge-comment-show-item-separator"></div>';
+                            }
+                            
+                            $('.comment-list').append(html);
+                            var commentIncrease = $('#countComment').text();
+                            var result = parseInt(commentIncrease) + 1;
+                            $('#countComment').text(result); 
+                            
+                        } else {
+                            
+                            var comment_id = item.comment_id;
+                            $('[data-id="' + comment_id + '"]').find('.comment-of-comment').css('background', '#E50000');
+                            
+                        }
+                        
+                    });
+                    
+                }
+            }
+        });
+        
+    }, 1500);
+    
+</script>
+@endauth
+@endsection

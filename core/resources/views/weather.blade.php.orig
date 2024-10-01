@@ -1,0 +1,73 @@
+@extends('layouts.auth')
+@section('content')
+<div class="page-content">
+
+  <form method="get">
+    <div class="weather-change input-style-1">
+      <input type="text" id="changeweatherlocation" name="location" placeholder="address or zip" class="form-control input-style-1" value="">
+      <button type="submit" class="button button-l bg-green1-dark shadow-large button-round-small">Change Location</button>
+    </div>
+  </form>
+  <div id="weather" class="weather"></div>
+
+  <?php
+  if(isset($_GET['location'])){
+    $loc = urlencode($_GET['location']);
+
+    $url = "https://maps.google.com/maps/api/geocode/json?address=$loc&key=AIzaSyBeT7fq6uHczg7C-kYQjeA8jCEz9PXUM74";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $json = json_decode($response);
+    // echo '<pre>';
+    // print_r($json);
+    // echo '</pre>';
+<<<<<<< HEAD
+=======
+    // exit();
+>>>>>>> 7f6124b16f598c763be831d7f6bfb90052be3165
+
+    $results = $json->results[0];
+
+    $lat = $results->geometry->location->lat;
+    $lon = $results->geometry->location->lng;
+<<<<<<< HEAD
+    $name = ($results->address_components) ? $results->address_components[1]->long_name : '';
+=======
+    $name = '';
+    // $name = (property_exists($results, 'address_components')) ? $results->address_components[0]->long_name : '';
+>>>>>>> 7f6124b16f598c763be831d7f6bfb90052be3165
+  } else {
+    // $usezip = Auth::user()->zip;
+    $lat = Auth::user()->lat;
+    $lon = Auth::user()->lng;
+    $name = Auth::user()->city;
+  }
+
+  // https://maps.googleapis.com/maps/api/geocode/json?address=62236&key=AIzaSyBeT7fq6uHczg7C-kYQjeA8jCEz9PXUM74
+  ?>
+
+<style>
+.map { width:100%; height:500px; margin:0 0 2rem; }
+</style>
+
+<?php
+if($lat && $lon){
+?>
+  <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="100%" src="https://forecast.io/embed/#lat={{$lat}}&lon={{$lon}}&name={{$name}}"> </iframe>
+  <script src="https://darksky.net/map-embed/@temperature,{{$lat}},{{$lon}},7.js?embed=true&timeControl=true&fieldControl=true&defaultField=temperature&defaultUnits=_f"></script>
+<?php
+} else {
+  echo '<p>No location data available.</p>';
+}
+?>
+
+</div> <!-- end .page-content -->
+
+
+@endsection
