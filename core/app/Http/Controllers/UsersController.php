@@ -12,6 +12,7 @@ use App\Share;
 use App\Follow;
 use Image;
 use Mail;
+use App\Jobs\SendEmailBroadcastJob;
 
 class UsersController extends Controller
 {
@@ -147,13 +148,13 @@ class UsersController extends Controller
 
         foreach ($users as $user)
         {
+            $to = $user->email;
+            $name = $user->name;
+            $subject = $request->subject;
+            $message = $request->emailMessage;
 
-         $to = $user->email;
-         $name = $user->name;
-         $subject = $request->subject;
-         $message = $request->emailMessage;
-
-         send_email($to, $name, $subject, $message);
+            // send_email($to, $name, $subject, $message);
+            SendEmailBroadcastJob::dispatch($to, $name, $subject, $message);
         }
 
         return back()->withSuccess('Mail Sent Successfuly');

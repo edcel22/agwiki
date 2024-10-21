@@ -13,10 +13,10 @@ class CreateUserInterestTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_interest', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
-        });
+        // Schema::create('user_interest', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->timestamps();
+        // });
     }
 
     /**
