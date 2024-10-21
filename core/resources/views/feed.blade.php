@@ -6,12 +6,14 @@
 <?php header("Access-Control-Allow-Origin: *"); ?>
 
 @php 
-    $theUser = ''; 
+    $theUser = '';
+    $loggedIn = false;
 @endphp
 
 @php
     if (Auth::check()) {
         $theUser = Auth::user();
+        $loggedIn = true;
     } else {
         $theUser = $user;  
     }
@@ -506,7 +508,11 @@
                                 @endif
 
                                 <img src="{{ asset('assets/front/img/' . optional($share->user)->avatar) }}" class="profile-image" alt="{{ optional($share->user)->name }}">
-                                <a href="{{ route('profile', optional($share->user)->username) }}" class="user">{{ optional($share->user)->name }}</a>
+                                @if($loggedIn)
+                                    <a href="{{ route('profile', optional($share->user)->username) }}" class="user">{{ optional($share->user)->name }}</a>
+                                @else
+                                    <b class="user">{{ optional($share->user)->name }}</b>
+                                @endif
                                 <br>
                                 <date>shared this {{ $post->type }} {{ $share->created_at->diffForHumans() }}</date>
 
