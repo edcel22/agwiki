@@ -27,7 +27,7 @@
             
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-lg btn-success btn-block button button-full button-s shadow-large button-round-small bg-green1-dark top-10" type="submit">Save Feed</button>
+                    <button class="btn btn-lg btn-success btn-block button button-full button-s shadow-large button-round-small bg-green1-dark top-10" type="submit">Save Topic</button>
                 </div>
             </div>
             <br><br>

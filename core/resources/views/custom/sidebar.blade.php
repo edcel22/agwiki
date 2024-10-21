@@ -273,7 +273,7 @@
 			<div class="clear"></div>
 			<!--id="ajaxSubmit" -->
             <!--data-menu="welcome-screen"-->
-            <button  type="submit" data-sitekey="6LcE85McAAAAAMWCElFtgLgZ2oYw7pBKvylF6fgr" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
+            <button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
 			<div class="clear"></div>
 		</form>
 		<div class="divider"></div>
