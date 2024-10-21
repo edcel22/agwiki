@@ -34,6 +34,5 @@ class SendEmailBroadcastJob implements ShouldQueue
     public function handle()
     {
         send_email($this->to, $this->name, $this->subject, $this->message);
-        // echo "ASD";
     }
 }
