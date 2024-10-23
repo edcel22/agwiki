@@ -234,8 +234,51 @@ header i{
     </style>-->
 
     @include('custom.header')
+		<style>
+			.auth-layout__login-container-wrapper {
+				width: 100%;
+				position: fixed;
+				z-index: 999;
+				background-color: #fff;
+				left: 0;
+				right: 0;
+			}
+
+			.auth-layout__login-container-content {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 10px 30px;
+			}
+
+			.auth-layout__login-container-content .logo-image {
+				max-width: 110px;
+			}
+
+			.auth-layout__login-container-content .login-button {
+				margin: 0;
+			}
+
+			.sidebar.sidebar-loggedout {
+					margin-top: 88px;
+			}
+		</style>
 
 </head>
+
+@php 
+    $theUser = '';
+    $loggedIn = false;
+@endphp
+
+@php
+    if (Auth::check()) {
+        $theUser = Auth::user();
+        $loggedIn = true;
+    } else {
+        $theUser = $user;  
+    }
+@endphp
 
 <body class="theme-light" data-highlight="blue2">
 <!-- Google Tag Manager (noscript) -->
@@ -415,6 +458,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <div id="page">
+@if(!$loggedIn)
+	<div class="auth-layout__login-container-wrapper">
+		<div class="auth-layout__login-container-content">
+			<a href="/">
+				<img
+					src="/assets/front/img/logo_md.png"
+					alt="AgWiki, Solving World Food Problems Socially"
+					class="logo-image"
+				>
+			</a>
+			<a
+				class="login-button button button-m button-round-small bg-blue1-dark shadow-small"
+				href="/login"
+			>
+				Login
+			</a>
+		</div>
+	</div>
+@endif
 
 
 

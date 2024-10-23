@@ -2,6 +2,19 @@
 
 @section('content')
 
+<?php
+    $placeholderImage = '/assets/front/img/change-cover.png';
+?>
+
+<style>
+    .group-cover-photo {
+        margin-bottom: 10px;
+    }
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
     <div class="single page-content">
         <h4 class="text-center">New Group</h4>
 
@@ -11,9 +24,9 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <img src="http://via.placeholder.com/1170x500?text=Change+Cover" id="cover-cont" class="img-responsive">
+                    <img src="{{ $placeholderImage }}" id="cover-cont" class="img-responsive group-cover-photo">
                     <div class="form-group crossposting-input input-style-1" style="text-align: center;">
-                        <label for="cover" class="button button-s shadow-large button-round-small bg-black">Change Cover</label>
+                        <label for="cover" class="button button-s shadow-large button-round-small bg-black cursor-pointer">Change Cover</label>
                         <input type="file" id="cover" name="cover" class="form-control input-style-1" style="display: none;">
                     </div>
                 </div>

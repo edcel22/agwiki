@@ -6,17 +6,50 @@
 <?php header("Access-Control-Allow-Origin: *"); ?>
 
 @php 
-    $theUser = ''; 
+    $theUser = '';
+    $loggedIn = false;
 @endphp
 
 @php
     if (Auth::check()) {
         $theUser = Auth::user();
+        $loggedIn = true;
     } else {
         $theUser = $user;  
     }
 @endphp
 
+<script>
+    // Function to toggle the specific dropdown visibility
+    function toggleDropdown(id) {
+        var dropdown = document.getElementById(id);
+
+        // First, hide all open dropdowns before showing the new one
+        var dropdowns = document.querySelectorAll('.dropdown-content');
+        dropdowns.forEach(function(dd) {
+            if (dd !== dropdown) {
+                dd.style.display = 'none'; // Hide other dropdowns
+            }
+        });
+
+        // Toggle the clicked dropdown
+        dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Add an event listener to detect clicks outside the dropdown
+    document.addEventListener('click', function(event) {
+        var dropdowns = document.querySelectorAll('.dropdown-content');
+
+        // Check if the click happened outside the dropdowns and their respective toggle buttons
+        dropdowns.forEach(function(dropdown) {
+            var toggleButton = document.querySelector('[dropdown-target-id="' + dropdown.id + '"]');
+            if (!dropdown.contains(event.target) && !toggleButton.contains(event.target)) {
+                dropdown.style.display = 'none'; // Hide the dropdown
+            }
+        });
+    });
+
+</script>
 
 <div class="page-content " id='pulldown'>
 	
@@ -392,7 +425,11 @@
                                             <a onClick="$( '.dropdown-content-{{$post->id}}' ).toggle();" href="javascript:void(0)" data-toggle="dropdown-content" class="dropdown-toggle">
                                                 <i class="fa fa-share-square"></i> <span class="caret"></span>
                                             </a>
-                                            <ul class="dropdown-content dropdown-content-{{$post->id}} groupShare">
+                                            <ul
+                                                class="dropdown-content dropdown-content-{{$post->id}} groupShare"
+                                                onblur="$( '.dropdown-content-{{$post->id}}' ).toggle();"
+                                                tabindex="0"
+                                            >
                                                 <li style="width:250px;">
                                                     <a data-original-title="Timeline"   href="" target="_blank" >
                                                        <a data-post="{{$post->id}}" onClick="$(this).addClass('active');$( '.dropdown-content-{{$post->id}}' ).toggle();" class="share"> Timeline</a>
@@ -506,7 +543,11 @@
                                 @endif
 
                                 <img src="{{ asset('assets/front/img/' . optional($share->user)->avatar) }}" class="profile-image" alt="{{ optional($share->user)->name }}">
-                                <a href="{{ route('profile', optional($share->user)->username) }}" class="user">{{ optional($share->user)->name }}</a>
+                                @if($loggedIn)
+                                    <a href="{{ route('profile', optional($share->user)->username) }}" class="user">{{ optional($share->user)->name }}</a>
+                                @else
+                                    <b class="user">{{ optional($share->user)->name }}</b>
+                                @endif
                                 <br>
                                 <date>shared this {{ $post->type }} {{ $share->created_at->diffForHumans() }}</date>
 
@@ -601,10 +642,15 @@
                                 <li style="width:50px;">
                                     <div class="single-input-wrapper share-group home-page-share-btn group">
                                         @if (Auth::check())
-                                        <a onClick="$( '.dropdown-content-{{$post->id}}' ).toggle();" href="javascript:void(0)" data-toggle="dropdown-content" class="dropdown-toggle">
+                                        <a onClick="$( '.dropdown-content-{{$post->id}}' ).toggle();" href="javascript:void(0)" data-toggle="dropdown-content" class="dropdown-toggle"
+                                        dropdown-target-id="post-{{$post->id}}"
+                                        >
                                             <i class="fa fa-share-square"></i> <span class="caret"></span>
                                         </a>
-                                        <ul class="dropdown-content dropdown-content-{{$post->id}} groupShare">
+                                        <ul
+                                            class="dropdown-content dropdown-content-{{$post->id}} groupShare"
+                                            id="post-{{$post->id}}"
+                                        >
                                             <li style="width:250px;">
                                                 <a data-original-title="Timeline"   href="" target="_blank" >
                                                     <a data-post="{{$post->id}}" onClick="$(this).addClass('active');$( '.dropdown-content-{{$post->id}}' ).toggle();" class="share"> Timeline</a>

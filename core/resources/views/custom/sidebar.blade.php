@@ -2,11 +2,13 @@
 
 @php 
     $theUser = ''; 
+		$loggedIn = false;
 @endphp
 
 @php
     if (Auth::check()) {
         $theUser = Auth::user();
+				$loggedIn = true;
     } else {
         $theUser = $user;  
     }
@@ -43,18 +45,24 @@
 @endphp
 
 
+<?php
+	$sidebarClass = "sidebar shadow-medium";
+	if (!$loggedIn) {
+		$sidebarClass .= ' sidebar-loggedout';
+	}
+?>
 
 
-
-<div class="sidebar shadow-medium">
+<div class="<?= $sidebarClass; ?>">
 
         <div data-height="cover" class="caption bottom-0" id="innerSidebar" >
 
             <div class="top-30">
 
 				<div class="landing-header">
-
-					<a href="/"><img src="/assets/front/img/logo_md.png" alt="AgWiki, Solving World Food Problems Socially"></a>
+					@if($loggedIn)
+						<a href="/"><img src="/assets/front/img/logo_md.png" alt="AgWiki, Solving World Food Problems Socially"></a>
+					@endif
 
 				</div>
 
@@ -265,7 +273,7 @@
 			<div class="clear"></div>
 			<!--id="ajaxSubmit" -->
             <!--data-menu="welcome-screen"-->
-            <button  type="submit" data-sitekey="6LcE85McAAAAAMWCElFtgLgZ2oYw7pBKvylF6fgr" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
+            <button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
 			<div class="clear"></div>
 		</form>
 		<div class="divider"></div>
