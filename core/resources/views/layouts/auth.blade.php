@@ -1918,6 +1918,7 @@ function registerPopup()
 	
     @endsection
 
+    <script src="{{ asset('js/sharepost.js') }}" defer></script>
 </body>
 
 </html>
