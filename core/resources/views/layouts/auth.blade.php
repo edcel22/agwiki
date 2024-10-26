@@ -163,13 +163,13 @@
     }
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" defer></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js" defer></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js defer"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" defer></script>
 <script src="/assets/front/js/jquery.jscroll.min.js"></script>
-<script type='text/javascript' src="https://jakiestfu.github.io/Mention.js/javascripts/bootstrap-typeahead.js"></script>
+<script type='text/javascript' src="https://jakiestfu.github.io/Mention.js/javascripts/bootstrap-typeahead.js" defer></script>
 
 <script>
     $(document).ready(function () {
