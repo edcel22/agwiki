@@ -136,7 +136,7 @@
                         		<li class="hidden-mobile">
                         			<div class="single-input-wrapper">
                         				<label for="doc">
-                        				<img src="/assets/front/css/doc_upload.png" alt="Upload an Document">
+                        				<img src="/assets/front/css/doc_upload.png" alt="Upload a Document">
                         				</label>
                         				<input type="file" name="doc" id="doc" style="display:none">
                         				<input type="hidden" name="type" id="type">
