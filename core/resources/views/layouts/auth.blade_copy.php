@@ -14,8 +14,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('assets/front/img/icon.png') }}"/>
-		<link rel="stylesheet" href="/assets/front/css/auth.css">
     @include('custom.header')
+
+    <style>
+        .auth-layout__login-container-wrapper {
+            width: 100%;
+            position: fixed;
+            z-index: 999;
+            background-color: #fff;
+            left: 0;
+            right: 0;
+        }
+        .auth-layout__login-container-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 30px;
+        }
+        .auth-layout__login-container-content .logo-image {
+            max-width: 110px;
+        }
+        .auth-layout__login-container-content .login-button {
+            margin: 0;
+        }
+        .sidebar.sidebar-loggedout {
+            margin-top: 88px;
+        }
+    </style>
 </head>
 
 @php 
@@ -163,13 +188,13 @@
     }
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" defer></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js" defer></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js defer"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" defer></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="/assets/front/js/jquery.jscroll.min.js"></script>
-<script type='text/javascript' src="https://jakiestfu.github.io/Mention.js/javascripts/bootstrap-typeahead.js" defer></script>
+<script type='text/javascript' src="https://jakiestfu.github.io/Mention.js/javascripts/bootstrap-typeahead.js"></script>
 
 <script>
     $(document).ready(function () {
