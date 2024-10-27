@@ -48,7 +48,6 @@
 					 instructionsRefreshing: 'Refreshing the page',
 					 refreshTimeout: 600,
 					 onRefresh: function(){ 
-					 // alert("Refresh");
 						 location.reload();
 					 }
 					});
@@ -86,9 +85,6 @@
                                 @endif
                             </div>
                         </div>
-                        <!--<span>With: <a href="#"> <i class="fas fa-user-plus">
-</i> </a>
-</span>-->
                     </div>
 
                     <div class="post-input">
@@ -119,20 +115,6 @@
                         				<input type="file" name="image" id="image" style="display:none">
                         			</div>
                         		</li>
-                        		<!--<li>
-                        			<div class="single-input-wrapper">
-
-                        			    <label for="video">
-
-                        			        <img src="/assets/front/css/mov_upload.png" alt="Upload an Video">
-
-                        			    </label>
-
-                        			    <input type="file" name="video" id="video" style="display:none">
-
-                        			</div>
-
-                        			</li>-->
                         		<li class="hidden-mobile">
                         			<div class="single-input-wrapper">
                         				<label for="doc">
@@ -143,18 +125,6 @@
                         				<input type="hidden" name="link" id="link">
                         			</div>
                         		</li>
-                        		<!--<li>
-                        			<div class="single-input-wrapper">
-
-                        			    <label for="group">
-
-                        			        <img src="/assets/front/css/group_upload.png" class="hidden-mobile" alt="Add to a Group"><span class="show-mobile">Add to Group</span>
-
-                        			    </label>
-
-                        			</div>
-
-                        			</li>-->
                                 @if (Auth::check())
 								    <li><i id="postSpinner" class="fa fa-spinner fa-spin fa-3x fa-fw" aria-hidden="true" style="display: none"></i></li>
                                 @endif
@@ -325,7 +295,6 @@
                             <br>
                             <date>shared this {{ $post->type }} {{ $theSharer->created_at->diffForHumans() }}</date>
 
-
 							@endif
 
                             <div class="post-meta">
@@ -339,7 +308,6 @@
                                         @endforeach
                                     </span> 
                                 @endif
-                           
                             </div>
                             <article>
                                 <p class="pubDate">
@@ -358,14 +326,8 @@
                                       echo "SOURCE: <a class='urlSource' href='/feed?rss=".$baseURL[2]."'>".$baseURL[2]."</a>";
                                     }
                                   @endphp
-
                                 </p>
-								
-								
-									
                                 <p class="article-img">
-									<!--<span class="url">{{ $post->link }}</span>-->
-									
 									<a href="/ajaxpage?url={{ $post->link }}" rel="modal:open">{!! str_replace('<br />','',$post->content) !!}</a>
 									@if(!strstr($post->content,'Read More') && !strstr($post->scrabingcontent,'Read More'))
 
@@ -540,7 +502,6 @@
                                     @endforeach
                                     @endforeach
                                     </span>
-                                <!--<span>With: <a href="#">User Name</a>, <a href="#">Tagged User</a>, <a href="#"> <i class="fas fa-user-plus"></i> </a></span>-->
                                     @endif
                                 <article>
                                     <br> @if($post->type == 'article') @if($post->scrabingcontent!='')
