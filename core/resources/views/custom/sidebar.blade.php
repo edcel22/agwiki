@@ -82,7 +82,7 @@
                         <a onclick= "return registerPopup()">
                     @endif
                         <i class="bg-green1-dark shadow-icon-large far fa-file-alt"></i>
-                        <em class="color-theme">Topicsss</em>
+                        <em class="color-theme">Topics</em>
                         </a>
 
                     @if (Auth::check())
