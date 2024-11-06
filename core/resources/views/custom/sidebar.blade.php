@@ -182,7 +182,7 @@
 					</a> -->
 					<a href="https://education.agwiki.com/" target="_blank">
 						<i class="bg-green1-dark shadow-icon-large fas fa-laptop-code"></i>
-						 <em class="color-theme">Educationn</em>
+						 <em class="color-theme">Education</em>
 					</a>
 
 
