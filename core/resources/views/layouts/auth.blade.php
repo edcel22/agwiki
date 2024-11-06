@@ -1,3 +1,17 @@
+@php 
+    $theUser = ''; 
+	$loggedIn = false;
+@endphp
+
+@php
+    if (Auth::check()) {
+        $theUser = Auth::user();
+		$loggedIn = true;
+    } else {
+        $theUser = $user;  
+    }
+@endphp
+
 <!DOCTYPE html>
 
 <html lang="{{ app()->getLocale() }}">
