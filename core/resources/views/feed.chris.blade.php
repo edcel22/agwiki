@@ -952,9 +952,7 @@
 
             <div class="input-style has-icon input-style-1 input-required">
 
-                <i class="input-icon fa fa-at">
-
-</i>
+                <i class="input-icon fa fa-at"></i>
 
                 <span>Email</span>
 
@@ -966,9 +964,7 @@
 
             <div class="input-style has-icon input-style-1 input-required">
 
-                <i class="input-icon fa fa-lock font-11">
-
-</i>
+                <i class="input-icon fa fa-lock font-11"></i>
 
                 <span>Password</span>
 
@@ -1006,17 +1002,13 @@
 
             <a href="#" class="button bg-linkedin button-l shadow-large button-icon-left">
 
-                <i class="fab fa-linkedin-in">
-
-</i> Log In With LinkedIn</a>
+                <i class="fab fa-linkedin-in"></i> Log In With LinkedIn</a>
 
             <br>
 
             <a href="#" class="button bg-facebook button-l shadow-large button-icon-left">
 
-                <i class="fab fa-facebook-f">
-
-</i> Log In With Facebook</a>
+                <i class="fab fa-facebook-f"></i> Log In With Facebook</a>
 
             <br>
 
@@ -1039,7 +1031,6 @@
             <div class="input-style has-icon input-style-1 input-required">
 
                 <i class="input-icon fa fa-at">
-
 </i>
 
                 <span>Email</span>

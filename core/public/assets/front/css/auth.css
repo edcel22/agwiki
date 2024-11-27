@@ -28,3 +28,14 @@
   justify-content: center;
   margin: 20px 0;
 }
+@media (max-width: 500px) {
+  
+  .auth-layout__login-container-content {
+    padding: 10px;
+  }
+  .auth-layout__login-container-content .navigation-buttons-chr .button {
+    padding: 8px !important;
+    margin: 0 !important;
+    font-size: 10px;
+  }
+}

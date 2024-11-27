@@ -234,9 +234,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         alt="AgWiki, Solving World Food Problems Socially"
                         class="logo-image">
             </a>
-            <a class="login-button button button-m button-round-small bg-blue1-dark shadow-small" href="/login">
-                Login
-            </a>
+            <div class="buttons navigation-buttons-chr">
+                <a href="#" class="button button-primary button-m button-round-small right-20" data-menu="menu-signup">Sign Up</a>
+                <a href="#" class="button button-primary button-m button-round-small" data-menu="menu-signin">Login</a>
+            </div>
         </div>
     </div>
 @endif

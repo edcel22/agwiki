@@ -19,7 +19,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
-AuthType Basic
-AuthName "beta"
-AuthUserFile "/home/beta2agwiki/.htpasswds/agwiki-blayzer/core/public/passwd"
-require valid-user
+# AuthType Basic
+# AuthName "beta"
+# AuthUserFile "/home/beta2agwiki/.htpasswds/agwiki-blayzer/core/public/passwd"
+# require valid-user

@@ -239,7 +239,7 @@
 
 
 
-<div id="menu-signup" class="menu menu-box-bottom" data-menu-height="92%" data-menu-effect="menu-parallax">
+<div id="menu-signup" class="menu menu-box-bottom menu-chr" data-menu-height="92%" data-menu-effect="menu-parallax">
 	<div class="content">
 		<h1 class="uppercase ultrabold top-20">Register</h1>
 		<p class="font-11 under-heading bottom-20">
@@ -277,9 +277,54 @@
 			<div class="clear"></div>
 		</form>
 		<div class="divider"></div>
-		<a href="{{ url('/login/linkedin') }}" class="button bg-linkedin button-l shadow-large button-icon-left"><i class="fab fa-linkedin-in"></i> Log In With LinkedIn</a><br>
-		<a href="{{ url('/login/facebook') }}" class="button bg-facebook button-l shadow-large button-icon-left"><i class="fab fa-facebook-f"></i> Log In With Facebook</a><br>
+		<div class="soc-login">
+			<a href="{{ url('/login/linkedin') }}" class="button bg-linkedin button-l shadow-large button-icon-left"><i class="fab fa-linkedin-in"></i> Log In With LinkedIn</a>
+			<a href="{{ url('/login/facebook') }}" class="button bg-facebook button-l shadow-large button-icon-left"><i class="fab fa-facebook-f"></i> Log In With Facebook</a>
+		</div>
 	</div>
 </div>
 
+<style>
+	#menu-signup.menu-chr.menu-active,
+	#menu-signin.menu-chr.menu-active {
+		display: block;
+		width: 100%;
+		max-width: 80%;
+		height: 100%;
+		top: 11%;
+		left: 10%;
+		max-height: fit-content;
+		border-radius: 20px;
+		overflow: hidden;
+	}
 
+	#menu-signup.menu-chr .soc-login,
+	#menu-signin.menu-chr .soc-login {
+		display: flex;
+		justify-content: center;
+	}
+	#menu-signup.menu-chr .soc-login .button,
+	#menu-signin.menu-chr .soc-login .button {
+		margin: 0 10px;
+	}
+
+	@media (max-width: 500px) {
+		#menu-signup.menu-chr.menu-active,
+		#menu-signin.menu-chr.menu-active {
+			width: 100%;
+			max-width: 90%;
+			top: 10%;
+			left: 5%;
+		}
+		#menu-signup.menu-chr .soc-login,
+		#menu-signin.menu-chr .soc-login {
+			flex-direction: column;
+		}
+		#menu-signup.menu-chr .soc-login .button,
+		#menu-signin.menu-chr .soc-login .button {
+			margin: 0 10px;
+			margin: 5px;
+			font-size: 12px;
+		}
+	}
+</style>

@@ -1,0 +1,2 @@
+docker exec -it laravel-php bash
+docker exec -it laravel-mysql-backup bash
