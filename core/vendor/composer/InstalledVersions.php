@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '5fb2555521b9cbc706379f865d051f25a0d6e8c5',
+    'reference' => '2cf6ac6484900d050668a370811b3bcbf069339f',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -441,7 +441,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '5fb2555521b9cbc706379f865d051f25a0d6e8c5',
+      'reference' => '2cf6ac6484900d050668a370811b3bcbf069339f',
     ),
     'laravel/nexmo-notification-channel' => 
     array (
@@ -1235,6 +1235,15 @@ private static $installed = array (
       array (
       ),
       'reference' => 'bafc69caeb4d49c39fd0779086c03a3738cbb389',
+    ),
+    'yajra/laravel-datatables-oracle' => 
+    array (
+      'pretty_version' => 'v8.13.7',
+      'version' => '8.13.7.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '17b50e3ee91ceb5b1cc6e596c366718af4ff45cc',
     ),
     'zendframework/zend-diactoros' => 
     array (

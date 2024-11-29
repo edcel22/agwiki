@@ -247,6 +247,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function () {
     Route::get('post/{post}', 'AdminController@postSingle')->name('post.single');
     Route::post('post-delete', 'AdminController@postDelete')->name('admin.post.delete');
     Route::post('post-cancel', 'AdminController@postCancel')->name('admin.post.cancel');
+    
+    Route::post('admin/post/pin', 'AdminController@pinPost')->name('admin.post.pin');
+    Route::post('admin/post/unpin', 'AdminController@unpinPost')->name('admin.post.unpin');
+    Route::get('admin/posts/data', 'AdminController@getPostsData')->name('admin.posts.data');
 
 	Route::get('rss', 'AdminController@rss')->name('rss');
 	Route::post('rss-delete', 'AdminController@postRSSDelete')->name('admin.rss.delete');

@@ -189,60 +189,80 @@ class HomeController extends Controller
 		echo '<iframe id="iframe1" height="600" width="100%" frameborder="0" marginheight="0" marginwidth="0" src="/'.$filename.'" ></iframe>';
 	}
 
-	public function feed()
+    public function feed()
     {
         $page_title = 'Feed';
-        if (Auth::check()){
-            //$user = User::find(rand(2225,2290));
-            //Auth::login($user);
-            // to use, comment out the auth at the top
 
+        if (Auth::check()) {
             $page_title = 'Feed';
-            $groups = GroupMember::where('user_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
-            
-            $shares = Auth::user()->timeline();
             $user = Auth::user();
+
+            // Fetch groups for the authenticated user
+            $groups = GroupMember::where('user_id', $user->id)
+                ->orderBy('id', 'DESC')
+                ->get();
+
+            // Fetch posts with pinned ones first
+            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                ->select('shares.*') // Select only necessary columns
+                ->where('shares.user_id', $user->id)
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+                ->paginate(10);
+
+            // Fetch user's interests
             $interest = Interest::all();
-            
-            //$ads = array(['link'=>'https://www.eatkidfriendly.com/info/','image'=>'http://agwiki.dev.blayzer.com/assets/front/img/s6hauarvTzfjcKWlk3ORMlJRBhwBGa3ymoBtMBR7.png','content'=>"We provide families with kid friendly restaurants, products and other great information."]);
-            //$ads = json_decode(json_encode($ads), FALSE);
-            
-            //$ads = Ads::inRandomOrder()->first();
 
-            
-            $ads = Ads::WhereRaw('id in (select ads_id from interest_ads ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join ads p on p.id = ip.ads_id where iu.user_id = '.Auth::user()->id.' )')->inRandomOrder()->first();
-            
+            // Fetch personalized ads for the user
+            $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+                            inner join interest_user iu on ip.interest_id = iu.interest_id 
+                            inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+                ->inRandomOrder()
+                ->first();
             $ads = array($ads);
-    
-        return view('feed', compact('page_title', 'shares','user','interest','groups','ads'));
+
+            return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
         } else {
+            $user = User::where('username', 'ktschomakoff-860')->first();
 
-                $user = User::where('username', 'ktschomakoff-860')->first();
-                $interest = Interest::all();
+            // Fetch interests
+            $interest = Interest::all();
 
-                if(isset($_GET['topic'])) {
-                    
-                    //die($_GET['topic']);
-                    $shares = Share::distinct('shares.post_id')->WhereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = '.$_GET['topic'].') ')->groupBy('shares.post_id')->orderBy('id', 'DESC')->paginate(10);//need to get pagination to work properly for topic feed
-                    // $shares= $shares->shuffle();
-                    // $shares->setPath('');
-			
-                } else {
-                    
-                    // DB::enableQueryLog();
-                    $shares = $user->nonuserTimeline();
-                    // dd(DB::getQueryLog());
+            if (isset($_GET['topic'])) {
+                // Fetch topic-specific shares with pinned posts first
+                $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                    ->select('shares.*')
+                    ->whereRaw('post_id in (select post_id from interest_post ip 
+                        inner join posts p on p.id = ip.post_id 
+                        where ip.interest_id = ' . $_GET['topic'] . ')')
+                    ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                    ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+                    ->paginate(10);
+            } else {
+                // Fetch all shares for non-logged-in users
+                $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                    ->select('shares.*')
+                    ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                    ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+                    ->paginate(10);
+            }
 
-                    // dd($shares);
-                }
-                $groups = GroupMember::where('user_id', $user->id)->orderBy('id', 'DESC')->inRandomOrder()->get();
+            // Fetch groups for the non-authenticated user
+            $groups = GroupMember::where('user_id', $user->id)
+                ->orderBy('id', 'DESC')
+                ->inRandomOrder()
+                ->get();
 
-                $ads = Ads::WhereRaw('id in (select ads_id from interest_ads ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join ads p on p.id = ip.ads_id where iu.user_id = '.$user->id.' )')->inRandomOrder()->first();
-                $ads = array($ads);
+            // Fetch ads for non-authenticated users
+            $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+                            inner join interest_user iu on ip.interest_id = iu.interest_id 
+                            inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+                ->inRandomOrder()
+                ->first();
+            $ads = array($ads);
 
             return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
         }
-       
     }
 
     // public function nonuserfeed() {
