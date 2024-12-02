@@ -833,7 +833,7 @@
             <a href="#" class="button button-full button-m shadow-large button-round-small bg-blue1-dark top-20">SEND RECOVERY EMAIL</a>
         </div>
     </div>
-    <div id="menu-signin" class="menu menu-box-bottom menu-chr" data-menu-height="500" data-menu-effect="menu-over">
+    <!-- <div  class="menu menu-box-bottom menu-chr" data-menu-height="500" data-menu-effect="menu-over">
         <div class="content">
             <h1 class="uppercase ultrabold top-20">LOGIN</h1>
             <p class="font-11 under-heading bottom-20">
@@ -871,7 +871,7 @@
                 <a href="{{ url('/login/facebook') }}" class="button bg-facebook button-l shadow-large button-icon-left"><i class="fab fa-facebook-f"></i> Log In With Facebook</a>
             </div>
         </div>
-    </div>
+    </div> -->
     {{-- <div id="menu-signup" class="menu menu-box-bottom" data-menu-height="300" data-menu-effect="menu-parallax">
         <div class="content">
             <h1 class="uppercase ultrabold top-20">Register</h1>

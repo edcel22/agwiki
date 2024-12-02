@@ -1069,7 +1069,7 @@ function registerPopup()
 									$(this).parent().find('span').prop('innerHTML', '(' + newValue + ')');
 
                                 if (data.message) {
-                                    toastr.success(data.message)
+                                    // toastr.success(data.message)
                                 }
                             }
 							else
