@@ -1400,7 +1400,7 @@
 
 
 
-                                toastr.success("Post Published Successfully.");
+                                // toastr.success("Post Published Successfully.");
 
 
 
