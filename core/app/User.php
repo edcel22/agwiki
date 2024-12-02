@@ -23,314 +23,152 @@ class User extends Authenticatable
     ];
 
     public function timeline()
-
     {
-        
+        $followedByThis = Follow::where('by', $this->id)->pluck('followed');
 
-        if($followed_by_this = Follow::where('by', $this->id)->pluck('followed'))
-		{
-			$follow_sql ='';
-			//die(print_r( $followed_by_this));
-			foreach($followed_by_this as $follow_id){
-				@$follow_sql .= ','.$follow_id;
-			}
-	
-	
-			$follow_sql = substr($follow_sql,-1);
-		}
-		//$shares = Share::with('interests')->get() ;
-		//die(print_r($shares));
-		
-		//die(print_r($followed_by_this));
-		
-		if(isset($_GET['topic']))
-		{
-			
-			$shares = Share::distinct('shares.post_id')->WhereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = '.$_GET['topic'].') ')->groupBy('shares.post_id')->orderBy('id', 'DESC')->paginate(10);//need to get pagination to work properly for topic feed
-			$shares->setPath('');
-            
-			
-		}
-		elseif(isset($_GET['rss']))
-		{
-			//die($_GET['rss']);
-			//DB::enableQueryLog();
-			$shares = Share::distinct('shares.post_id')->join('posts','posts.id', '=', 'shares.post_id')->where('link' ,'like', '%' .$_GET['rss']. '%')->orWhere('scrabingcontent','like', '%' .$_GET['rss']. '%')->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->paginate(10);
-			//dd(DB::getQueryLog());
-			$shares->setPath('');
-			
-			//dd($shares);
-			
-			
-		}		
-		elseif(isset($_GET['fav']))
-		{
-			
-			
-			if(isset($_GET['search']))
-			{
-				$shares = Share::distinct('favorites.post_id')->join('posts','posts.id', '=', 'shares.post_id')->join('favorites','favorites.post_id', 'shares.post_id')->where('favorites.user_id',Auth::user()->id)->where('content' ,'like', '%' .$_GET['search']. '%')->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->paginate(10);
-				$shares->setPath('');
-			}
-			else
-			{
-				//DB::enableQueryLog();
-				$shares = Share::distinct('shares.post_id')->join('posts','posts.id', '=', 'shares.post_id')->join('favorites','favorites.post_id', 'posts.id')->where('favorites.user_id',Auth::user()->id)->groupBy('shares.post_id')->orderBy('favorites.id', 'DESC')->paginate(10);
-				//dd(DB::getQueryLog());
-				$shares->setPath('');
-			}
-				
-			
-		}
-		elseif(isset($_GET['search']))
-		{
-			//die($_GET['rss']);
-			//DB::enableQueryLog();
-			$shares = Share::distinct('shares.post_id')->join('posts','posts.id', '=', 'shares.post_id')->where('content' ,'like', '%' .$_GET['search']. '%')->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->paginate(10);
-			//dd(DB::getQueryLog());
-			$shares->setPath('');
-			
-		}
-		
-		else
-		{
-		//DB::enableQueryLog();
-		
-		//need to try this to run faster///
-		
-		/*select distinct * from `shares` 
-inner join `posts` on `posts`.`id` = `shares`.`post_id` 
-inner join interest_post ip
-on `posts`.id = ip.post_id
-inner join interest_user iu
-on iu.user_id =  1611
-where 
-`posts`.`user_id` in (1616, 1625, 1626)  
-or `posts`.type like "feed" 
-or `posts`.`user_id` = 1611 
+        if ($followedByThis->count() > 0) {
+            // Convert the collection to a comma-separated string of IDs
+            $followSql = implode(',', $followedByThis->toArray());
+        }
     
-or (`posts`.`user_id` = 1 and `posts`.`type` != 'feed') 
-group by `shares`.`id`
-order by `shares`.`id` desc */
-		/////////////////////////////////
-		
-        	//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' and p.type like "feed")')->orWhere('posts.user_id', $this->id)->orWhere([['posts.user_id','=',1],['type','!=','feed']])->orderBy('shares.id', 'DESC')->paginate(5);
-			
-			
-			//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' and p.type like "feed")')->orWhere('posts.user_id', Auth::user()->id)->orWhere([['posts.user_id','=',1],['type','!=','feed']])->orderBy('shares.id', 'DESC')->groupBy('shares.post_id')->paginate(5);
-			//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' )')->orWhere('posts.user_id', Auth::user()->id)->orWhere([['posts.user_id','=',1],['type','!=','feed']])->orderBy('shares.id', 'DESC')->groupBy('shares.post_id')->paginate(10);
-		
-			$start = microtime(true);
-			//DB::enableQueryLog();
-			//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')
-			$shares = Share::distinct('shares.post_id')->join('posts',
-				function($join)
-				{
-					$join->on('posts.id', '=', 'shares.post_id');
-					$join->where('shares.active','=', 1);
-				})
-				->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' )')->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id and p.user_id =1 where iu.user_id = '.Auth::user()->id.')')->orWhereRaw('(post_id not in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id)) and posts.user_id =1')->orWhere('posts.user_id', Auth::user()->id)->orderBy('shares.id', 'DESC')->groupBy('shares.post_id')->paginate(10);
-			//dd(DB::getQueryLog());
-			$time = microtime(true) - $start;
-			//dd($shares);
-			//die($time);
-			
-			//groupBy('posts.id')
-			$shares->setPath('');
-            // dd($shares);
+        if (isset($_GET['topic'])) {
+            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                ->select('shares.*', 'posts.pinned') // Select pinned column for ordering
+                ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } elseif (isset($_GET['rss'])) {
+            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                ->select('shares.*', 'posts.pinned')
+                ->where('link', 'like', '%' . $_GET['rss'] . '%')
+                ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%')
+                ->orderBy('posts.pinned', 'DESC')
+                ->orderBy('shares.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } elseif (isset($_GET['fav'])) {
+            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+                ->select('shares.*', 'posts.pinned')
+                ->where('favorites.user_id', Auth::user()->id)
+                ->orderBy('posts.pinned', 'DESC')
+                ->orderBy('favorites.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } elseif (isset($_GET['search'])) {
+            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                ->select('shares.*', 'posts.pinned') // Include pinned for ordering
+                ->where('posts.content', 'like', '%' . $_GET['search'] . '%') // Apply search condition
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } else {
+            $start = microtime(true);
 
-            
+            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+                ->select('shares.*', 'posts.pinned') 
+                ->where('shares.active', 1) // Ensure only active shares are included
+                // ->whereIn('posts.user_id', $followedByThis) // Filter by followed users
+                ->orWhereRaw("
+                    post_id IN (
+                        SELECT post_id
+                        FROM interest_post ip
+                        INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
+                        INNER JOIN posts p ON p.id = ip.post_id
+                        WHERE iu.user_id = ? 
+                    )
+                ", [Auth::id()])
+                ->orWhereRaw("
+                    post_id IN (
+                        SELECT post_id
+                        FROM interest_post ip
+                        INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
+                        INNER JOIN posts p ON p.id = ip.post_id AND p.user_id = 1
+                        WHERE iu.user_id = ?
+                    )
+                ", [Auth::id()])
+                ->orWhereRaw("
+                    (post_id NOT IN (
+                        SELECT post_id
+                        FROM interest_post ip
+                        INNER JOIN posts p ON p.id = ip.post_id
+                    ) AND posts.user_id = 1)
+                ")
+                ->orWhere('posts.user_id', Auth::id()) // Include posts by the current user
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.created_at', 'DESC') // Secondary ordering by creation datedate
+            ->paginate(10);
 
-		}
-		//->where('group_id',0)
-		
-		//dd(DB::getQueryLog());
-
-	//	dd($shares);
-
-		/*$shares = DB::select('SELECT * from shares s
-		right join posts p
-		on p.id = s.post_id
-		left join interest_user iu
-		on p.user_id = iu.user_id
-		left join interest_post ip
-		on p.id = ip.post_id and iu.interest_id = ip.interest_id
-		where p.user_id = '.Auth::user()->id.'
-		'.((isset($follow_sql))?'or p.user_id in ('.$follow_sql.')':"").'
-		or p.id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id where iu.user_id = '.Auth::user()->id.')
-		or iu.interest_id = ip.interest_id
-		order by p.id desc');*/
-		
-		/*SELECT * from posts p
-		left join interest_user iu
-		on p.user_id = iu.user_id
-		left join interest_post ip
-		on p.id = ip.post_id and iu.interest_id = ip.interest_id
-		where p.user_id = 1562
-		or p.id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id where iu.user_id = 1562)
-		order by p.id desc*/
-		
-		//die(print_r($shares));
-		
-        //dd($shares);
-        // dd(response()->json($shares));
-        
-        
+            $time = microtime(true) - $start;
+            $shares->setPath('');
+        }
+    
         return $shares;
-
     }
 
-    public function nonuserTimeline() {
+    public function nonuserTimeline()
+    {
         $user = User::where('username', 'ktschomakoff-860')->first();
-        if($followed_by_this = Follow::where('by', $this->id)->pluck('followed'))
-		{
-			$follow_sql ='';
-			//die(print_r( $followed_by_this));
-			foreach($followed_by_this as $follow_id){
-				@$follow_sql .= ','.$follow_id;
-			}
-	
-	
-			$follow_sql = substr($follow_sql,-1);
-		}
-		//$shares = Share::with('interests')->get() ;
-		//die(print_r($shares));
-		
-		//die(print_r($followed_by_this));
-		
-		if(isset($_GET['topic']))
-		{
-			
-			$shares = Share::distinct('shares.post_id')->WhereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = '.$_GET['topic'].') ')->groupBy('shares.post_id')->orderBy('id', 'DESC')->paginate(10);//need to get pagination to work properly for topic feed
-			$shares->setPath('');
-            
-			
-		}
-		elseif(isset($_GET['rss']))
-		{
-			//die($_GET['rss']);
-			//DB::enableQueryLog();
-			$shares = Share::distinct('shares.post_id')->join('posts','posts.id', '=', 'shares.post_id')->where('link' ,'like', '%' .$_GET['rss']. '%')->orWhere('scrabingcontent','like', '%' .$_GET['rss']. '%')->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->paginate(10);
-			//dd(DB::getQueryLog());
-			$shares->setPath('');
-			
-			//dd($shares);
-			
-			
-		}		
-		elseif(isset($_GET['fav']))
-		{
-			
-			
-			if(isset($_GET['search']))
-			{
-				$shares = Share::distinct('favorites.post_id')->join('posts','posts.id', '=', 'shares.post_id')->join('favorites','favorites.post_id', 'shares.post_id')->where('favorites.user_id',$user->id)->where('content' ,'like', '%' .$_GET['search']. '%')->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->paginate(10);
-				$shares->setPath('');
-			}
-			else
-			{
-				//DB::enableQueryLog();
-				$shares = Share::distinct('shares.post_id')->join('posts','posts.id', '=', 'shares.post_id')->join('favorites','favorites.post_id', 'posts.id')->where('favorites.user_id',$user->id)->groupBy('shares.post_id')->orderBy('favorites.id', 'DESC')->paginate(10);
-				//dd(DB::getQueryLog());
-				$shares->setPath('');
-			}
-				
-			
-		}
-		elseif(isset($_GET['search']))
-		{
-			//die($_GET['rss']);
-			//DB::enableQueryLog();
-			$shares = Share::distinct('shares.post_id')->join('posts','posts.id', '=', 'shares.post_id')->where('content' ,'like', '%' .$_GET['search']. '%')->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->paginate(10);
-			//dd(DB::getQueryLog());
-			$shares->setPath('');
-			
-		}
-		
-		else
-		{
-		//DB::enableQueryLog();
-		
-		//need to try this to run faster///
-		
-		/*select distinct * from `shares` 
-inner join `posts` on `posts`.`id` = `shares`.`post_id` 
-inner join interest_post ip
-on `posts`.id = ip.post_id
-inner join interest_user iu
-on iu.user_id =  1611
-where 
-`posts`.`user_id` in (1616, 1625, 1626)  
-or `posts`.type like "feed" 
-or `posts`.`user_id` = 1611 
-    
-or (`posts`.`user_id` = 1 and `posts`.`type` != 'feed') 
-group by `shares`.`id`
-order by `shares`.`id` desc */
-		/////////////////////////////////
-		
-        	//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' and p.type like "feed")')->orWhere('posts.user_id', $this->id)->orWhere([['posts.user_id','=',1],['type','!=','feed']])->orderBy('shares.id', 'DESC')->paginate(5);
-			
-			
-			//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' and p.type like "feed")')->orWhere('posts.user_id', Auth::user()->id)->orWhere([['posts.user_id','=',1],['type','!=','feed']])->orderBy('shares.id', 'DESC')->groupBy('shares.post_id')->paginate(5);
-			//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.Auth::user()->id.' )')->orWhere('posts.user_id', Auth::user()->id)->orWhere([['posts.user_id','=',1],['type','!=','feed']])->orderBy('shares.id', 'DESC')->groupBy('shares.post_id')->paginate(10);
-		
-			$start = microtime(true);
-			//DB::enableQueryLog();
-			//$shares = Share::distinct('shares.post_id')->join('posts','posts.id', 'shares.post_id')
-			$shares = Share::distinct('shares.post_id')->join('posts',
-				function($join)
-				{
-					$join->on('posts.id', '=', 'shares.post_id');
-					$join->where('shares.active','=', 1);
-				})
-				->whereIn('posts.user_id', $followed_by_this)->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id where iu.user_id = '.$user->id.' )')->orWhereRaw('post_id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join posts p on p.id = ip.post_id and p.user_id =1 where iu.user_id = '.$user->id.')')->orWhereRaw('(post_id not in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id)) and posts.user_id =1')->orWhere('posts.user_id', $user->id)->orderBy('shares.id', 'DESC')->groupBy('shares.post_id')->paginate(10);
-			//dd(DB::getQueryLog());
-			$time = microtime(true) - $start;
-			//dd($shares);
-			//die($time);
-			
-			//groupBy('posts.id')
-			$shares->setPath('');
-            // dd($shares);
 
-            
+        if ($followed_by_this = Follow::where('by', $this->id)->pluck('followed')) {
+            $follow_sql = '';
+            foreach ($followed_by_this as $follow_id) {
+                @$follow_sql .= ',' . $follow_id;
+            }
+            $follow_sql = substr($follow_sql, -1); // Convert followed IDs into a comma-separated string
+        }
 
-		}
-		//->where('group_id',0)
-		
-		//dd(DB::getQueryLog());
+        if (isset($_GET['topic'])) {
+            $shares = Share::distinct('shares.post_id')
+                ->join('posts', 'shares.post_id', '=', 'posts.id')
+                ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('id', 'DESC')
+                ->paginate(10); // Ensure pagination works properly for topic feed
+            $shares->setPath('');
+        } elseif (isset($_GET['rss'])) {
+            $shares = Share::distinct('shares.post_id')
+                ->join('posts', 'shares.post_id', '=', 'posts.id')
+                ->where('link', 'like', '%' . $_GET['rss'] . '%')
+                ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%')
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } elseif (isset($_GET['fav'])) {
+            $shares = Share::distinct('shares.post_id')
+                ->join('posts', 'shares.post_id', '=', 'posts.id')
+                ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+                ->where('favorites.user_id', $user->id)
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('favorites.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } elseif (isset($_GET['search'])) {
+            $shares = Share::distinct('shares.post_id')
+                ->join('posts', 'shares.post_id', '=', 'posts.id')
+                ->where('content', 'like', '%' . $_GET['search'] . '%')
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.id', 'DESC')
+                ->paginate(10);
+            $shares->setPath('');
+        } else {
+            $start = microtime(true); // Keep the original line
+            $shares = Share::distinct('shares.post_id')
+                ->join('posts', function ($join) {
+                    $join->on('posts.id', '=', 'shares.post_id');
+                    $join->where('shares.active', '=', 1);
+                })
+                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+                ->orderBy('shares.id', 'DESC')
+                ->paginate(10);
+            $time = microtime(true) - $start; // Keep the original line
+            $shares->setPath(''); // Keep the original line
+        }
 
-	//	dd($shares);
-
-		/*$shares = DB::select('SELECT * from shares s
-		right join posts p
-		on p.id = s.post_id
-		left join interest_user iu
-		on p.user_id = iu.user_id
-		left join interest_post ip
-		on p.id = ip.post_id and iu.interest_id = ip.interest_id
-		where p.user_id = '.Auth::user()->id.'
-		'.((isset($follow_sql))?'or p.user_id in ('.$follow_sql.')':"").'
-		or p.id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id where iu.user_id = '.Auth::user()->id.')
-		or iu.interest_id = ip.interest_id
-		order by p.id desc');*/
-		
-		/*SELECT * from posts p
-		left join interest_user iu
-		on p.user_id = iu.user_id
-		left join interest_post ip
-		on p.id = ip.post_id and iu.interest_id = ip.interest_id
-		where p.user_id = 1562
-		or p.id in (select post_id from interest_post ip inner join interest_user iu on ip.interest_id = iu.interest_id where iu.user_id = 1562)
-		order by p.id desc*/
-		
-		//die(print_r($shares));
-		
-        //dd($shares);
-        // dd(response()->json($shares));
-        
-        
         return $shares;
     }
 

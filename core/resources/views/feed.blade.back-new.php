@@ -220,7 +220,6 @@
                 @if($shares && count($shares))
                 <div class="post-loop-inner infinite-scroll">
                     @foreach($shares as $share) 
-                        {{-- <p>{{ $share->id }} - Pinned: {{ $share->post->pinned }}</p> --}}
                         @if($share->post && $share->post->group_id == 0) 
                             @php 
                                 $post = $share->post; $res=App\User::getfollowandmutual($post->poststatus_id); 

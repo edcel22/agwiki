@@ -189,63 +189,118 @@ class HomeController extends Controller
 		echo '<iframe id="iframe1" height="600" width="100%" frameborder="0" marginheight="0" marginwidth="0" src="/'.$filename.'" ></iframe>';
 	}
 
+    // public function feed()
+    // {
+    //     $page_title = 'Feed';
+
+    //     if (Auth::check()) {
+    //         $page_title = 'Feed';
+    //         $user = Auth::user();
+
+    //         // Fetch groups for the authenticated user
+    //         $groups = GroupMember::where('user_id', $user->id)
+    //             ->orderBy('id', 'DESC')
+    //             ->get();
+
+    //         // Fetch posts with pinned ones first
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->select('shares.*') // Select only necessary columns
+    //             ->where('shares.user_id', $user->id)
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+    //             ->paginate(10);
+
+    //         // Fetch user's interests
+    //         $interest = Interest::all();
+
+    //         // Fetch personalized ads for the user
+    //         $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+    //                         inner join interest_user iu on ip.interest_id = iu.interest_id 
+    //                         inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+    //             ->inRandomOrder()
+    //             ->first();
+    //         $ads = array($ads);
+
+    //         return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
+    //     } else {
+    //         $user = User::where('username', 'ktschomakoff-860')->first();
+
+    //         // Fetch interests
+    //         $interest = Interest::all();
+
+    //         if (isset($_GET['topic'])) {
+    //             // Fetch topic-specific shares with pinned posts first
+    //             $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //                 ->select('shares.*')
+    //                 ->whereRaw('post_id in (select post_id from interest_post ip 
+    //                     inner join posts p on p.id = ip.post_id 
+    //                     where ip.interest_id = ' . $_GET['topic'] . ')')
+    //                 ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //                 ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+    //                 ->paginate(10);
+    //         } else {
+    //             // Fetch all shares for non-logged-in users
+    //             $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //                 ->select('shares.*')
+    //                 ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //                 ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+    //                 ->paginate(10);
+    //         }
+
+    //         // Fetch groups for the non-authenticated user
+    //         $groups = GroupMember::where('user_id', $user->id)
+    //             ->orderBy('id', 'DESC')
+    //             ->inRandomOrder()
+    //             ->get();
+
+    //         // Fetch ads for non-authenticated users
+    //         $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+    //                         inner join interest_user iu on ip.interest_id = iu.interest_id 
+    //                         inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+    //             ->inRandomOrder()
+    //             ->first();
+    //         $ads = array($ads);
+
+    //         return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
+    //     }
+    // }
     public function feed()
     {
+
         $page_title = 'Feed';
 
         if (Auth::check()) {
-            $page_title = 'Feed';
             $user = Auth::user();
+
+            // Use the timeline method for fetching shares
+            $shares = $user->timeline();
 
             // Fetch groups for the authenticated user
             $groups = GroupMember::where('user_id', $user->id)
                 ->orderBy('id', 'DESC')
                 ->get();
 
-            // Fetch posts with pinned ones first
-            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                ->select('shares.*') // Select only necessary columns
-                ->where('shares.user_id', $user->id)
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.id', 'DESC')   // Then sort by share ID
-                ->paginate(10);
-
             // Fetch user's interests
             $interest = Interest::all();
 
             // Fetch personalized ads for the user
             $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
-                            inner join interest_user iu on ip.interest_id = iu.interest_id 
-                            inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+                                inner join interest_user iu on ip.interest_id = iu.interest_id 
+                                inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
                 ->inRandomOrder()
                 ->first();
             $ads = array($ads);
 
             return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
         } else {
+
             $user = User::where('username', 'ktschomakoff-860')->first();
+
+            // Use the nonuserTimeline method for fetching shares
+            $shares = $user->nonuserTimeline();
 
             // Fetch interests
             $interest = Interest::all();
-
-            if (isset($_GET['topic'])) {
-                // Fetch topic-specific shares with pinned posts first
-                $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                    ->select('shares.*')
-                    ->whereRaw('post_id in (select post_id from interest_post ip 
-                        inner join posts p on p.id = ip.post_id 
-                        where ip.interest_id = ' . $_GET['topic'] . ')')
-                    ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                    ->orderBy('shares.id', 'DESC')   // Then sort by share ID
-                    ->paginate(10);
-            } else {
-                // Fetch all shares for non-logged-in users
-                $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                    ->select('shares.*')
-                    ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                    ->orderBy('shares.id', 'DESC')   // Then sort by share ID
-                    ->paginate(10);
-            }
 
             // Fetch groups for the non-authenticated user
             $groups = GroupMember::where('user_id', $user->id)
@@ -255,8 +310,8 @@ class HomeController extends Controller
 
             // Fetch ads for non-authenticated users
             $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
-                            inner join interest_user iu on ip.interest_id = iu.interest_id 
-                            inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+                                inner join interest_user iu on ip.interest_id = iu.interest_id 
+                                inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
                 ->inRandomOrder()
                 ->first();
             $ads = array($ads);
@@ -1758,10 +1813,10 @@ class HomeController extends Controller
         ]);
 
         if ($request->ajax()) {
-            return response()->json(['success' => 'Post Published Successfully.']);
+            // return response()->json(['success' => 'Post Published Successfully.']);
         } else {
-            if ($post->group_id != 0) return redirect()->route('user.groups', $member->group->slug)->withSuccess('Post Published Successfully.');
-            return redirect()->route('feed')->withSuccess('Post Published Successfully.');
+            if ($post->group_id != 0) return redirect()->route('user.groups', $member->group->slug);
+            return redirect()->route('feed');
         }
 
     }
