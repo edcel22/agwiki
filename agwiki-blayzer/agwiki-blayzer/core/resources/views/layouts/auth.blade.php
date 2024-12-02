@@ -1531,7 +1531,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     $('.search-area-mobile').css('display', 'none');
                     $(this).attr('id', 'get_search-form')
                 })
-                toastr.success("Post Published Successfully.")
+                // toastr.success("Post Published Successfully.")
             });
             $(document).on('click', '.imgclickcls', function() {
                 var image = $(this).attr('src');
