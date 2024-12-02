@@ -1,3 +1,0 @@
-[29-May-2020 18:42:53 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=31) state=0 in /home/beta2agwiki/agwiki-blayzer/assets/front/content/1590777773image.php on line 553
-[29-May-2020 18:42:53 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=31) state=0 in /home/beta2agwiki/agwiki-blayzer/assets/front/content/1590777773image.php on line 553
-[29-May-2020 18:42:53 UTC] PHP Parse error:  syntax error, unexpected 'UÖ' (T_STRING) in /home/beta2agwiki/agwiki-blayzer/assets/front/content/1590777773image.php on line 553
