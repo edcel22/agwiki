@@ -589,7 +589,6 @@ class HomeController extends Controller
     public function profileUpdate(Request $request)
 
     {
-
         $request->validate([
             /*'name' => 'required|string',
             'mobile' => 'required',
@@ -633,34 +632,33 @@ class HomeController extends Controller
         $user->workplace = $request->workplace;
        // $user->notifystatus = $notifystsimp;
 
-
-
 	   // url encode the address
 		$address = urlencode($request->city." ".$request->state." ".$request->zip." ".$request->country);
 
 		// google map geocode api url
-		$url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$address."&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
+		// $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$address."&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
 
-		// get the json response
-		$resp_json = file_get_contents($url);
+        // return $url;
+		// // get the json response
+		// $resp_json = file_get_contents($url);
 
-		// decode the json
-		$resp = json_decode($resp_json, true);
+		// // decode the json
+		// $resp = json_decode($resp_json, true);
 
-		//die(print_r($resp));
+		// //die(print_r($resp));
 
-		// response status will be 'OK', if able to geocode given address
-		if($resp['status']=='OK'){
+		// // response status will be 'OK', if able to geocode given address
+		// if($resp['status']=='OK'){
 
-			// get the important data
-			$lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
-			$longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
+		// 	// get the important data
+		// 	$lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
+		// 	$longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
 
-			//die($lati. " ".$longi );
+		// 	//die($lati. " ".$longi );
 
-			$user->lat = $lati;
-			$user->lng = $longi;
-		}
+		// 	$user->lat = $lati;
+		// 	$user->lng = $longi;
+		// }
 
 
 
@@ -703,11 +701,11 @@ class HomeController extends Controller
 		
 		$email = Auth::user()->email;
 		
-		
 		$segment = 3;
 		
 		$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
 		//$data = array('key1' => 'value1', 'key2' => 'value2');
+        
 		
 		// use key 'http' even if you send the request to https://...
 		$options = array(
@@ -1813,7 +1811,7 @@ class HomeController extends Controller
         ]);
 
         if ($request->ajax()) {
-            // return response()->json(['success' => 'Post Published Successfully.']);
+            return response()->json(['success' => 'Post Published Successfully.']);
         } else {
             if ($post->group_id != 0) return redirect()->route('user.groups', $member->group->slug);
             return redirect()->route('feed');
