@@ -801,23 +801,23 @@ class HomeController extends Controller
     $user->workplace = $request->workplace;
 
     // Commented out Google Maps Geocoding API call
-    /*
-    $address = urlencode($request->city . " " . $request->state . " " . $request->zip . " " . $request->country);
+    // /*
+    // $address = urlencode($request->city . " " . $request->state . " " . $request->zip . " " . $request->country);
 
-    $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
+    // $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
 
-    $resp_json = file_get_contents($url);
+    // $resp_json = file_get_contents($url);
 
-    $resp = json_decode($resp_json, true);
+    // $resp = json_decode($resp_json, true);
 
-    if ($resp['status'] == 'OK') {
-        $lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
-        $longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
+    // if ($resp['status'] == 'OK') {
+    //     $lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
+    //     $longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
 
-        $user->lat = $lati;
-        $user->lng = $longi;
-    }
-    */
+    //     $user->lat = $lati;
+    //     $user->lng = $longi;
+    // }
+    // */
 
     if ($request->hasFile('cover')) {
         $file = $request->file('cover');
@@ -845,51 +845,51 @@ class HomeController extends Controller
         $user->avatar = $avatar;
     }
 
-    // Commented out Mautic API integration
-    /*
-    $email = Auth::user()->email;
-    $segment = 3;
+    // // Commented out Mautic API integration
+    // /*
+    // $email = Auth::user()->email;
+    // $segment = 3;
 
-    $url = 'http://mautic.agwiki.com/api/contacts?search=' . $email;
+    // $url = 'http://mautic.agwiki.com/api/contacts?search=' . $email;
 
-    $options = array(
-        'http' => array(
-            'header' => array(
-                "Content-type: application/x-www-form-urlencoded",
-                "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
-            ),
-            'content' => '',
-            'method' => 'GET',
-            "ssl" => array(
-                "verify_peer" => false,
-                "verify_peer_name" => false,
-            )
-        ),
-    );
-    $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    $contact = json_decode($result, true);
-    if (isset(array_keys($contact['contacts'])[0])) {
-        $contact_id = array_keys($contact['contacts'])[0];
+    // $options = array(
+    //     'http' => array(
+    //         'header' => array(
+    //             "Content-type: application/x-www-form-urlencoded",
+    //             "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
+    //         ),
+    //         'content' => '',
+    //         'method' => 'GET',
+    //         "ssl" => array(
+    //             "verify_peer" => false,
+    //             "verify_peer_name" => false,
+    //         )
+    //     ),
+    // );
+    // $context = stream_context_create($options);
+    // $result = file_get_contents($url, false, $context);
+    // $contact = json_decode($result, true);
+    // if (isset(array_keys($contact['contacts'])[0])) {
+    //     $contact_id = array_keys($contact['contacts'])[0];
 
-        $url = 'https://mautic.agwiki.com/api/segments/' . $segment . '/contact/' . $contact_id . '/remove';
+    //     $url = 'https://mautic.agwiki.com/api/segments/' . $segment . '/contact/' . $contact_id . '/remove';
 
-        $options = array(
-            'http' => array(
-                'header' => array(
-                    "Content-type: application/x-www-form-urlencoded",
-                    "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
-                ),
-                'content' => '',
-                'Cache-Control: no-cache',
-                'method' => 'POST'
-            )
-        );
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $dnc_result = json_decode($result, true);
-    }
-    */
+    //     $options = array(
+    //         'http' => array(
+    //             'header' => array(
+    //                 "Content-type: application/x-www-form-urlencoded",
+    //                 "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
+    //             ),
+    //             'content' => '',
+    //             'Cache-Control: no-cache',
+    //             'method' => 'POST'
+    //         )
+    //     );
+    //     $context = stream_context_create($options);
+    //     $result = file_get_contents($url, false, $context);
+    //     $dnc_result = json_decode($result, true);
+    // }
+    // */
 
     $user->save();
 
