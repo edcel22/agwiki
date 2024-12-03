@@ -762,6 +762,8 @@ class HomeController extends Controller
     // }
     public function profileUpdate(Request $request)
 {
+
+    return 'wow';
     $request->validate([
         /*'name' => 'required|string',
         'mobile' => 'required',
