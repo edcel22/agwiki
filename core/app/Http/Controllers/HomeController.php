@@ -586,178 +586,315 @@ class HomeController extends Controller
 
     }
 
-    public function profileUpdate(Request $request)
+    // public function profileUpdate(Request $request)
 
-    {
-        $request->validate([
-            /*'name' => 'required|string',
-            'mobile' => 'required',
-            'position' => 'required',
-            'quote' => 'required',
-            'country' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'zip' => 'required',
-            'cover' => 'image',
-            'avatar' => 'image',
-            'work' => 'required',
-            'workplace' => 'required'*/
-        ]);
+    // {
 
-        if (isset($request->notificationtype) && count($request->notificationtype) > 0) {
-            $notifystsimp = implode(',', $request->notificationtype);
-        } else {
-            $notifystsimp = '';
-        }
+    //     $request->validate([
+    //         /*'name' => 'required|string',
+    //         'mobile' => 'required',
+    //         'position' => 'required',
+    //         'quote' => 'required',
+    //         'country' => 'required',
+    //         'city' => 'required',
+    //         'state' => 'required',
+    //         'zip' => 'required',
+    //         'cover' => 'image',
+    //         'avatar' => 'image',
+    //         'work' => 'required',
+    //         'workplace' => 'required'*/
+    //     ]);
 
-        $user = Auth::user();
+    //     if (isset($request->notificationtype) && count($request->notificationtype) > 0) {
+    //         $notifystsimp = implode(',', $request->notificationtype);
+    //     } else {
+    //         $notifystsimp = '';
+    //     }
 
-        $user->name = $request->fname. ' ' . $request->lname;
-		$user->fname = $request->fname;
-		$user->lname = $request->lname;
-		$user->bio = $request->bio;
+    //     $user = Auth::user();
 
-		$user->facebook = $request->facebook;
-		$user->twitter = $request->twitter;
-		$user->linkedin = $request->linkedin;
+    //     $user->name = $request->fname. ' ' . $request->lname;
+	// 	$user->fname = $request->fname;
+	// 	$user->lname = $request->lname;
+	// 	$user->bio = $request->bio;
 
-       // $user->mobile = $request->mobile;
-       // $user->position = $request->position;
-       // $user->quote = $request->quote;
-        $user->country = $request->country;
-        $user->city = $request->city;
-        $user->state = $request->state;
-        $user->zip = $request->zip;
-       // $user->work = $request->work;
-        $user->workplace = $request->workplace;
-       // $user->notifystatus = $notifystsimp;
+	// 	$user->facebook = $request->facebook;
+	// 	$user->twitter = $request->twitter;
+	// 	$user->linkedin = $request->linkedin;
 
-	   // url encode the address
-		$address = urlencode($request->city." ".$request->state." ".$request->zip." ".$request->country);
-
-		// google map geocode api url
-		// $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$address."&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
-
-        // return $url;
-		// // get the json response
-		// $resp_json = file_get_contents($url);
-
-		// // decode the json
-		// $resp = json_decode($resp_json, true);
-
-		// //die(print_r($resp));
-
-		// // response status will be 'OK', if able to geocode given address
-		// if($resp['status']=='OK'){
-
-		// 	// get the important data
-		// 	$lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
-		// 	$longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
-
-		// 	//die($lati. " ".$longi );
-
-		// 	$user->lat = $lati;
-		// 	$user->lng = $longi;
-		// }
+    //    // $user->mobile = $request->mobile;
+    //    // $user->position = $request->position;
+    //    // $user->quote = $request->quote;
+    //     $user->country = $request->country;
+    //     $user->city = $request->city;
+    //     $user->state = $request->state;
+    //     $user->zip = $request->zip;
+    //    // $user->work = $request->work;
+    //     $user->workplace = $request->workplace;
+    //    // $user->notifystatus = $notifystsimp;
 
 
 
-        if ($request->hasFile('cover')) {
-            $file = $request->file('cover');
-            $cover = $file->hashName();
-            $im = Image::make($file);
-            $im->orientate();
-            $im->resize(2200, 912);
-            $im->save('assets/front/img/' . $cover);
-            if ($user->cover != 'cover.jpg') {
-                @unlink('assets/front/img/' . $user->cover);
-            }
-            $user->cover = $cover;
-        }
+	//    // url encode the address
+	// 	$address = urlencode($request->city." ".$request->state." ".$request->zip." ".$request->country);
 
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $avatar = $file->hashName();
-            $im = Image::make($file);
-            $im->orientate();
-            //$im->resize(380, 295);
+	// 	// google map geocode api url
+	// 	$url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$address."&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
 
-			/*$im->resize(300, null, function ($constraint) {
-				$constraint->aspectRatio();
-			});*/
+	// 	// get the json response
+	// 	$resp_json = file_get_contents($url);
 
-			$im->fit(300);
+	// 	// decode the json
+	// 	$resp = json_decode($resp_json, true);
 
-            $im->save('assets/front/img/' . $avatar);
-            if ($user->avatar != 'male.png' && $user->avatar != 'female.png') {
-                @unlink('assets/front/img/' . $user->avatar);
-            }
-            $user->avatar = $avatar;
-        }
+	// 	//die(print_r($resp));
+
+	// 	// response status will be 'OK', if able to geocode given address
+	// 	if($resp['status']=='OK'){
+
+	// 		// get the important data
+	// 		$lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
+	// 		$longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
+
+	// 		//die($lati. " ".$longi );
+
+	// 		$user->lat = $lati;
+	// 		$user->lng = $longi;
+	// 	}
+
+
+
+    //     if ($request->hasFile('cover')) {
+    //         $file = $request->file('cover');
+    //         $cover = $file->hashName();
+    //         $im = Image::make($file);
+    //         $im->orientate();
+    //         $im->resize(2200, 912);
+    //         $im->save('assets/front/img/' . $cover);
+    //         if ($user->cover != 'cover.jpg') {
+    //             @unlink('assets/front/img/' . $user->cover);
+    //         }
+    //         $user->cover = $cover;
+    //     }
+
+    //     if ($request->hasFile('avatar')) {
+    //         $file = $request->file('avatar');
+    //         $avatar = $file->hashName();
+    //         $im = Image::make($file);
+    //         $im->orientate();
+    //         //$im->resize(380, 295);
+
+	// 		/*$im->resize(300, null, function ($constraint) {
+	// 			$constraint->aspectRatio();
+	// 		});*/
+
+	// 		$im->fit(300);
+
+    //         $im->save('assets/front/img/' . $avatar);
+    //         if ($user->avatar != 'male.png' && $user->avatar != 'female.png') {
+    //             @unlink('assets/front/img/' . $user->avatar);
+    //         }
+    //         $user->avatar = $avatar;
+    //     }
 		
 		
-		//mautic///////////////////////
+	// 	//mautic///////////////////////
 		
 		
-		$email = Auth::user()->email;
+	// 	$email = Auth::user()->email;
 		
-		$segment = 3;
 		
-		$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
-		//$data = array('key1' => 'value1', 'key2' => 'value2');
-        
+	// 	$segment = 3;
 		
-		// use key 'http' even if you send the request to https://...
-		$options = array(
-			'http' => array(
-				'header'  => array("Content-type: application/x-www-form-urlencoded",
-		"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-				'content' => '',
-				'method' => 'GET',
-				"ssl"=>array(
-						"verify_peer"=>false,
-						"verify_peer_name"=>false,
-					)
+	// 	$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
+	// 	//$data = array('key1' => 'value1', 'key2' => 'value2');
+		
+	// 	// use key 'http' even if you send the request to https://...
+	// 	$options = array(
+	// 		'http' => array(
+	// 			'header'  => array("Content-type: application/x-www-form-urlencoded",
+	// 	"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+	// 			'content' => '',
+	// 			'method' => 'GET',
+	// 			"ssl"=>array(
+	// 					"verify_peer"=>false,
+	// 					"verify_peer_name"=>false,
+	// 				)
 				
-			),
+	// 		),
 			
-		);
-		// $context  = stream_context_create($options);
-		// $result = file_get_contents($url, false, $context);
-		// $contact = json_decode($result, true);
-		// if(isset(array_keys($contact['contacts'])[0]))
-		// {
-		// 	$contact_id = array_keys($contact['contacts'])[0];
+	// 	);
+	// 	$context  = stream_context_create($options);
+	// 	$result = file_get_contents($url, false, $context);
+	// 	$contact = json_decode($result, true);
+	// 	if(isset(array_keys($contact['contacts'])[0]))
+	// 	{
+	// 		$contact_id = array_keys($contact['contacts'])[0];
 			
 			
-		// 	$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
-		// 	//$data = array('key1' => 'value1', 'key2' => 'value2');
+	// 		$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
+	// 		//$data = array('key1' => 'value1', 'key2' => 'value2');
 			
-		// 	// use key 'http' even if you send the request to https://...
-		// 	$options = array(
-		// 		'http' => array(
-		// 			'header'  => array("Content-type: application/x-www-form-urlencoded",
-		// 	"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-		// 			'content' => '',
-		// 			'Cache-Control: no-cache' ,
-		// 			'method' => 'POST'
-		// 		)
-		// 	);
-		// 	$context  = stream_context_create($options);
-		// 	$result = file_get_contents($url, false, $context);
-		// 	$dnc_result = json_decode($result, true);
+	// 		// use key 'http' even if you send the request to https://...
+	// 		$options = array(
+	// 			'http' => array(
+	// 				'header'  => array("Content-type: application/x-www-form-urlencoded",
+	// 		"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+	// 				'content' => '',
+	// 				'Cache-Control: no-cache' ,
+	// 				'method' => 'POST'
+	// 			)
+	// 		);
+	// 		$context  = stream_context_create($options);
+	// 		$result = file_get_contents($url, false, $context);
+	// 		$dnc_result = json_decode($result, true);
 			
-		// }
+	// 	}
 		
-		///////////////////////////////
+	// 	///////////////////////////////
 
-        $user->save();
+    //     $user->save();
 
-        //return redirect()->back()->withSuccess('Profile Updated Successfully');
-		return redirect()->route('profile',$user->username)->withSuccess('Profile Updated Successfully');
+    //     //return redirect()->back()->withSuccess('Profile Updated Successfully');
+	// 	return redirect()->route('profile',$user->username)->withSuccess('Profile Updated Successfully');
 
 
+    // }
+    public function profileUpdate(Request $request)
+{
+    $request->validate([
+        /*'name' => 'required|string',
+        'mobile' => 'required',
+        'position' => 'required',
+        'quote' => 'required',
+        'country' => 'required',
+        'city' => 'required',
+        'state' => 'required',
+        'zip' => 'required',
+        'cover' => 'image',
+        'avatar' => 'image',
+        'work' => 'required',
+        'workplace' => 'required'*/
+    ]);
+
+    if (isset($request->notificationtype) && count($request->notificationtype) > 0) {
+        $notifystsimp = implode(',', $request->notificationtype);
+    } else {
+        $notifystsimp = '';
     }
+
+    $user = Auth::user();
+
+    $user->name = $request->fname . ' ' . $request->lname;
+    $user->fname = $request->fname;
+    $user->lname = $request->lname;
+    $user->bio = $request->bio;
+
+    $user->facebook = $request->facebook;
+    $user->twitter = $request->twitter;
+    $user->linkedin = $request->linkedin;
+
+    $user->country = $request->country;
+    $user->city = $request->city;
+    $user->state = $request->state;
+    $user->zip = $request->zip;
+    $user->workplace = $request->workplace;
+
+    // Commented out Google Maps Geocoding API call
+    /*
+    $address = urlencode($request->city . " " . $request->state . " " . $request->zip . " " . $request->country);
+
+    $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
+
+    $resp_json = file_get_contents($url);
+
+    $resp = json_decode($resp_json, true);
+
+    if ($resp['status'] == 'OK') {
+        $lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
+        $longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
+
+        $user->lat = $lati;
+        $user->lng = $longi;
+    }
+    */
+
+    if ($request->hasFile('cover')) {
+        $file = $request->file('cover');
+        $cover = $file->hashName();
+        $im = Image::make($file);
+        $im->orientate();
+        $im->resize(2200, 912);
+        $im->save('assets/front/img/' . $cover);
+        if ($user->cover != 'cover.jpg') {
+            @unlink('assets/front/img/' . $user->cover);
+        }
+        $user->cover = $cover;
+    }
+
+    if ($request->hasFile('avatar')) {
+        $file = $request->file('avatar');
+        $avatar = $file->hashName();
+        $im = Image::make($file);
+        $im->orientate();
+        $im->fit(300);
+        $im->save('assets/front/img/' . $avatar);
+        if ($user->avatar != 'male.png' && $user->avatar != 'female.png') {
+            @unlink('assets/front/img/' . $user->avatar);
+        }
+        $user->avatar = $avatar;
+    }
+
+    // Commented out Mautic API integration
+    /*
+    $email = Auth::user()->email;
+    $segment = 3;
+
+    $url = 'http://mautic.agwiki.com/api/contacts?search=' . $email;
+
+    $options = array(
+        'http' => array(
+            'header' => array(
+                "Content-type: application/x-www-form-urlencoded",
+                "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
+            ),
+            'content' => '',
+            'method' => 'GET',
+            "ssl" => array(
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            )
+        ),
+    );
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $contact = json_decode($result, true);
+    if (isset(array_keys($contact['contacts'])[0])) {
+        $contact_id = array_keys($contact['contacts'])[0];
+
+        $url = 'https://mautic.agwiki.com/api/segments/' . $segment . '/contact/' . $contact_id . '/remove';
+
+        $options = array(
+            'http' => array(
+                'header' => array(
+                    "Content-type: application/x-www-form-urlencoded",
+                    "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
+                ),
+                'content' => '',
+                'Cache-Control: no-cache',
+                'method' => 'POST'
+            )
+        );
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $dnc_result = json_decode($result, true);
+    }
+    */
+
+    $user->save();
+
+    return redirect()->route('profile', $user->username)->withSuccess('Profile Updated Successfully');
+}
 
     public function search()
 
