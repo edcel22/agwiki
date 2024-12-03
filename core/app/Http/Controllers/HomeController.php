@@ -722,32 +722,32 @@ class HomeController extends Controller
 			),
 			
 		);
-		$context  = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
-		$contact = json_decode($result, true);
-		if(isset(array_keys($contact['contacts'])[0]))
-		{
-			$contact_id = array_keys($contact['contacts'])[0];
+		// $context  = stream_context_create($options);
+		// $result = file_get_contents($url, false, $context);
+		// $contact = json_decode($result, true);
+		// if(isset(array_keys($contact['contacts'])[0]))
+		// {
+		// 	$contact_id = array_keys($contact['contacts'])[0];
 			
 			
-			$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
-			//$data = array('key1' => 'value1', 'key2' => 'value2');
+		// 	$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
+		// 	//$data = array('key1' => 'value1', 'key2' => 'value2');
 			
-			// use key 'http' even if you send the request to https://...
-			$options = array(
-				'http' => array(
-					'header'  => array("Content-type: application/x-www-form-urlencoded",
-			"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-					'content' => '',
-					'Cache-Control: no-cache' ,
-					'method' => 'POST'
-				)
-			);
-			$context  = stream_context_create($options);
-			$result = file_get_contents($url, false, $context);
-			$dnc_result = json_decode($result, true);
+		// 	// use key 'http' even if you send the request to https://...
+		// 	$options = array(
+		// 		'http' => array(
+		// 			'header'  => array("Content-type: application/x-www-form-urlencoded",
+		// 	"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+		// 			'content' => '',
+		// 			'Cache-Control: no-cache' ,
+		// 			'method' => 'POST'
+		// 		)
+		// 	);
+		// 	$context  = stream_context_create($options);
+		// 	$result = file_get_contents($url, false, $context);
+		// 	$dnc_result = json_decode($result, true);
 			
-		}
+		// }
 		
 		///////////////////////////////
 
