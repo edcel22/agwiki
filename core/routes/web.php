@@ -11,6 +11,22 @@
 |
 */
 
+#check php info for debugging the dependencies
+Route::get('/gd-test', function () {
+    if (function_exists('gd_info')) {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'GD Library is enabled.',
+            'info' => gd_info(),
+        ]);
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'GD Library is not enabled.',
+        ]);
+    }
+});
+
 #KT
 Route::get('/', function () {
      return redirect()->route('feed');
