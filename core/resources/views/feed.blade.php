@@ -840,33 +840,6 @@
             <p class="font-11 under-heading bottom-20">
                 Hello, stranger! Please enter your credentials below.
             </p>
-            {{-- <div class="input-style has-icon input-style-1 input-required">
-                <i class="input-icon fa fa-at">
-</i>
-                <span>Email</span>
-                <em>(required)</em>
-                <input type="email" placeholder="Email">
-            </div>
-            <div class="input-style has-icon input-style-1 input-required">
-                <i class="input-icon fa fa-lock font-11">
-</i>
-                <span>Password</span>
-                <em>(required)</em>
-                <input type="password" placeholder="Password">
-            </div>
-            <div class="top-30">
-                <div class="one-half">
-                    <a href="#" data-menu="menu-forgot" class="left-text font-10">Forgot Password?</a>
-                </div>
-                <div class="one-half last-column">
-                    <a data-menu="menu-signup" href="#" class="right-text font-10">Create Account</a>
-                </div>
-            </div>
-            <div class="clear">
-            </div>
-            <a href="#" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10">LOGIN</a>
-            <div class="divider">
-            </div> --}}
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="input-style input-style-1 input-required login">
@@ -923,68 +896,67 @@
     </style>
     @endsection
     @section('js')
-<script>
-	
-	   function onSubmit(token) {
-		 document.getElementById("regForm").submit();
-	   }
-
-	
-	$(document).ready(function(){
-
-	   $('#ajaxSubmit').click(function(e){
-
-	      e.preventDefault();
-
-	      $.ajaxSetup({
-
-	         headers: {
-
-	             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-
-	         }
-
-	     });
-
-	      $.ajax({
-
-	         url: "{{ route('register') }}",
-
-	         method: 'post',
-
-	         data: {
-
-	            email: $('#email').val(),
-
-
-
-	         },
-
-	         success: function(result){
-
-	            console.log(result);
-
-	         }});
-
-	      });
-
-	   });
-
-
-
-</script>
-<script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
-<script>
-	const player = new Plyr('#player');
-	function showPassword() {
-	  var x = document.getElementById("password");
-	  if (x.type === "password") {
-		x.type = "text";
-	  } else {
-		x.type = "password";
-	  }
-	}
-</script>
-@endsection
-
+    <script>
+        
+           function onSubmit(token) {
+             document.getElementById("regForm").submit();
+           }
+    
+        
+        $(document).ready(function(){
+    
+           $('#ajaxSubmit').click(function(e){
+    
+              e.preventDefault();
+    
+              $.ajaxSetup({
+    
+                 headers: {
+    
+                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    
+                 }
+    
+             });
+    
+              $.ajax({
+    
+                 url: "{{ route('register') }}",
+    
+                 method: 'post',
+    
+                 data: {
+    
+                    email: $('#email').val(),
+    
+    
+    
+                 },
+    
+                 success: function(result){
+    
+                    console.log(result);
+    
+                 }});
+    
+              });
+    
+           });
+    
+    
+    
+    </script>
+    <script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
+    <script>
+        const player = new Plyr('#player');
+        function showPassword() {
+          var x = document.getElementById("password");
+          if (x.type === "password") {
+            x.type = "text";
+          } else {
+            x.type = "password";
+          }
+        }
+    </script>
+    @endsection
 
