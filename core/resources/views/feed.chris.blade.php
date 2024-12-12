@@ -994,7 +994,7 @@
 
             </div>
 
-            <a href="dashboard.html" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10">LOGIN</a>
+            {{-- <a href="dashboard.html" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10">LOGIN</a> --}}
 
             <div class="divider">
 
