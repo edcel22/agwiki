@@ -132,8 +132,8 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
      * - ORIG_PATH_INFO
      *
      * From ZF2's Zend\Http\PhpEnvironment\Request class
-     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
-     * @license   http://framework.zend.com/license/new-bsd New BSD License
+     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (https://www.zend.com)
+     * @license   https://framework.zend.com/license/new-bsd New BSD License
      */
     $marshalRequestPath = function (array $server) : string {
         // IIS7 with URL Rewrite: make sure we get the unencoded url

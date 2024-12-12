@@ -35,7 +35,7 @@ Status of This Memo
 
    Information about the current status of this document, any errata,
    and how to provide feedback on it may be obtained at
-   http://www.rfc-editor.org/info/rfc5849.
+   https://www.rfc-editor.org/info/rfc5849.
 
 Copyright Notice
 
@@ -44,7 +44,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -123,7 +123,7 @@ RFC 5849                        OAuth 1.0                     April 2010
    wanted to solve the common problem of enabling delegated access to
    protected resources.  The resulting OAuth protocol was stabilized at
    version 1.0 in October 2007, and revised in June 2009 (Revision A) as
-   published at <http://oauth.net/core/1.0a>.
+   published at <https://oauth.net/core/1.0a>.
 
    This specification provides an informational documentation of OAuth
    Core 1.0 Revision A, addresses several errata reported since that
@@ -330,7 +330,7 @@ RFC 5849                        OAuth 1.0                     April 2010
    user-agent is redirected to the callback URI provided by the client
    in the previous request (line breaks are for display purposes only):
 
-     http://printer.example.com/ready?
+     https://printer.example.com/ready?
      oauth_token=hh5s93j4hdidpola&oauth_verifier=hfdp7dh39dks9884
 
 
@@ -1099,7 +1099,7 @@ RFC 5849                        OAuth 1.0                     April 2010
      GET /r%20v/X?id=123 HTTP/1.1
      Host: EXAMPLE.COM:80
 
-   is represented by the base string URI: "http://example.com/r%20v/X".
+   is represented by the base string URI: "https://example.com/r%20v/X".
 
    In another example, the HTTPS request:
 
@@ -1506,7 +1506,7 @@ RFC 5849                        OAuth 1.0                     April 2010
 
    For example:
 
-     WWW-Authenticate: OAuth realm="http://server.example.com/"
+     WWW-Authenticate: OAuth realm="https://server.example.com/"
 
 
 
@@ -1969,7 +1969,7 @@ Appendix A.  Differences from the Community Edition
    This specification includes the following changes made to the
    original community document [OAuthCore1.0_RevisionA] in order to
    correct mistakes and omissions identified since the document was
-   originally published at <http://oauth.net>.
+   originally published at <https://oauth.net>.
 
    o  Changed using TLS/SSL when sending or requesting plain text
       credentials from SHOULD to MUST.  This change affects any use of
@@ -2061,7 +2061,7 @@ RFC 5849                        OAuth 1.0                     April 2010
               Hors, A., Raggett, D., and I. Jacobs, "HTML 4.0
               Specification", World Wide Web Consortium
               Recommendation REC-html40-19980424, April 1998,
-              <http://www.w3.org/TR/1998/REC-html40-19980424>.
+              <https://www.w3.org/TR/1998/REC-html40-19980424>.
 
 
 
@@ -2081,18 +2081,18 @@ RFC 5849                        OAuth 1.0                     April 2010
    [NIST_SHA-1Comments]
               Burr, W., "NIST Comments on Cryptanalytic Attacks on
               SHA-1",
-              <http://csrc.nist.gov/groups/ST/hash/statement.html>.
+              <https://csrc.nist.gov/groups/ST/hash/statement.html>.
 
    [OAuthCore1.0_RevisionA]
               OAuth Community, "OAuth Core 1.0 Revision A",
-              <http://oauth.net/core/1.0a>.
+              <https://oauth.net/core/1.0a>.
 
 Author's Address
 
    Eran Hammer-Lahav (editor)
 
    EMail: eran@hueniverse.com
-   URI:   http://hueniverse.com
+   URI:   https://hueniverse.com
 
 
 

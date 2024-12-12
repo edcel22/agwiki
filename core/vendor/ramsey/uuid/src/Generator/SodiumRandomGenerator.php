@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Ben Ramsey <ben@benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
+ * @license https://opensource.org/licenses/MIT MIT
  * @link https://benramsey.com/projects/ramsey-uuid/ Documentation
  * @link https://packagist.org/packages/ramsey/uuid Packagist
  * @link https://github.com/ramsey/uuid GitHub
@@ -23,7 +23,7 @@ namespace Ramsey\Uuid\Generator;
  *     generating random byes. The default RandomBytesGenerator uses the
  *     random_bytes() function.
  *     <em>This generator will be removed in ramsey/uuid 4.0.0.</em>
- * @link http://pecl.php.net/package/libsodium
+ * @link https://pecl.php.net/package/libsodium
  * @link https://paragonie.com/book/pecl-libsodium
  */
 class SodiumRandomGenerator implements RandomGeneratorInterface

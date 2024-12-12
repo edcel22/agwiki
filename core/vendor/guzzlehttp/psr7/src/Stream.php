@@ -16,8 +16,8 @@ class Stream implements StreamInterface
      *
      * @var string
      *
-     * @see http://php.net/manual/function.fopen.php
-     * @see http://php.net/manual/en/function.gzopen.php
+     * @see https://php.net/manual/function.fopen.php
+     * @see https://php.net/manual/en/function.gzopen.php
      */
     const READABLE_MODES = '/r|a\+|ab\+|w\+|wb\+|x\+|xb\+|c\+|cb\+/';
     const WRITABLE_MODES = '/a|w|r\+|rb\+|rw|x|c/';

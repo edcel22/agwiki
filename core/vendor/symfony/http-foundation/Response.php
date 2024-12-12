@@ -1246,7 +1246,7 @@ class Response
     /**
      * Checks if we need to remove Cache-Control for SSL encrypted downloads when using IE < 9.
      *
-     * @see http://support.microsoft.com/kb/323308
+     * @see https://support.microsoft.com/kb/323308
      *
      * @final
      */

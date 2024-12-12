@@ -31,7 +31,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER on the response.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- * @author Tobias Schultze <http://tobion.de>
+ * @author Tobias Schultze <https://tobion.de>
  *
  * @internal since Symfony 4.3
  */

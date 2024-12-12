@@ -26,7 +26,7 @@ class XingTest extends TestCase
         $this->assertInstanceOf('League\OAuth1\Client\Credentials\ClientCredentialsInterface', $credentials);
         $this->assertEquals($this->getApplicationKey(), $credentials->getIdentifier());
         $this->assertEquals('mysecret', $credentials->getSecret());
-        $this->assertEquals('http://app.dev/', $credentials->getCallbackUri());
+        $this->assertEquals('https://app.dev/', $credentials->getCallbackUri());
     }
 
     public function testCreatingWithObject()
@@ -34,7 +34,7 @@ class XingTest extends TestCase
         $credentials = new ClientCredentials;
         $credentials->setIdentifier('myidentifier');
         $credentials->setSecret('mysecret');
-        $credentials->setCallbackUri('http://app.dev/');
+        $credentials->setCallbackUri('https://app.dev/');
 
         $server = new Xing($credentials);
 
@@ -173,7 +173,7 @@ class XingTest extends TestCase
         return [
             'identifier' => $this->getApplicationKey(),
             'secret' => 'mysecret',
-            'callback_uri' => 'http://app.dev/',
+            'callback_uri' => 'https://app.dev/',
         ];
     }
 

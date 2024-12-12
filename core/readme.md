@@ -45,7 +45,7 @@ We would like to extend our thanks to the following sponsors for helping fund on
 - [CodeBrisk](https://codebrisk.com)
 - [1Forge](https://1forge.com)
 - [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
+- [Runtime Converter](https://runtimeconverter.com/)
 - [WebL'Agence](https://weblagence.com/)
 - [Invoice Ninja](https://www.invoiceninja.com)
 - [iMi digital](https://www.imi-digital.de/)

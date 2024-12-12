@@ -12,7 +12,7 @@ class Company extends \Faker\Provider\Company
     );
 
     /**
-     * @link http://www.personalseite.de/information/titel.htm
+     * @link https://www.personalseite.de/information/titel.htm
      */
     protected static $jobTitleFormat = array(
         'Abteilungsdirektor', 'Arbeitsdirektor', 'Aufsichtsrat', 'Beirat', 'Bereichsleiter', 'Betriebsleiter', 'Finanzvorstand', 'Geschäftsführender Gesellschafter', 'Geschäftsführer', 'Gesellschafter',

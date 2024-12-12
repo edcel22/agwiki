@@ -6,7 +6,7 @@ require_once __DIR__.'/../../vendor/autoload.php';
 $server = new League\OAuth1\Client\Server\Xing(array(
     'identifier' => 'your-identifier',
     'secret' => 'your-secret',
-    'callback_uri' => "http://your-callback-uri/",
+    'callback_uri' => "https://your-callback-uri/",
 ));
 
 // Start session
@@ -61,7 +61,7 @@ if (isset($_GET['user'])) {
     session_write_close();
 
     // Redirect to the user page
-    header("Location: http://{$_SERVER['HTTP_HOST']}/?user=user");
+    header("Location: https://{$_SERVER['HTTP_HOST']}/?user=user");
     exit;
 
 // Step 2.5 - denied request to authorize client

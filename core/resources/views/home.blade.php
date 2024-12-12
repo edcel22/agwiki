@@ -248,7 +248,7 @@ if (Auth::check()) {
 
 
 
-	<a href="http://go.agwiki.com/support" class="button button-center-medium button-s shadow-large button-round-small bg-red1-light">I Need Support</a>
+	<a href="https://go.agwiki.com/support" class="button button-center-medium button-s shadow-large button-round-small bg-red1-light">I Need Support</a>
 
 
 

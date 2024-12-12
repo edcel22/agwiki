@@ -3,7 +3,7 @@
     "description": "Guzzle 6 HTTP Adapter",
     "license": "MIT",
     "keywords": ["guzzle", "http"],
-    "homepage": "http://httplug.io",
+    "homepage": "https://httplug.io",
     "authors": [
         {
             "name": "David de Boer",

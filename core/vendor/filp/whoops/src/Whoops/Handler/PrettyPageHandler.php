@@ -1,7 +1,7 @@
 <?php
 /**
  * Whoops - php errors for cool kids
- * @author Filipe Dobreira <http://github.com/filp>
+ * @author Filipe Dobreira <https://github.com/filp>
  */
 
 namespace Whoops\Handler;
@@ -451,7 +451,7 @@ class PrettyPageHandler extends Handler
      * @example
      *   $run->addEditor('remove-it', function($file, $line) {
      *       unlink($file);
-     *       return "http://stackoverflow.com";
+     *       return "https://stackoverflow.com";
      *   });
      *
      * @param string          $identifier

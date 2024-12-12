@@ -85,8 +85,8 @@ So our advice regarding the `Opis\Closure\serialize|unserialize` functions is to
 
 
 [documentation]: https://www.opis.io/closure "Opis Closure"
-[license]: http://opensource.org/licenses/MIT "MIT License"
+[license]: https://opensource.org/licenses/MIT "MIT License"
 [Packagist]: https://packagist.org/packages/opis/closure "Packagist"
 [Composer]: https://getcomposer.org "Composer"
-[SemVer]: http://semver.org/ "Semantic versioning"
+[SemVer]: https://semver.org/ "Semantic versioning"
 [CHANGELOG]: https://github.com/opis/closure/blob/master/CHANGELOG.md "Changelog"

@@ -31,7 +31,7 @@ we have improved this, and have created an extensive documentation for you. Plea
 use this README file as a starting point for Mockery, but do read the documentation
 to learn how to use Mockery.
 
-The current version can be seen at [docs.mockery.io](http://docs.mockery.io).
+The current version can be seen at [docs.mockery.io](https://docs.mockery.io).
 
 ## Test Doubles
 
@@ -67,7 +67,7 @@ $double = Mockery::mock(BookRepository::class);
 ```
 
 A detailed explanation of creating and working with test doubles is given in the
-documentation, [Creating test doubles](http://docs.mockery.io/en/latest/reference/creating_test_doubles.html)
+documentation, [Creating test doubles](https://docs.mockery.io/en/latest/reference/creating_test_doubles.html)
 section.
 
 ## Method Stubs 🎫
@@ -172,9 +172,9 @@ $book = $double->find(123);
 ```
 
 A detailed explanation of declaring expectations on method calls, please
-read the documentation, the [Expectation declarations](http://docs.mockery.io/en/latest/reference/expectations.html)
+read the documentation, the [Expectation declarations](https://docs.mockery.io/en/latest/reference/expectations.html)
 section. After that, you can also learn about the new `allows` and `expects` methods
-in the [Alternative shouldReceive syntax](http://docs.mockery.io/en/latest/reference/alternative_should_receive_syntax.html)
+in the [Alternative shouldReceive syntax](https://docs.mockery.io/en/latest/reference/alternative_should_receive_syntax.html)
 section.
 
 It is worth mentioning that one way of setting up expectations is no better or worse
@@ -212,7 +212,7 @@ $double->shouldHaveReceived()->baz(123); // null
 $double->shouldHaveReceived()->baz(12345); // Uncaught Exception Mockery\Exception\InvalidCountException...
 ```
 
-Please refer to the [Spies](http://docs.mockery.io/en/latest/reference/spies.html) section
+Please refer to the [Spies](https://docs.mockery.io/en/latest/reference/spies.html) section
 of the documentation to learn more about the spies.
 
 ## Utilities 🔌
@@ -259,7 +259,7 @@ $double->foo(); // int(123)
 
 ## Versioning
 
-The Mockery team attempts to adhere to [Semantic Versioning](http://semver.org),
+The Mockery team attempts to adhere to [Semantic Versioning](https://semver.org),
 however, some of Mockery's internals are considered private and will be open to
 change at any time. Just because a class isn't final, or a method isn't marked
 private, does not mean it constitutes part of the API we guarantee under the

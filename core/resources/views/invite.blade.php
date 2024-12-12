@@ -24,7 +24,7 @@
 
 On behalf of the AgWiki team, we would also like to encourage your participation so you can be part of this new and growing local, regional, and global platform. 
 
-Please register at http://agwiki.com/
+Please register at https://agwiki.com/
 Our mission is to Solve World Food Problems Socially. 
 
 Thank you,

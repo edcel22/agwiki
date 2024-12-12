@@ -228,7 +228,7 @@ class GroupController extends Controller
 
 				$segment = 6;
 
-				$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
+				$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
 				//$data = array('key1' => 'value1', 'key2' => 'value2');
 
 				// use key 'http' even if you send the request to https://...
@@ -297,7 +297,7 @@ class GroupController extends Controller
 
 					$segment = 6;
 
-					$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
+					$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
 					//$data = array('key1' => 'value1', 'key2' => 'value2');
 
 					// use key 'http' even if you send the request to https://...

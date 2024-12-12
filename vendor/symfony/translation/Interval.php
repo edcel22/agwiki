@@ -33,7 +33,7 @@ use Symfony\Component\Translation\Exception\InvalidArgumentException;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  *
- * @see    http://en.wikipedia.org/wiki/Interval_%28mathematics%29#The_ISO_notation
+ * @see    https://en.wikipedia.org/wiki/Interval_%28mathematics%29#The_ISO_notation
  * @deprecated since Symfony 4.2, use IdentityTranslator instead
  */
 class Interval

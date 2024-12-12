@@ -343,7 +343,7 @@ function mimetype_from_filename($filename)
  *
  * @return string|null
  *
- * @link http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/conf/mime.types
+ * @link https://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/conf/mime.types
  * @deprecated mimetype_from_extension will be removed in guzzlehttp/psr7:2.0. Use MimeType::fromExtension instead.
  */
 function mimetype_from_extension($extension)

@@ -1,722 +1,226 @@
 @extends('layouts.auth')
-
-
-
 <link rel="stylesheet" href="https://cdn.plyr.io/3.2.4/plyr.css">
-
-
-
 <link rel="stylesheet" href="{{ asset('assets/front/twitter/messages.css') }}">
-
-
-
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-
-
 <link rel="stylesheet" href="{{ asset('assets/front/twitter/responsive.css') }}"> @section('content')
-
-
-
-<div class="page-content">
-
-
-
-    <div class="chat-area-content">
-
-
-
-        <div class="chat-area-inner">
-
-
-
-            <div class="chat-header-area">
-
-
-
-                <div class="chat-header-inner">
-
-
-
-                    <div class="thumb">
-
-
-
-                        <img class="profile-image " src="{{ asset('assets/front/img/' . $to->avatar) }}" alt="{{ $to->name }}">
-
-
-
+    <div class="page-content">
+        <div class="chat-area-content">
+            <div class="chat-area-inner">
+                <div class="chat-header-area">
+                    <div class="chat-header-inner">
+                        <div class="thumb">
+                            <img class="profile-image " src="{{ asset('assets/front/img/' . $to->avatar) }}"
+                                alt="{{ $to->name }}">
+                        </div>
+                        <a href="/profile/{{ $to->username }}" class="user">
+                            <h4 class="name">{{ $to->name }} @if ($to->verified == 1)
+                                    <span class="verified"><i class="fa fa-check-circle"></i></span>
+                                @endif
+                            </h4>
+                        </a>
+                        <!-- <span class="post">{{ $to->position }}</span> -->
                     </div>
-
-
-
-                    <a href="/profile/{{ $to->username }}" class="user">
-
-
-
-                        <h4 class="name">{{ $to->name }} @if($to->verified == 1)<span class="verified"><i class="fa fa-check-circle"></i></span>@endif</h4>
-
-
-
-                    </a>
-
-
-
-                    <!-- <span class="post">{{ $to->position }}</span> -->
-
-
-
                 </div>
 
+                <div class="chat-body-area">
+                    <div class="chat-body-inner comment-list" id="chat-body-inner" style="overflow-y: scroll;">
+                        @foreach ($messages as $message)
+                            @php
+                                $message->status = 1;
+                                $message->save();
+                            @endphp
 
-
-            </div>
-
-
-
-            <div class="chat-body-area">
-
-
-
-                <div class="chat-body-inner comment-list" id="chat-body-inner" style="overflow-y: scroll;">
-
-
-
-                    @foreach($messages as $message)
-
-
-                    @php
-                    $message->status = 1;
-                    $message->save();
-                    @endphp
-
-                    @if($message->from != $from->id) @if($message->type == 'image')
-
-
-
-                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <img src="{{ asset('assets/front/content/' . $message->link) }}" class="img-responsive">
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
+                            @if ($message->from != $from->id)
+                                @if ($message->type == 'image')
+                                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <img src="{{ asset('assets/front/content/' . $message->link) }}"
+                                                    class="img-responsive">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($message->type == 'youtube')
+                                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <div class="plyr__video-embed player">
+                                                    <iframe id="{{ str_random(20) }}"
+                                                        src="https://www.youtube.com/embed/{{ $message->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                                                        allowfullscreen allowtransparency allow="autoplay"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($message->type == 'vimeo')
+                                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <div class="plyr__video-embed player">
+                                                    <iframe id="{{ str_random(20) }}"
+                                                        src="https://player.vimeo.com/video/{{ $message->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media"
+                                                        allowfullscreen allowtransparency allow="autoplay"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <p>{!! $message->content !!}</p>
+                                                <span
+                                                    class="messageDate">{{ \Carbon\Carbon::parse($message->created_at, 'America/Chicago')->format('m/d/Y h:ia') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @else
+                                @if ($message->type == 'image')
+                                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <img src="{{ asset('assets/front/content/' . $message->link) }}"
+                                                    class="img-responsive">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($message->type == 'youtube')
+                                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <div class="plyr__video-embed player">
+                                                    <iframe id="{{ str_random(20) }}"
+                                                        src="https://www.youtube.com/embed/{{ $message->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                                                        allowfullscreen allowtransparency allow="autoplay"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($message->type == 'vimeo')
+                                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <div class="plyr__video-embed player">
+                                                    <iframe id="{{ str_random(20) }}"
+                                                        src="https://player.vimeo.com/video/{{ $message->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media"
+                                                        allowfullscreen allowtransparency allow="autoplay"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
+                                        <div class="bottom-content">
+                                            <div class="bubble">
+                                                <p>{!! $message->content !!} </p>
+                                                <span
+                                                    class="messageDate">{{ \Carbon\Carbon::parse($message->created_at)->format('m/d/Y h:ia') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
+                        @endforeach
                     </div>
-
-
-
-                    @elseif($message->type == 'youtube')
-
-
-
-                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <div class="plyr__video-embed player">
-
-
-
-                                    <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $message->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
-
-
-
-                                </div>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @elseif($message->type == 'vimeo')
-
-
-
-                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <div class="plyr__video-embed player">
-
-
-
-                                    <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $message->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
-
-
-
-                                </div>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @else
-
-
-
-                    <div class="single-chat-box msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <p>{!! $message->content !!}</p>
-
-
-
-                                <span class="messageDate">{{ \Carbon\Carbon::parse($message->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @endif @else @if($message->type == 'image')
-
-
-
-                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <img src="{{ asset('assets/front/content/' . $message->link) }}" class="img-responsive">
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @elseif($message->type == 'youtube')
-
-
-
-                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <div class="plyr__video-embed player">
-
-
-
-                                    <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $message->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe>
-
-
-
-                                </div>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @elseif($message->type == 'vimeo')
-
-
-
-                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <div class="plyr__video-embed player">
-
-
-
-                                    <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $message->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe>
-
-
-
-                                </div>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @else
-
-
-
-                    <div class="single-chat-box align-right msg" data-id="{{ $message->id }}">
-
-
-
-                        <div class="bottom-content">
-
-
-
-                            <div class="bubble">
-
-
-
-                                <p>{!! $message->content !!} </p>
-
-
-
-                                <span class="messageDate">{{ \Carbon\Carbon::parse($message->created_at)->format('m/d/Y h:ia' )}}</span>
-
-
-
-                            </div>
-
-
-
-                        </div>
-
-
-
-                    </div>
-
-
-
-                    @endif @endif @endforeach
-
-
-
                 </div>
 
-
-
-            </div>
-
-
-
-            <div class="chat-bottom-area">
-
-
-
-                <div class="chat-bottom-inner">
-
-
-
-                    <div id="comment-reply" class="comment-reply">
-
-
-
-                        <form id="message_form" action="{{ route('user.message.store') }}" method="post">
-
-
-
-                            @csrf
-
-
-
-                            <input type="hidden" name="from" value="{{ $from->id }}">
-
-
-
-                            <input type="hidden" name="to" value="{{ $to->id }}">
-
-
-
-                            <div class="form-group">
-
-
-
-
-                                <textarea id="msgText" name="message"></textarea>
-
-								<div class="right-content">
-
-									<a id="messagePost" class="button bg-highlight button-primary button-s shadow-large top-10">
-
-										<span class="posting-submit-icon"><i class="fa fa-paper-plane"></i></span>
-
-										<span class="posting-submit-btn"> Send<span>
-
-									</a>
-
-								</div>
-
-                            </div>
-
-
-
-                        </form>
-
-
-
+                <div class="chat-bottom-area">
+                    <div class="chat-bottom-inner">
+                        <div id="comment-reply" class="comment-reply">
+                            <form id="message_form" action="{{ route('user.message.store') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="from" value="{{ $from->id }}">
+                                <input type="hidden" name="to" value="{{ $to->id }}">
+                                <div class="form-group">
+                                    <textarea id="msgText" name="message"></textarea>
+                                    <div class="right-content">
+                                        <a id="messagePost"
+                                            class="button bg-highlight button-primary button-s shadow-large top-10">
+                                            <span class="posting-submit-icon"><i class="fa fa-paper-plane"></i></span>
+                                            <span class="posting-submit-btn"> Send<span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-
-
-
                 </div>
-
-
-
             </div>
+        </div>
+    </div>
 
-
-
-        </div>  </div>
-  </div>
-
-
-
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-
-
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-
-
-        @auth
-
-
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    @auth
         <script src="{{ asset('assets/front/twitter/emojionearea.min.js') }}"></script>
-
-
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-
-
-
-
-
-
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-
-
         <script src="https://cdn.plyr.io/3.2.4/plyr.js"></script>
-
-
-
         <script src="{{ asset('assets/front/js/jscroll.message.js') }}"></script>
-
-
-
         <script>
-
             (function($) {
-
-
-
                 $(document).ready(function() {
-
-
-
                     var pla = document.querySelectorAll('.player');
-
-
-
                     pla.forEach(function(item) {
-
-
-
                         new Plyr(item);
-
-
-
                     });
-
-
-
-                    @if($errors-> any())
-
-
-
-                    @foreach($errors-> all() as $error)
-
-
-
-                    toastr.error("{{ $error }}");
-
-
-
-                    @endforeach
-
-
-
+                    @if ($errors->any())
+                        @foreach ($errors->all() as $error)
+                            toastr.error("{{ $error }}");
+                        @endforeach
                     @endif
-
-
-
-                    @if(session('success'))
-
-
-
-                    toastr.success("{{ session('success') }}");
-
-
-
+                    @if (session('success'))
+                        toastr.success("{{ session('success') }}");
                     @endif
-
-
-
-                    @if(session('alert'))
-
-
-
-                    toastr.warning("{{ session('alert') }}");
-
-
-
+                    @if (session('alert'))
+                        toastr.warning("{{ session('alert') }}");
                     @endif
-
-
-
                 });
-
-
-
-            })(jQuery);
-
+            })
+            (jQuery);
         </script>
 
-
+        <script>
+            const BASE_URL = "{{ url('/') }}";
+        </script>
 
         <script>
-
             $(document).on('click', 'label[for="youtube"]', function(e) {
-
-
-
                 swal("Enter Youtube Video ID (Like 2X9eJF1nLiY)", {
-
-
-
                     content: "input",
-
-
-
                 }).then((value) => {
-
-
-
                     if (value != '') {
-
-
-
                         $('#youtube').val(value);
-
-
-
                         $('#type').val('youtube');
-
-
-
                         // var html = '<div id="player" data-plyr-provider="youtube" data-plyr-embed-id="' + value + '"></div>\n';
-
-
-
                         $.ajax({
-
-
-
                             type: "POST",
-
-
-
-                            url: "{{ route('user.message.store') }}",
-
-
-
+                            // url: "{{ route('user.message.update') }}",
+                            url: "https://agwiki.com/message/update",
                             data: {
-
-
-
                                 _token: '{{ csrf_token() }}',
-
-
-
                                 type: 'youtube',
-
-
-
                                 link: value,
-
-
-
                                 from: '{{ $from->id }}',
-
-
-
                                 to: '{{ $to->id }}'
-
-
-
                             }
-
-
-
                         });
-
-
-
                         $('.emojionearea-editor').html('');
-
-
-
                     }
-
-
-
                 });
-
-
-
             });
 
-
-
             $(document).on('click', 'label[for="vimeo"]', function(e) {
-
-
-
                 swal("Enter Vimeo Video ID (Like 114042185)", {
-
-
-
                     content: "input",
-
-
-
                 }).then((value) => {
-
-
-
                     if (value != '') {
-
-
-
                         $('#vimeo').val(value);
-
-
-
                         $('#type').val('vimeo');
-
-
-
                         // var html = '<div id="player" data-plyr-provider="vimeo" data-plyr-embed-id="' + value + '"></div>\n';
-
-
-
                         $.ajax({
-
-
-
                             type: "POST",
 
 
@@ -867,71 +371,71 @@
 
 
 
-			$(document).on('click', '#messagePost', function(e) {
+            $(document).on('click', '#messagePost', function(e) {
 
-				console.log('in messagepost');
-
-
-
-               // if (e.which == 13) {
+                console.log('in messagepost');
 
 
 
-                    var cb = function() {
+                // if (e.which == 13) {
 
 
 
-                        $('#msgText').val('');
+                var cb = function() {
 
 
 
-                    }
+                    $('#msgText').val('');
 
 
 
-                    // $('#msgText').val(emo[0].emojioneArea.getText());
+                }
 
 
 
-                    // $('#message_form').submit();
+                // $('#msgText').val(emo[0].emojioneArea.getText());
 
 
 
-                    $.ajax({
+                // $('#message_form').submit();
 
 
 
-                        type: "POST",
+                $.ajax({
 
 
 
-                        url: "{{ route('user.message.store') }}",
+                    type: "POST",
 
 
 
-                        complete: cb,
+                    url: "{{ route('user.message.store') }}",
 
 
 
-                        data: {
-
-                            from: '{{ $from->id }}',
-
-                            to: '{{ $to->id }}',
-
-                            'message': $('#msgText').val(),
-
-                            _token: '{{ csrf_token() }}'
-
-                        },
+                    complete: cb,
 
 
 
-                    });
+                    data: {
+
+                        from: '{{ $from->id }}',
+
+                        to: '{{ $to->id }}',
+
+                        'message': $('#msgText').val(),
+
+                        _token: '{{ csrf_token() }}'
+
+                    },
 
 
 
-               // }
+                });
+
+
+
+                // }
 
 
 
@@ -1129,7 +633,9 @@
 
 
 
-                                        var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+                                        var html =
+                                            '<div class="single-chat-box align-right msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1161,7 +667,8 @@
 
 
 
-                                            '<img src="{{ asset('assets / front / content / ') }}/' + item.link + '" class="img-responsive" />' +
+                                            '<img src="{{ asset('assets / front / content / ') }}/' +
+                                            item.link + '" class="img-responsive" />' +
 
 
 
@@ -1181,7 +688,9 @@
 
 
 
-                                        var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+                                        var html =
+                                            '<div class="single-chat-box align-right msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1225,7 +734,10 @@
 
 
 
-                                            '<div class="plyr__video-embed player"><iframe id="' + id + '" src="https://www.youtube.com/embed/' + item.link + '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+                                            '<div class="plyr__video-embed player"><iframe id="' +
+                                            id + '" src="https://www.youtube.com/embed/' + item
+                                            .link +
+                                            '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
 
 
 
@@ -1245,7 +757,9 @@
 
 
 
-                                        var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+                                        var html =
+                                            '<div class="single-chat-box align-right msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1289,7 +803,10 @@
 
 
 
-                                            '                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://player.vimeo.com/video/' + item.link + '?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+                                            '                                                                           <div class="plyr__video-embed player"><iframe id="' +
+                                            id + '" src="https://player.vimeo.com/video/' + item
+                                            .link +
+                                            '?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
 
 
 
@@ -1309,7 +826,9 @@
 
 
 
-                                        var html = '<div class="single-chat-box align-right msg" data-id="' + item.id + '">\n' +
+                                        var html =
+                                            '<div class="single-chat-box align-right msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1353,7 +872,8 @@
 
 
 
-                                            '                                                                           <p>' + item.content + '</p>\n' +
+                                            '                                                                           <p>' +
+                                            item.content + '</p>\n' +
 
 
 
@@ -1381,7 +901,8 @@
 
 
 
-                                        var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+                                        var html = '<div class="single-chat-box msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1425,7 +946,8 @@
 
 
 
-                                            '                                                                           <img src="{{ asset('assets / front / content / ') }}/' + item.link + '" class="img-responsive" />' +
+                                            '                                                                           <img src="{{ asset('assets / front / content / ') }}/' +
+                                            item.link + '" class="img-responsive" />' +
 
 
 
@@ -1445,7 +967,8 @@
 
 
 
-                                        var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+                                        var html = '<div class="single-chat-box msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1457,7 +980,8 @@
 
 
 
-                                            '                                                                            <img class="profile-image " class="profile-image " src="' + partAvatar + '" alt="' + partName + '">\n' +
+                                            '                                                                            <img class="profile-image " class="profile-image " src="' +
+                                            partAvatar + '" alt="' + partName + '">\n' +
 
 
 
@@ -1489,7 +1013,10 @@
 
 
 
-                                            '                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://www.youtube.com/embed/' + item.link + '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+                                            '                                                                           <div class="plyr__video-embed player"><iframe id="' +
+                                            id + '" src="https://www.youtube.com/embed/' + item
+                                            .link +
+                                            '?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
 
 
 
@@ -1509,7 +1036,8 @@
 
 
 
-                                        var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+                                        var html = '<div class="single-chat-box msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1553,7 +1081,10 @@
 
 
 
-                                            '                                                                           <div class="plyr__video-embed player"><iframe id="' + id + '" src="https://player.vimeo.com/video/' + item.link + '?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
+                                            '                                                                           <div class="plyr__video-embed player"><iframe id="' +
+                                            id + '" src="https://player.vimeo.com/video/' + item
+                                            .link +
+                                            '?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay"></iframe></div>' +
 
 
 
@@ -1573,7 +1104,8 @@
 
 
 
-                                        var html = '<div class="single-chat-box msg" data-id="' + item.id + '">\n' +
+                                        var html = '<div class="single-chat-box msg" data-id="' +
+                                            item.id + '">\n' +
 
 
 
@@ -1617,7 +1149,8 @@
 
 
 
-                                            '                                                                           <p>' + item.content + '</p>\n' +
+                                            '                                                                           <p>' +
+                                            item.content + '</p>\n' +
 
 
 
@@ -2022,9 +1555,6 @@
 
 
             })(jQuery);
-
         </script>
-
-
-
-        @endauth @endsection
+    @endauth
+@endsection

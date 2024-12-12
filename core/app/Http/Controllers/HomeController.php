@@ -350,13 +350,13 @@ class HomeController extends Controller
       if ($platform == 'facebook') {
           $link = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($post_url).'&quote='.$text;
       } elseif ($platform == 'twitter') {
-          $link = 'http://twitter.com/intent/tweet?url=' . urlencode($post_url).'&text='.$text;
+          $link = 'https://twitter.com/intent/tweet?url=' . urlencode($post_url).'&text='.$text;
       } elseif ($platform == 'google') {
           $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
       } elseif ($platform == 'linkedin') {
-          $link = 'http://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
+          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
       } elseif ($platform == 'pinterest') {
-          $link = 'http://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
+          $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
       } else {
           return redirect()->back();
       }
@@ -706,7 +706,7 @@ class HomeController extends Controller
 		
 	// 	$segment = 3;
 		
-	// 	$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
+	// 	$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
 	// 	//$data = array('key1' => 'value1', 'key2' => 'value2');
 		
 	// 	// use key 'http' even if you send the request to https://...
@@ -852,7 +852,7 @@ class HomeController extends Controller
     // $email = Auth::user()->email;
     // $segment = 3;
 
-    // $url = 'http://mautic.agwiki.com/api/contacts?search=' . $email;
+    // $url = 'https://mautic.agwiki.com/api/contacts?search=' . $email;
 
     // $options = array(
     //     'http' => array(
@@ -3064,7 +3064,7 @@ class HomeController extends Controller
 
 
 
-		if(strstr($image,'https://') || strstr($image,'http://'))
+		if(strstr($image,'https://') || strstr($image,'https://'))
 		{
 
 		}
@@ -3081,7 +3081,7 @@ class HomeController extends Controller
 
 		//die(print_r($headers));
 		//die($image);
-        if (@is_array(getimagesize($image)) && $image != '' && $image !='http://' && $image !='https://' && (strstr($headers[0],'OK') || strstr($headers[0],'301'))  ) { //$headers[0] == 'HTTP/1.1 200 OK'
+        if (@is_array(getimagesize($image)) && $image != '' && $image !='https://' && $image !='https://' && (strstr($headers[0],'OK') || strstr($headers[0],'301'))  ) { //$headers[0] == 'HTTP/1.1 200 OK'
 
 
 
@@ -3184,7 +3184,7 @@ class HomeController extends Controller
            // if(file_exists($image))
 			//if(@is_array(getimagesize($image)))
 			//die($image . ' - '.$path);
-            	$html .= '<p class="article-img"><a href="/ajaxpage?url=' . $request->urllink . '" rel="modal:open"><img src="'.((strstr($path,'https://') || strstr($path,'http://'))?$path:'/' . $path ). '" style="width:100%;"></a></p>';
+            	$html .= '<p class="article-img"><a href="/ajaxpage?url=' . $request->urllink . '" rel="modal:open"><img src="'.((strstr($path,'https://') || strstr($path,'https://'))?$path:'/' . $path ). '" style="width:100%;"></a></p>';
         }
         $html .= '</div>';
         $html .= '<div >';

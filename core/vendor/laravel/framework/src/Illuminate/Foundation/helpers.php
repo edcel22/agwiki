@@ -589,7 +589,7 @@ if (! function_exists('mix')) {
         if (file_exists(public_path($manifestDirectory.'/hot'))) {
             $url = rtrim(file_get_contents(public_path($manifestDirectory.'/hot')));
 
-            if (Str::startsWith($url, ['http://', 'https://'])) {
+            if (Str::startsWith($url, ['https://', 'https://'])) {
                 return new HtmlString(Str::after($url, ':').$path);
             }
 

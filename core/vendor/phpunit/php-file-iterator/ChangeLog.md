@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
+All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [2.0.6] - 2024-03-01
 

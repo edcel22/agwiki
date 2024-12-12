@@ -2,7 +2,7 @@
 /**
  * Nexmo Client Library for PHP
  *
- * @copyright Copyright (c) 2016 Nexmo, Inc. (http://nexmo.com)
+ * @copyright Copyright (c) 2016 Nexmo, Inc. (https://nexmo.com)
  * @license   https://github.com/Nexmo/nexmo-php/blob/master/LICENSE.txt MIT License
  */
 
@@ -79,7 +79,7 @@ class Collection extends Response implements ResponseInterface, \Countable, \Ite
     }
 
     /**
-     * @link http://php.net/manual/en/iterator.current.php
+     * @link https://php.net/manual/en/iterator.current.php
      * @return Message
      */
     public function current()
@@ -88,7 +88,7 @@ class Collection extends Response implements ResponseInterface, \Countable, \Ite
     }
 
     /**
-     * @link http://php.net/manual/en/iterator.next.php
+     * @link https://php.net/manual/en/iterator.next.php
      * @return void
      */
     public function next()
@@ -97,7 +97,7 @@ class Collection extends Response implements ResponseInterface, \Countable, \Ite
     }
 
     /**
-     * @link http://php.net/manual/en/iterator.key.php
+     * @link https://php.net/manual/en/iterator.key.php
      * @return int
      */
     public function key()
@@ -106,7 +106,7 @@ class Collection extends Response implements ResponseInterface, \Countable, \Ite
     }
 
     /**
-     * @link http://php.net/manual/en/iterator.valid.php
+     * @link https://php.net/manual/en/iterator.valid.php
      * @return boolean
      */
     public function valid()
@@ -115,7 +115,7 @@ class Collection extends Response implements ResponseInterface, \Countable, \Ite
     }
 
     /**
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * @link https://php.net/manual/en/iterator.rewind.php
      * @return void
      */
     public function rewind()

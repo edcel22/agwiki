@@ -3,7 +3,7 @@
     "description": "Promise used for asynchronous HTTP requests",
     "license": "MIT",
     "keywords": ["promise"],
-    "homepage": "http://httplug.io",
+    "homepage": "https://httplug.io",
     "authors": [
         {
             "name": "Joel Wurtz",

@@ -4,7 +4,7 @@
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
 [![Donate](https://img.shields.io/badge/donate-patreon-blue.svg)](https://www.patreon.com/bePatron?u=4521203)
 
-[![Laravel 4.2|5.x](https://img.shields.io/badge/Laravel-4.2|5.x-orange.svg)](http://laravel.com)
+[![Laravel 4.2|5.x](https://img.shields.io/badge/Laravel-4.2|5.x-orange.svg)](https://laravel.com)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-datatables-oracle.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Latest Unstable Version](https://poser.pugx.org/yajra/laravel-datatables-oracle/v/unstable.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![Build Status](https://travis-ci.org/yajra/laravel-datatables.svg?branch=master)](https://travis-ci.org/yajra/laravel-datatables)
@@ -12,7 +12,7 @@
 [![Total Downloads](https://poser.pugx.org/yajra/laravel-datatables-oracle/downloads.png)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-datatables-oracle)
 
-This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](http://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
+This package is created to handle [server-side](https://www.datatables.net/manual/server-side) works of [DataTables](https://datatables.net) jQuery Plugin via [AJAX option](https://datatables.net/reference/option/ajax) by using Eloquent ORM, Fluent Query Builder or Collection.
 
 ```php
 return datatables()->of(User::query())->toJson();
@@ -29,15 +29,15 @@ return datatables(User::all())->toJson();
 ```
 
 ## Requirements
-- [PHP >= 7.0](http://php.net/)
+- [PHP >= 7.0](https://php.net/)
 - [Laravel 5.4|5.5|5.6](https://github.com/laravel/framework)
-- [jQuery DataTables v1.10.x](http://datatables.net/)
+- [jQuery DataTables v1.10.x](https://datatables.net/)
 
 ## Documentations
-- [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
+- [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
 - [Laravel DataTables API](https://datatables.net/reference/api/)
-- [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
-- [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
+- [Laravel 5.0 - 5.3 Demo Application](https://datatables.yajrabox.com)
+- [Laravel 5.4 Demo Application](https://dt54.yajrabox.com)
 
 ## Laravel Version Compatibility
 

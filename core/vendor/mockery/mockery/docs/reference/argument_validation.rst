@@ -120,7 +120,7 @@ The ``type()`` matcher also accepts a class or interface name to be used in an
 ``instanceof`` evaluation of the actual argument. Hamcrest uses ``anInstanceOf()``.
 
 A full list of the type checkers is available at
-`php.net <http://www.php.net/manual/en/ref.var.php>`_ or browse Hamcrest's function
+`php.net <https://www.php.net/manual/en/ref.var.php>`_ or browse Hamcrest's function
 list in
 `the Hamcrest code <https://github.com/hamcrest/hamcrest-php/blob/master/hamcrest/Hamcrest.php>`_.
 

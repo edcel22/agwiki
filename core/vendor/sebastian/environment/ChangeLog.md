@@ -1,6 +1,6 @@
 # Changes in sebastianbergmann/environment
 
-All notable changes in `sebastianbergmann/environment` are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+All notable changes in `sebastianbergmann/environment` are documented in this file using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ## [4.2.5] - 2024-03-01
 

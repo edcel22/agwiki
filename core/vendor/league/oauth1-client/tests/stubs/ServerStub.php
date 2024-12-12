@@ -13,7 +13,7 @@ class ServerStub extends Server
      */
     public function urlTemporaryCredentials()
     {
-        return 'http://www.example.com/temporary';
+        return 'https://www.example.com/temporary';
     }
 
     /**
@@ -21,7 +21,7 @@ class ServerStub extends Server
      */
     public function urlAuthorization()
     {
-        return 'http://www.example.com/authorize';
+        return 'https://www.example.com/authorize';
     }
 
     /**
@@ -29,7 +29,7 @@ class ServerStub extends Server
      */
     public function urlTokenCredentials()
     {
-        return 'http://www.example.com/token';
+        return 'https://www.example.com/token';
     }
 
     /**
@@ -37,7 +37,7 @@ class ServerStub extends Server
      */
     public function urlUserDetails()
     {
-        return 'http://www.example.com/user';
+        return 'https://www.example.com/user';
     }
 
     /**

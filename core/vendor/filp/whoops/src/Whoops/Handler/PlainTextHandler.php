@@ -1,7 +1,7 @@
 <?php
 /**
 * Whoops - php errors for cool kids
-* @author Filipe Dobreira <http://github.com/filp>
+* @author Filipe Dobreira <https://github.com/filp>
 * Plaintext handler for command line and logs.
 * @author Pierre-Yves Landuré <https://howto.biapy.com/>
 */

@@ -22,11 +22,11 @@ use Symfony\Component\Routing\RouteCompiler;
  * XmlFileLoader loads XML routing files.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- * @author Tobias Schultze <http://tobion.de>
+ * @author Tobias Schultze <https://tobion.de>
  */
 class XmlFileLoader extends FileLoader
 {
-    public const NAMESPACE_URI = 'http://symfony.com/schema/routing';
+    public const NAMESPACE_URI = 'https://symfony.com/schema/routing';
     public const SCHEME_PATH = '/schema/routing/routing-1.0.xsd';
 
     /**
@@ -428,7 +428,7 @@ class XmlFileLoader extends FileLoader
 
     private function isElementValueNull(\DOMElement $element): bool
     {
-        $namespaceUri = 'http://www.w3.org/2001/XMLSchema-instance';
+        $namespaceUri = 'https://www.w3.org/2001/XMLSchema-instance';
 
         if (!$element->hasAttributeNS($namespaceUri, 'nil')) {
             return false;

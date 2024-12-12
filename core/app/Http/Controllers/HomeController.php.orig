@@ -106,7 +106,7 @@ class HomeController extends Controller
 		$user = Auth::user();
 		$interest = Interest::all();
 		
-		//$ads = array(['link'=>'https://www.eatkidfriendly.com/info/','image'=>'http://agwiki.dev.blayzer.com/assets/front/img/s6hauarvTzfjcKWlk3ORMlJRBhwBGa3ymoBtMBR7.png','content'=>"We provide families with kid friendly restaurants, products and other great information."]);
+		//$ads = array(['link'=>'https://www.eatkidfriendly.com/info/','image'=>'https://agwiki.dev.blayzer.com/assets/front/img/s6hauarvTzfjcKWlk3ORMlJRBhwBGa3ymoBtMBR7.png','content'=>"We provide families with kid friendly restaurants, products and other great information."]);
 		//$ads = json_decode(json_encode($ads), FALSE);
 		$ads = Ads::inRandomOrder()->first();
 		$ads = array($ads);
@@ -131,13 +131,13 @@ class HomeController extends Controller
         if ($platform == 'facebook') {
             $link = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($post_url).'&quote='.$text;
         } elseif ($platform == 'twitter') {
-            $link = 'http://twitter.com/share?url=' . urlencode($post_url).'&text='.$text;
+            $link = 'https://twitter.com/share?url=' . urlencode($post_url).'&text='.$text;
         } elseif ($platform == 'google') {
             $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
         } elseif ($platform == 'linkedin') {
-            $link = 'http://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
+            $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
         } elseif ($platform == 'pinterest') {
-            $link = 'http://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
+            $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
         } else {
             return redirect()->back();
         }
@@ -2190,7 +2190,7 @@ class HomeController extends Controller
 		
 		
 		
-		if(strstr($image,'https://') || strstr($image,'http://'))
+		if(strstr($image,'https://') || strstr($image,'https://'))
 		{
 			
 		}
@@ -2203,7 +2203,7 @@ class HomeController extends Controller
 			
 		$headers = get_headers($image, 1);
 		
-        if ($image != '' && $image !='http://' && $image !='https://' && $headers[0] == 'HTTP/1.1 200 OK') {
+        if ($image != '' && $image !='https://' && $image !='https://' && $headers[0] == 'HTTP/1.1 200 OK') {
 			
 					
 			
@@ -2231,7 +2231,7 @@ class HomeController extends Controller
            // if(file_exists($image))
 			//if(@is_array(getimagesize($image)))
 			//die($image . ' - '.$path);
-            	$html .= '<p class="article-img"><img src="'.((strstr($path,'https://') || strstr($path,'http://'))?$path:'/' . $path ). '" style="width:100%;"></p>';
+            	$html .= '<p class="article-img"><img src="'.((strstr($path,'https://') || strstr($path,'https://'))?$path:'/' . $path ). '" style="width:100%;"></p>';
         }
         $html .= '</div>';
         $html .= '<div >';

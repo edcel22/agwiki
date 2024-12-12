@@ -7,7 +7,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/php-http/httplug.svg?style=flat-square)](https://scrutinizer-ci.com/g/php-http/httplug)
 [![Total Downloads](https://img.shields.io/packagist/dt/php-http/httplug.svg?style=flat-square)](https://packagist.org/packages/php-http/httplug)
 
-[![Slack Status](http://slack.httplug.io/badge.svg)](http://slack.httplug.io)
+[![Slack Status](https://slack.httplug.io/badge.svg)](https://slack.httplug.io)
 [![Email](https://img.shields.io/badge/email-team@httplug.io-blue.svg?style=flat-square)](mailto:team@httplug.io)
 
 **HTTPlug, the HTTP client abstraction for PHP.**
@@ -25,14 +25,14 @@ $ composer require php-http/httplug
 ## Intro
 
 This is the contract package for HTTP Client.
-Use it to create HTTP Clients which are interoperable and compatible with [PSR-7](http://www.php-fig.org/psr/psr-7/).
+Use it to create HTTP Clients which are interoperable and compatible with [PSR-7](https://www.php-fig.org/psr/psr-7/).
 
 This library is the official successor of the [ivory http adapter](https://github.com/egeloen/ivory-http-adapter).
 
 
 ## Documentation
 
-Please see the [official documentation](http://docs.php-http.org).
+Please see the [official documentation](https://docs.php-http.org).
 
 
 ## Testing
@@ -44,7 +44,7 @@ $ composer test
 
 ## Contributing
 
-Please see our [contributing guide](http://docs.php-http.org/en/latest/development/contributing.html).
+Please see our [contributing guide](https://docs.php-http.org/en/latest/development/contributing.html).
 
 
 ## Security

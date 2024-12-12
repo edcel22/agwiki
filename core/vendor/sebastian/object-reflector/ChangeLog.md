@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to `sebastianbergmann/object-reflector` are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+All notable changes to `sebastianbergmann/object-reflector` are documented in this file using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ## 1.1.3 - 2024-03-01
 

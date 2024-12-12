@@ -19,7 +19,7 @@ class HmacSha1SignatureTest extends TestCase
     {
         $signature = new HmacSha1Signature($this->getMockClientCredentials());
 
-        $uri = 'http://www.example.com/?qux=corge';
+        $uri = 'https://www.example.com/?qux=corge';
         $parameters = ['foo' => 'bar', 'baz' => null];
 
         $this->assertEquals('A3Y7C1SUHXR1EBYIUlT3d6QT1cQ=', $signature->sign($uri, $parameters));
@@ -29,7 +29,7 @@ class HmacSha1SignatureTest extends TestCase
     {
         $signature = new HmacSha1Signature($this->getMockClientCredentials());
 
-        $uri = 'http://www.example.com:8080/?qux=corge';
+        $uri = 'https://www.example.com:8080/?qux=corge';
         $parameters = ['foo' => 'bar', 'baz' => null];
 
         $this->assertEquals('ECcWxyi5UOC1G0MxH0ygm6Pd6JE=', $signature->sign($uri, $parameters));
@@ -117,7 +117,7 @@ class HmacSha1SignatureTest extends TestCase
     {
         $signature = new HmacSha1Signature($this->getMockClientCredentials());
 
-        $uri = 'http://www.example.com/';
+        $uri = 'https://www.example.com/';
         $parameters = [
             'a' => [
                 'b' => [

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Ben Ramsey <ben@benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
+ * @license https://opensource.org/licenses/MIT MIT
  * @link https://benramsey.com/projects/ramsey-uuid/ Documentation
  * @link https://packagist.org/packages/ramsey/uuid Packagist
  * @link https://github.com/ramsey/uuid GitHub
@@ -21,7 +21,7 @@ use Ramsey\Uuid\Provider\NodeProviderInterface;
  * RandomNodeProvider provides functionality to generate a random node ID, in
  * the event that the node ID could not be obtained from the host system
  *
- * @link http://tools.ietf.org/html/rfc4122#section-4.5
+ * @link https://tools.ietf.org/html/rfc4122#section-4.5
  */
 class RandomNodeProvider implements NodeProviderInterface
 {

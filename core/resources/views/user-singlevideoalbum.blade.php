@@ -32,7 +32,7 @@
                                         <img width="125" height="125" src="https://img.youtube.com/vi/{{$youtubevideo[1]}}/0.jpg" class="videopopupcls" type="youtube" link="{{ $youtubevideo[1] }}">
                                     @else
                                         @php
-                                            $hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$video->value.php"));
+                                            $hash = unserialize(file_get_contents("https://vimeo.com/api/v2/video/$video->value.php"));
                                         @endphp
                                         <img width="125" height="125" src="{{$hash[0]['thumbnail_medium']}}" class="videopopupcls" type="vimeo" link="{{ $video->value }}">
 

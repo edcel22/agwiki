@@ -2,7 +2,7 @@
 /**
  * Nexmo Client Library for PHP
  *
- * @copyright Copyright (c) 2018 Nexmo, Inc. (http://nexmo.com)
+ * @copyright Copyright (c) 2018 Nexmo, Inc. (https://nexmo.com)
  * @license   https://github.com/Nexmo/nexmo-php/blob/master/LICENSE.txt MIT License
  */
 

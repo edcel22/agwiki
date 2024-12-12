@@ -401,19 +401,19 @@
 			<div class="col-md-4">
 				<label>Facebook Handle </label>
 				<div class="form-group crossposting-input input-style-1">
-					<input type="text" class="form-control input-style-1" name="facebook" id="facebook" placeholder="(http://facebook.com/___?)" value="{{ old('facebook')}}"  autofocus>
+					<input type="text" class="form-control input-style-1" name="facebook" id="facebook" placeholder="(https://facebook.com/___?)" value="{{ old('facebook')}}"  autofocus>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<label>Twitter Handle </label>
 				<div class="form-group crossposting-input input-style-1">
-					<input type="text" class="form-control input-style-1" name="twitter" id="twitter" placeholder="(http://twitter.com/___?)" value="{{ old('twitter')}}"  autofocus>
+					<input type="text" class="form-control input-style-1" name="twitter" id="twitter" placeholder="(https://twitter.com/___?)" value="{{ old('twitter')}}"  autofocus>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<label>LinkedIn Handle </label>
 				<div class="form-group crossposting-input input-style-1">
-					<input type="text" class="form-control input-style-1" name="linkedin" id="linkedin" placeholder="(http://linkedin.com/in/___?)" value="{{ old('linkedin')}}"  autofocus>
+					<input type="text" class="form-control input-style-1" name="linkedin" id="linkedin" placeholder="(https://linkedin.com/in/___?)" value="{{ old('linkedin')}}"  autofocus>
 				</div>
 			</div>
 			<div class="divider divider-margins"></div>

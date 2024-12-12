@@ -297,7 +297,7 @@ class UrlGenerator implements UrlGeneratorContract
     public function formatScheme($secure = null)
     {
         if (! is_null($secure)) {
-            return $secure ? 'https://' : 'http://';
+            return $secure ? 'https://' : 'https://';
         }
 
         if (is_null($this->cachedSchema)) {
@@ -498,7 +498,7 @@ class UrlGenerator implements UrlGeneratorContract
             $root = $this->cachedRoot;
         }
 
-        $start = Str::startsWith($root, 'http://') ? 'http://' : 'https://';
+        $start = Str::startsWith($root, 'https://') ? 'https://' : 'https://';
 
         return preg_replace('~'.$start.'~', $scheme, $root, 1);
     }

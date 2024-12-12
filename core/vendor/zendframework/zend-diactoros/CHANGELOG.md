@@ -1441,7 +1441,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#29](https://github.com/zendframework/zend-diactoros/pull/29) fixes request
   method validation to allow any valid token as defined by [RFC
-  7230](http://tools.ietf.org/html/rfc7230#appendix-B). This allows usage of
+  7230](https://tools.ietf.org/html/rfc7230#appendix-B). This allows usage of
   custom request methods, vs a static, hard-coded list.
 
 ## 1.0.5 - 2015-06-24
@@ -1493,7 +1493,7 @@ immediately.
 
 - [#25](https://github.com/zendframework/zend-diactoros/pull/25) adds
   documentation. Documentation is written in markdown, and can be converted to
-  HTML using [bookdown](http://bookdown.io). New features now MUST include
+  HTML using [bookdown](https://bookdown.io). New features now MUST include
   documentation for acceptance.
 
 ### Deprecated
@@ -1524,7 +1524,7 @@ immediately.
   - The request MUST return a `UriInterface` instance from `getUri()`; that
     instance CAN be empty. Previously, Diactoros would return `null`; now it
     lazy-instantiates an empty `Uri` instance on initialization.
-- [ZF2015-05](http://framework.zend.com/security/advisory/ZF2015-05) was
+- [ZF2015-05](https://framework.zend.com/security/advisory/ZF2015-05) was
   addressed by altering `Uri::filterPath()` to prevent emitting a path prepended
   with multiple slashes.
 
