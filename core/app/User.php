@@ -22,155 +22,316 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function timeline()
-    {
-        $followedByThis = Follow::where('by', $this->id)->pluck('followed');
+    // public function timeline()
+    // {
+    //     $followedByThis = Follow::where('by', $this->id)->pluck('followed');
 
-        if ($followedByThis->count() > 0) {
-            // Convert the collection to a comma-separated string of IDs
-            $followSql = implode(',', $followedByThis->toArray());
-        }
+    //     if ($followedByThis->count() > 0) {
+    //         // Convert the collection to a comma-separated string of IDs
+    //         $followSql = implode(',', $followedByThis->toArray());
+    //     }
     
-        if (isset($_GET['topic'])) {
-            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                ->select('shares.*', 'posts.pinned') // Select pinned column for ordering
-                ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } elseif (isset($_GET['rss'])) {
-            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                ->select('shares.*', 'posts.pinned')
-                ->where('link', 'like', '%' . $_GET['rss'] . '%')
-                ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%')
-                ->orderBy('posts.pinned', 'DESC')
-                ->orderBy('shares.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } elseif (isset($_GET['fav'])) {
-            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                ->join('favorites', 'favorites.post_id', '=', 'posts.id')
-                ->select('shares.*', 'posts.pinned')
-                ->where('favorites.user_id', Auth::user()->id)
-                ->orderBy('posts.pinned', 'DESC')
-                ->orderBy('favorites.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } elseif (isset($_GET['search'])) {
-            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                ->select('shares.*', 'posts.pinned') // Include pinned for ordering
-                ->where('posts.content', 'like', '%' . $_GET['search'] . '%') // Apply search condition
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } else {
-            $start = microtime(true);
+    //     if (isset($_GET['topic'])) {
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->select('shares.*', 'posts.pinned') // Select pinned column for ordering
+    //             ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } elseif (isset($_GET['rss'])) {
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->select('shares.*', 'posts.pinned')
+    //             ->where('link', 'like', '%' . $_GET['rss'] . '%')
+    //             ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%')
+    //             ->orderBy('posts.pinned', 'DESC')
+    //             ->orderBy('shares.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } elseif (isset($_GET['fav'])) {
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+    //             ->select('shares.*', 'posts.pinned')
+    //             ->where('favorites.user_id', Auth::user()->id)
+    //             ->orderBy('posts.pinned', 'DESC')
+    //             ->orderBy('favorites.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } elseif (isset($_GET['search'])) {
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->select('shares.*', 'posts.pinned') // Include pinned for ordering
+    //             ->where('posts.content', 'like', '%' . $_GET['search'] . '%') // Apply search condition
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } else {
+    //         $start = microtime(true);
 
-            $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
-                ->select('shares.*', 'posts.pinned') 
-                ->where('shares.active', 1) // Ensure only active shares are included
-                // ->whereIn('posts.user_id', $followedByThis) // Filter by followed users
-                ->orWhereRaw("
-                    post_id IN (
-                        SELECT post_id
-                        FROM interest_post ip
-                        INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
-                        INNER JOIN posts p ON p.id = ip.post_id
-                        WHERE iu.user_id = ? 
-                    )
-                ", [Auth::id()])
-                ->orWhereRaw("
-                    post_id IN (
-                        SELECT post_id
-                        FROM interest_post ip
-                        INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
-                        INNER JOIN posts p ON p.id = ip.post_id AND p.user_id = 1
-                        WHERE iu.user_id = ?
-                    )
-                ", [Auth::id()])
-                ->orWhereRaw("
-                    (post_id NOT IN (
-                        SELECT post_id
-                        FROM interest_post ip
-                        INNER JOIN posts p ON p.id = ip.post_id
-                    ) AND posts.user_id = 1)
-                ")
-                ->orWhere('posts.user_id', Auth::id()) // Include posts by the current user
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.created_at', 'DESC') // Secondary ordering by creation datedate
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->select('shares.*', 'posts.pinned') 
+    //             ->where('shares.active', 1) // Ensure only active shares are included
+    //             // ->whereIn('posts.user_id', $followedByThis) // Filter by followed users
+    //             ->orWhereRaw("
+    //                 post_id IN (
+    //                     SELECT post_id
+    //                     FROM interest_post ip
+    //                     INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
+    //                     INNER JOIN posts p ON p.id = ip.post_id
+    //                     WHERE iu.user_id = ? 
+    //                 )
+    //             ", [Auth::id()])
+    //             ->orWhereRaw("
+    //                 post_id IN (
+    //                     SELECT post_id
+    //                     FROM interest_post ip
+    //                     INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
+    //                     INNER JOIN posts p ON p.id = ip.post_id AND p.user_id = 1
+    //                     WHERE iu.user_id = ?
+    //                 )
+    //             ", [Auth::id()])
+    //             ->orWhereRaw("
+    //                 (post_id NOT IN (
+    //                     SELECT post_id
+    //                     FROM interest_post ip
+    //                     INNER JOIN posts p ON p.id = ip.post_id
+    //                 ) AND posts.user_id = 1)
+    //             ")
+    //             ->orWhere('posts.user_id', Auth::id()) // Include posts by the current user
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.created_at', 'DESC') // Secondary ordering by creation datedate
+    //         ->paginate(10);
+
+    //         $time = microtime(true) - $start;
+    //         $shares->setPath('');
+    //     }
+    
+    //     return $shares;
+    // }
+    public function timeline()
+{
+    $followedByThis = Follow::where('by', $this->id)->pluck('followed');
+
+    if ($followedByThis->count() > 0) {
+        // Convert the collection to a comma-separated string of IDs
+        $followSql = implode(',', $followedByThis->toArray());
+    }
+
+    if (isset($_GET['topic'])) {
+        $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+            ->select('shares.*', 'posts.pinned') // Select pinned column for ordering
+            ->where('shares.active', 1) // Include active filter
+            ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('shares.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } elseif (isset($_GET['rss'])) {
+        $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+            ->select('shares.*', 'posts.pinned')
+            ->where('shares.active', 1) // Include active filter
+            ->where(function ($query) {
+                $query->where('link', 'like', '%' . $_GET['rss'] . '%')
+                      ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%');
+            })
+            ->orderBy('posts.pinned', 'DESC')
+            ->orderBy('shares.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } elseif (isset($_GET['fav'])) {
+        $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+            ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+            ->select('shares.*', 'posts.pinned')
+            ->where('shares.active', 1) // Include active filter
+            ->where('favorites.user_id', Auth::user()->id)
+            ->orderBy('posts.pinned', 'DESC')
+            ->orderBy('favorites.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } elseif (isset($_GET['search'])) {
+        $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+            ->select('shares.*', 'posts.pinned') // Include pinned for ordering
+            ->where('shares.active', 1) // Include active filter
+            ->where('posts.content', 'like', '%' . $_GET['search'] . '%') // Apply search condition
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('shares.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } else {
+        $start = microtime(true);
+
+        $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+            ->select('shares.*', 'posts.pinned') 
+            ->where('shares.active', 1) // Ensure only active shares are included
+            ->where(function ($query) use ($followedByThis) {
+                $query->whereIn('posts.user_id', $followedByThis)
+                      ->orWhereRaw("
+                        post_id IN (
+                            SELECT post_id
+                            FROM interest_post ip
+                            INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
+                            INNER JOIN posts p ON p.id = ip.post_id
+                            WHERE iu.user_id = ? 
+                        )
+                    ", [Auth::id()])
+                      ->orWhereRaw("
+                        post_id IN (
+                            SELECT post_id
+                            FROM interest_post ip
+                            INNER JOIN interest_user iu ON ip.interest_id = iu.interest_id
+                            INNER JOIN posts p ON p.id = ip.post_id AND p.user_id = 1
+                            WHERE iu.user_id = ?
+                        )
+                    ", [Auth::id()])
+                      ->orWhereRaw("
+                        (post_id NOT IN (
+                            SELECT post_id
+                            FROM interest_post ip
+                            INNER JOIN posts p ON p.id = ip.post_id
+                        ) AND posts.user_id = 1)
+                    ")
+                      ->orWhere('posts.user_id', Auth::id()); // Include posts by the current user
+            })
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('shares.created_at', 'DESC') // Secondary ordering by creation date
             ->paginate(10);
 
-            $time = microtime(true) - $start;
-            $shares->setPath('');
-        }
-    
-        return $shares;
+        $time = microtime(true) - $start;
+        $shares->setPath('');
     }
+
+    return $shares;
+}
+
+    // public function nonuserTimeline()
+    // {
+    //     $user = User::where('username', 'ktschomakoff-860')->first();
+
+    //     if ($followed_by_this = Follow::where('by', $this->id)->pluck('followed')) {
+    //         $follow_sql = '';
+    //         foreach ($followed_by_this as $follow_id) {
+    //             @$follow_sql .= ',' . $follow_id;
+    //         }
+    //         $follow_sql = substr($follow_sql, -1); // Convert followed IDs into a comma-separated string
+    //     }
+
+    //     if (isset($_GET['topic'])) {
+    //         $shares = Share::distinct('shares.post_id')
+    //             ->join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('id', 'DESC')
+    //             ->paginate(10); // Ensure pagination works properly for topic feed
+    //         $shares->setPath('');
+    //     } elseif (isset($_GET['rss'])) {
+    //         $shares = Share::distinct('shares.post_id')
+    //             ->join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->where('link', 'like', '%' . $_GET['rss'] . '%')
+    //             ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%')
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } elseif (isset($_GET['fav'])) {
+    //         $shares = Share::distinct('shares.post_id')
+    //             ->join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+    //             ->where('favorites.user_id', $user->id)
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('favorites.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } elseif (isset($_GET['search'])) {
+    //         $shares = Share::distinct('shares.post_id')
+    //             ->join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->where('content', 'like', '%' . $_GET['search'] . '%')
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')
+    //             ->paginate(10);
+    //         $shares->setPath('');
+    //     } else {
+    //         $start = microtime(true); // Keep the original line
+    //         $shares = Share::distinct('shares.post_id')
+    //             ->join('posts', function ($join) {
+    //                 $join->on('posts.id', '=', 'shares.post_id');
+    //                 $join->where('shares.active', '=', 1);
+    //             })
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')
+    //             ->paginate(10);
+    //         $time = microtime(true) - $start; // Keep the original line
+    //         $shares->setPath(''); // Keep the original line
+    //     }
+
+    //     return $shares;
+    // }
 
     public function nonuserTimeline()
-    {
-        $user = User::where('username', 'ktschomakoff-860')->first();
+{
+    $user = User::where('username', 'ktschomakoff-860')->first();
 
-        if ($followed_by_this = Follow::where('by', $this->id)->pluck('followed')) {
-            $follow_sql = '';
-            foreach ($followed_by_this as $follow_id) {
-                @$follow_sql .= ',' . $follow_id;
-            }
-            $follow_sql = substr($follow_sql, -1); // Convert followed IDs into a comma-separated string
+    if ($followed_by_this = Follow::where('by', $this->id)->pluck('followed')) {
+        $follow_sql = '';
+        foreach ($followed_by_this as $follow_id) {
+            @$follow_sql .= ',' . $follow_id;
         }
-
-        if (isset($_GET['topic'])) {
-            $shares = Share::distinct('shares.post_id')
-                ->join('posts', 'shares.post_id', '=', 'posts.id')
-                ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('id', 'DESC')
-                ->paginate(10); // Ensure pagination works properly for topic feed
-            $shares->setPath('');
-        } elseif (isset($_GET['rss'])) {
-            $shares = Share::distinct('shares.post_id')
-                ->join('posts', 'shares.post_id', '=', 'posts.id')
-                ->where('link', 'like', '%' . $_GET['rss'] . '%')
-                ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%')
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } elseif (isset($_GET['fav'])) {
-            $shares = Share::distinct('shares.post_id')
-                ->join('posts', 'shares.post_id', '=', 'posts.id')
-                ->join('favorites', 'favorites.post_id', '=', 'posts.id')
-                ->where('favorites.user_id', $user->id)
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('favorites.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } elseif (isset($_GET['search'])) {
-            $shares = Share::distinct('shares.post_id')
-                ->join('posts', 'shares.post_id', '=', 'posts.id')
-                ->where('content', 'like', '%' . $_GET['search'] . '%')
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.id', 'DESC')
-                ->paginate(10);
-            $shares->setPath('');
-        } else {
-            $start = microtime(true); // Keep the original line
-            $shares = Share::distinct('shares.post_id')
-                ->join('posts', function ($join) {
-                    $join->on('posts.id', '=', 'shares.post_id');
-                    $join->where('shares.active', '=', 1);
-                })
-                ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-                ->orderBy('shares.id', 'DESC')
-                ->paginate(10);
-            $time = microtime(true) - $start; // Keep the original line
-            $shares->setPath(''); // Keep the original line
-        }
-
-        return $shares;
+        $follow_sql = substr($follow_sql, -1); // Convert followed IDs into a comma-separated string
     }
+
+    if (isset($_GET['topic'])) {
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('id', 'DESC')
+            ->paginate(10); // Ensure pagination works properly for topic feed
+        $shares->setPath('');
+    } elseif (isset($_GET['rss'])) {
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->where(function ($query) {
+                $query->where('link', 'like', '%' . $_GET['rss'] . '%')
+                      ->orWhere('scrabingcontent', 'like', '%' . $_GET['rss'] . '%');
+            })
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('shares.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } elseif (isset($_GET['fav'])) {
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->join('favorites', 'favorites.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->where('favorites.user_id', $user->id)
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('favorites.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } elseif (isset($_GET['search'])) {
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->where('content', 'like', '%' . $_GET['search'] . '%')
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('shares.id', 'DESC')
+            ->paginate(10);
+        $shares->setPath('');
+    } else {
+        $start = microtime(true); // Keep the original line
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+            ->orderBy('shares.id', 'DESC')
+            ->paginate(10);
+        $time = microtime(true) - $start; // Keep the original line
+        $shares->setPath(''); // Keep the original line
+    }
+
+    return $shares;
+}
 
     public static function getfollowandmutual($poststatus) {
         $Mutualfollow=array();

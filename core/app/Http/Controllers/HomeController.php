@@ -1977,7 +1977,10 @@ class HomeController extends Controller
 		if ($post->type == 'feed' && Auth::user()->id == 1) {
            //check for feed and set as inactive
 			//$share = Share::find('post_id',$request->post_id);
-			$share = Share::distinct('shares.post_id')->where('shares.post_id',$request->post_id)->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->update(['active'=>0]);
+			$share = Share::distinct('shares.post_id')->where('shares.post_id',$request->post_id)->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->update(['active' => 0]);
+			// $share = Share::distinct('shares.post_id')->where('shares.post_id',$request->post_id)->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->get();
+
+            // return $share;
 			
 			//die(print_r($share));
 				

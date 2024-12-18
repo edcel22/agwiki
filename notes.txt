@@ -1,2 +1,3 @@
 docker exec -it laravel-php bash
 docker exec -it laravel-mysql-backup bash
+db_password: root_password

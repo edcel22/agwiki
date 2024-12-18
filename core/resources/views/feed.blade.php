@@ -895,68 +895,854 @@
         }
     </style>
     @endsection
+
     @section('js')
-    <script>
+        <script>
+            function onSubmit(token) {
+                document.getElementById("regForm").submit();
+            }
         
-           function onSubmit(token) {
-             document.getElementById("regForm").submit();
-           }
-    
+            $(document).ready(function () {
+                $('#ajaxSubmit').click(function (e) {
+                    e.preventDefault();
         
-        $(document).ready(function(){
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+        
+                    $.ajax({
+                        url: "{{ route('register') }}",
+                        method: 'post',
+                        data: {
+                            email: $('#email').val(),
+                        },
+                        success: function (result) {
+                            console.log(result);
+                        }
+                    });
+                });
+
+                @if(isset($_GET['topic']))
+
+                $('.page-link').each(function() {
+
+                    var href = $(this).attr('href');
+
+                    console.log(href);
+
+                    if (href) {
+
+                        href += (href.match(/\?/) ? '&' : '?') + 'topic={{$_GET["topic"]}}';
+
+                        $(this).attr('href', href);
+
+                        console.log(href);
+
+                    }
+
+                });
+
+                @endif
+
+                // $(document).on('click', '.delete-post', function(e) {
+
+                //     e.preventDefault();
+
+                //     console.log('in delete');
+
+                //     var post = $(this).data('post');
+
+                //     $(this).addClass('deletable');
+
+                //     swal({
+
+                //         title: "Are you sure? You Want To Delete This Post.",
+
+                //         text: "Once deleted, you will not be able to recover this post.",
+
+                //         icon: "warning",
+
+                //         buttons: !0,
+
+                //         dangerMode: !0,
+
+                //     }).then((willDelete) => {
+
+                //         if (willDelete) {
+
+                //             $.ajax({
+
+                //                 data: {
+
+                //                     _token: '{{ csrf_token() }}',
+
+                //                     post_id: post
+
+                //                 },
+
+                //                 url: "{{ route('user.post.delete') }}",
+
+                //                 type: 'POST',
+
+                //                 success: function(response) {
+
+                //                     if (response.success && response.success == 1) {
+
+                //                         $('.deletable').parent().parent().parent().slideUp().remove();
+
+                //                         swal("Poof! Post has been deleted!", {
+
+                //                             icon: "success",
+
+                //                         })
+
+                //                     } else {
+
+                //                         $('.deletable').removeClass('deletable')
+
+                //                     }
+
+                //                 }
+
+                //             })
+
+                //         }
+
+                //     })
+
+                // });
+                $(document).on('click', '.delete-post', function (e) {
+                    e.preventDefault();
+
+                    var post = $(this).data('post');
+                    var postContainer = $(this).closest('.post'); // Target the parent container of the post
+
+                    swal({
+                        title: "Are you sure you want to delete this post?",
+                        text: "Once deleted, this post cannot be recovered.",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                type: 'POST',
+                                url: "{{ route('user.post.delete') }}",
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    post_id: post
+                                },
+                                success: function (response) {
+                                    if (response.success && response.success === 1) {
+                                        postContainer.slideUp(400, function () {
+                                            $(this).remove(); // Fully remove the post container after sliding up
+                                        });
+                                        swal("Post has been deleted!", {
+                                            icon: "success",
+                                        });
+                                    } else {
+                                        swal("Failed to delete the post. Please try again.", {
+                                            icon: "error",
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    swal("Unexpected error. Please try again later.", {
+                                        icon: "error",
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(document).on('click', '#mobile-right-nav-icon', function() {
+
+                    $('.mobile-nav-header-right .sidebar-area').css('display', 'block');
+
+                    $(this).attr('id', 'mobile-right-nav-icon-opened')
+
+                });
+
+                $(document).on('click', '#mobile-right-nav-icon-opened', function() {
+
+                    $('.mobile-nav-header-right .sidebar-area').css('display', 'none');
+
+                    $(this).attr('id', 'mobile-right-nav-icon')
+
+                });
+
+                $('[data-toggle="tooltip"]').tooltip();
+
+                $(document).on('click', '.like', function(e) {
+
+                    e.preventDefault();
+
+                    var post = $(this).data('post');
+
+                    $(this).addClass('actv');
+
+                    var myString = $(this).parent().find('span').prop('innerHTML');
+
+                    var result = myString.match(/\((.*)\)/);
+
+                    var currentValue = result[1];
+
+                    var newValue = parseInt(currentValue.trim()) + 1;
+
+                    $(this).parent().find('span').prop('innerHTML', '(' + newValue + ')');
+
+                    $.ajax({
+
+                        type: "POST",
+
+                        url: "{{ route('user.like') }}",
+
+                        data: {
+
+                            post_id: post,
+
+                            _token: '{{ csrf_token() }}'
+
+                        },
+
+                        success: function(data) {
+
+                            if (data.success && data.success == 1) {
+
+                                if (data.message) {
+
+                                    toastr.success(data.message)
+
+                                }
+
+                            }
+
+                        }
+
+                    })
+
+                });
+
+                $(document).on('click', '.share', function(e) {
+
+                    e.preventDefault();
+
+                    var post = $(this).data('post');
+
+                    var myString = $(this).parent().find('span').prop('innerHTML');
+
+                    console.log(myString);
+
+                    myString = myString.replace("Share", "")
+
+                    var result = myString.match(/\((.*)\)/);
+
+                    var currentValue = result[1];
+
+                    console.log(currentValue);
+
+                    var newValue = parseInt(currentValue.trim()) + 1;
+
+                    console.log(newValue);
+
+                    $(this).parent().find('span').prop('innerHTML', ' Share(' + newValue + ')');
+
+                    $(this).addClass('active');
+
+                    $.ajax({
+
+                        type: "POST",
+
+                        url: "{{ route('user.share') }}",
+
+                        data: {
+
+                            post_id: post,
+
+                            _token: '{{ csrf_token() }}'
+
+                        },
+
+                        success: function(data) {
+
+                            if (data.success && data.success == 1) {
+
+                                toastr.success("Successfully Shared On Your Profile")
+
+                            } else {
+
+                                toastr.error("Unexpected Error! Please try Again.")
+
+                            }
+
+                        }
+
+                    })
+
+                })
+            });
+        </script>
+        
+        <script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
+        <script src="/assets/front/js/jquery.jscroll.min.js">
+        </script>
+        
+        <script>
+            const player = new Plyr('#player');
+        
+            function showPassword() {
+                var x = document.getElementById("password");
+                if (x.type === "password") {
+                    x.type = "text";
+                } else {
+                    x.type = "password";
+                }
+            }
+        </script>
+        <script type="text/javascript">
+            $(function() {
     
-           $('#ajaxSubmit').click(function(e){
+                $('.infinite-scroll').jscroll({
     
-              e.preventDefault();
+                    autoTrigger: !0,
     
-              $.ajaxSetup({
+                    loadingHtml: '<div class="section-box infinite-loading"><i class="fa fa-spinner fa-spin fa-3x fa-fw" aria-hidden="true"></i></div>',
     
-                 headers: {
+                    padding: 0,
+                    nextSelector: 'ul.pagination li.active + li a',
+                    contentSelector: 'div.infinite-scroll',
+                    callback: function() {
+                        $('ul.pagination').remove();
+                        constplayers = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p))
+                    }
+                })
+            });
+        </script>
     
-                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        <script>
+            (function($) {
     
-                 }
+                $(document).ready(function() {
     
-             });
+                    $(document).on('click', '#get_search-form', function(e) {
     
-              $.ajax({
+                        e.preventDefault();
     
-                 url: "{{ route('register') }}",
+                        $('.search-area-mobile').css('display', 'block');
     
-                 method: 'post',
+                        $(this).attr('id', 'get_search_clicked')
     
-                 data: {
+                    })
     
-                    email: $('#email').val(),
+                    $(document).on('click', '#get_search_clicked', function(e) {
     
+                        e.preventDefault();
     
+                        $('.search-area-mobile').css('display', 'none');
     
-                 },
+                        $(this).attr('id', 'get_search-form')
     
-                 success: function(result){
+                    })
     
-                    console.log(result);
+                    // toastr.success("Post Published Successfully.")
     
-                 }});
+                });
     
-              });
+                $(document).on('click', '.imgclickcls', function() {
     
-           });
+                    var image = $(this).attr('src');
     
+                    var theImage = new Image();
     
+                    $(theImage).load(function() {
     
-    </script>
-    <script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
-    <script>
-        const player = new Plyr('#player');
-        function showPassword() {
-          var x = document.getElementById("password");
-          if (x.type === "password") {
-            x.type = "text";
-          } else {
-            x.type = "password";
-          }
-        }
-    </script>
+                        if (this.width >= 1000) {
+    
+                            $('#imgmodalwidth').css('width', '1050')
+    
+                        } else {
+    
+                            $('#imgmodalwidth').css('width', this.width + 50)
+    
+                        }
+    
+                    });
+    
+                    theImage.src = image;
+    
+                    $("#imagesrc").attr("src", image)
+    
+                })
+    
+            })(jQuery);
+        </script>
+    
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5b028cce69cdbe02">
+        </script>
+    
+        <script type="text/javascript">
+            $(document).ready(function() {
+    
+                const emoeditor = $(".article-emoji-input").emojioneArea({
+    
+                    pickerPosition: "bottom",
+    
+                    filtersPosition: "bottom",
+    
+                });
+    
+                emoeditor[0].emojioneArea.on("paste", function(editor, event) {
+    
+                    var value = this.getText();
+    
+                    var urlpat = /^https?:\/\//i;
+    
+                    if (urlpat.test(value)) {
+    
+                        $("#loaderimg").show();
+    
+                        $('#urldatadiv').css('display', 'none');
+    
+                        setTimeout(function() {
+    
+                            $.ajax({
+    
+                                type: "POST",
+    
+                                url: "{{ route('user.urllink.data') }}",
+    
+                                data: {
+    
+                                    'urllink': value,
+    
+                                    _token: '{{ csrf_token() }}'
+    
+                                },
+    
+                                async: !1,
+    
+                                success: function(data) {
+    
+                                    console.log('link success');
+    
+                                    var res = data.split("!~");
+    
+                                    $('#urldatadiv').css('display', 'block');
+    
+                                    $('#urldatadiv').html(res[0]);
+    
+                                    $('#urldataval').val(res[0]);
+    
+                                    $('#hrefurl').val(res[1]);
+    
+                                    $("#loaderimg").hide();
+    
+                                    //emoeditor[0].emojioneArea.html('');
+    
+                                    //$(".emojionearea-editor").html('');
+    
+                                    //$(".article-emoji-input").val('');
+    
+                                }
+    
+                            })
+    
+                        }, 100)
+    
+                    }
+    
+                });
+    
+                emoeditor[0].emojioneArea.on("keyup", function(editor, event) {
+    
+                    var value = this.getText();
+    
+                    if (value == "") {
+    
+                        $('#urldatadiv').css('display', 'none');
+    
+                        $('#urldatadiv').html('');
+    
+                        $('#urldataval').val('');
+    
+                        $('#hrefurl').val('')
+    
+                    }
+    
+                });
+    
+                $('[rel="tooltip"]').tooltip();
+    
+                const players = Array.from(document.querySelectorAll('.player')).map(p => new Plyr(p));
+    
+                $(document).on('change', '#image', function(e) {
+    
+                    console.log('in image');
+    
+                    if (this.files.length) {
+    
+                        console.log('in image length');
+    
+                        var file = this.files[0];
+    
+                        upload(file, 'image');
+    
+                        $('#video').val(null);
+    
+                        $('#audio').val(null);
+    
+                        $('#youtube').val(null);
+    
+                        $('#vimeo').val(null);
+    
+                        $('#doc').val(null)
+    
+                    }
+    
+                });
+    
+                $(document).on('change', '#video', function(e) {
+    
+                    if (this.files.length) {
+    
+                        var file = this.files[0];
+    
+                        if (file.type === 'video/mp4') {
+    
+                            upload(file, 'video');
+    
+                            $('#image').val(null);
+    
+                            $('#audio').val(null);
+    
+                            $('#youtube').val(null);
+    
+                            $('#vimeo').val(null);
+    
+                            $('#doc').val(null)
+    
+                        } else {
+    
+                            toastr.warning('Only MP4 is supported')
+    
+                        }
+    
+                    }
+    
+                });
+    
+                $(document).on('change', '#doc', function(e) {
+    
+                    if (this.files.length) {
+    
+                        var file = this.files[0];
+    
+                        $('#type').val('doc');
+    
+                        upload(file, 'doc');
+    
+                        $('#image').val(null);
+    
+                        $('#video').val(null);
+    
+                        $('#audio').val(null);
+    
+                        $('#youtube').val(null);
+    
+                        $('#vimeo').val(null)
+    
+                    }
+    
+                });
+    
+                $(document).on('change', '#audio', function(e) {
+    
+                    if (this.files.length) {
+    
+                        var file = this.files[0];
+    
+                        if (file.type === 'audio/mpeg' || file.type == 'audio/mp3') {
+    
+                            upload(file, 'audio');
+    
+                            $('#image').val(null);
+    
+                            $('#video').val(null);
+    
+                            $('#youtube').val(null);
+    
+                            $('#vimeo').val(null);
+    
+                            $('#doc').val(null)
+    
+                        } else {
+    
+                            toastr.warning('Only MP3 is supported')
+    
+                        }
+    
+                    }
+    
+                });
+    
+                $(document).on('click', 'label[for="youtube"]', function(e) {
+    
+                    swal("Enter Youtube Video ID (Like 2X9eJF1nLiY)", {
+    
+                        content: "input",
+    
+                    }).then((value) => {
+    
+                        if (value != '') {
+    
+                            $('#youtube').val(value);
+    
+                            $('#type').val('youtube');
+    
+                            var html = '<div id="player" data-plyr-provider="youtube" data-plyr-embed-id="' + value + '"> < /div>\n';
+                            $('#cont div').html(html);
+                            const player = new Plyr('#player');
+                            $('#cont div').css('height', '300px');
+                            $('#cont').fadeIn();
+                            $('.emojionearea-editor').attr('placeholder', 'Caption');
+                            $('#image').val(null);
+                            $('#video').val(null);
+                            $('#audio').val(null);
+                            $('#vimeo').val(null);
+                            $('#doc').val(null)
+                        }
+                    })
+                });
+                $(document).on('click', 'label[for="vimeo"]', function(e) {
+                    swal("Enter Vimeo Video ID (Like 114042185)", {
+                        content: "input",
+                    }).then((value) => {
+                        if (value != '') {
+                            $('#vimeo').val(value);
+                            $('#type').val('vimeo');
+                            var html = '<div id="player" data-plyr-provider="vimeo" data-plyr-embed-id="' + value + '"> < /div>\n';
+                            $('#cont div').html(html);
+                            const player = new Plyr('#player');
+                            $('#cont div').css('height', '300px').fadeIn();
+                            $('#cont').fadeIn();
+                            $('.emojionearea-editor').attr('placeholder', 'Caption');
+                            $('#image').val(null);
+                            $('#video').val(null);
+                            $('#audio').val(null);
+                            $('#youtube').val(null);
+                            $('#doc').val(null)
+                        }
+                    })
+                });
+                $(document).on('click', '#cont span', function(e) {
+                    $('#cont').fadeOut();
+    
+                    $('#cont div').html('');
+                    $('.emojionearea-editor').attr('placeholder', 'New Article');
+                    var link = $('#link').val();
+                    if (link != '') {
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ route('user.file.delete') }}",
+                            data: {
+                                link: link,
+                                _token: '{{ csrf_token() }}'
+                            }
+                        })
+                    }
+    
+                    $('#type').val('')
+    
+                });
+                $(".article-emoji-input").emojioneArea({
+    
+                    pickerPosition: "bottom",
+    
+                    filtersPosition: "bottom",
+    
+                });
+                $(".nice-scroll").niceScroll({
+    
+                    cursorcolor: "#07cb79",
+    
+                    cursorwidth: "10px",
+    
+                    background: "rgba(26, 39, 53, 0.3)",
+    
+                    cursorborder: "1px solid aquamarine",
+    
+                    cursorborderradius: 10
+    
+                })
+    
+            });
+    
+            function upload(file, type) {
+    
+                var formdata = new FormData();
+    
+                formdata.append("_token", "{{ csrf_token() }}");
+    
+                formdata.append("type", type);
+    
+                formdata.append("file", file);
+    
+                var ajax = new XMLHttpRequest();
+    
+                ajax.upload.addEventListener("progress", progressHandler, !1);
+    
+                ajax.addEventListener("load", completeHandler, !1);
+    
+                ajax.addEventListener("error", errorHandler, !1);
+    
+                ajax.addEventListener("abort", abortHandler, !1);
+    
+                ajax.open("POST", "{{ route('file.store') }}");
+    
+                ajax.send(formdata)
+    
+            }
+    
+            function progressHandler(event) {
+    
+                var percent = (event.loaded / event.total) * 100;
+    
+                $("#post-ajax-loader").fadeIn();
+    
+                $("#prog").css('width', Math.round(percent) + '%');
+    
+                $("#prog").text(Math.round(percent) + '%')
+    
+            }
+    
+            function completeHandler(event) {
+    
+                var jso = JSON.parse(event.target.responseText);
+    
+                if (jso.error) {
+    
+                    $("#link").val(null);
+    
+                    $('#type').val(null);
+    
+                    $('input[type="file"]').val(null);
+    
+                    $("#prog").css('width', '0%');
+    
+                    $("#prog").text('0%');
+    
+                    $("#prog").fadeOut();
+    
+                    $('#post-ajax-loader').fadeOut();
+    
+                    toastr.error(jso.error);
+    
+                    $('.emojionearea-editor').attr('placeholder', 'New Article')
+    
+                } else {
+    
+                    $("#prog").text("Upload Completed");
+    
+                    $("#link").val(jso.link);
+    
+                    $('#type').val(jso.type);
+    
+                    $('.emojionearea-editor').attr('placeholder', 'Caption');
+    
+                    $('input[type="file"]').val(null);
+    
+                    toastr.success('Uploaded Successfully. Just Share This');
+    
+                    if (jso.type == 'image') {
+    
+                        $('#cont').fadeIn();
+    
+                        $('#cont div').html('<img src="{{ url('
+                            assets / front / content / ') }}/' + jso.link + '" class="img-responsive" style="width: 100%;margin-bottom: 20px;">')
+    
+                    } else if (jso.type == 'video') {
+    
+                        $('#cont').fadeIn();
+    
+                        var html = '<video id="player" playsinline controls>\n' + '<source src="{{ url('
+                        assets / front / content / ') }}/' + jso.link + '" type="video/mp4" id="player-src">\n' + '</video>';
+    
+                        $('#cont div').html(html);
+    
+                        const player = new Plyr('#player')
+    
+                    } else if (jso.type == 'audio') {
+    
+                        $('#cont').fadeIn();
+    
+                        var html = '<audio id="player" controls> <source src="{{ url('
+                        assets / front / content / ') }}/' + jso.link + '" type="audio/mp3" id="player-src"> < /audio>';
+                        $('#cont div').html(html);
+                        const player = new Plyr('#player')
+                    }
+    
+                    setTimeout(function() {
+    
+                        $("#prog").css('width', '0%');
+    
+                        $("#prog").text('0%');
+    
+                        $("#prog").fadeOut();
+    
+                        $('#post-ajax-loader').fadeOut()
+    
+                    }, 1500)
+    
+                }
+    
+            }
+    
+            function errorHandler(event) {
+    
+                $("#link").val(null);
+    
+                $('#type').val(null);
+    
+                $('input[type="file"]').val(null);
+    
+                $("#prog").css('width', '0%');
+    
+                $("#prog").text('0%');
+    
+                $("#prog").fadeOut();
+    
+                $('#post-ajax-loader').fadeOut();
+    
+                toastr.error('Upload Failed. Please Try Again.');
+    
+                $('.emojionearea-editor').attr('placeholder', 'New Article')
+    
+            }
+    
+            function abortHandler(event) {
+    
+                $("#link").val(null);
+    
+                $('#type').val(null);
+    
+                $('input[type="file"]').val(null);
+    
+                $("#prog").css('width', '0%');
+    
+                $("#prog").text('0%');
+    
+                $("#prog").fadeOut();
+    
+                $('#post-ajax-loader').fadeOut();
+    
+                toastr.error('Upload Aborted. Please Try Again.');
+    
+                $('.emojionearea-editor').attr('placeholder', 'New Article')
+    
+            }
+        </script>
     @endsection
 
