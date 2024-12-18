@@ -630,7 +630,7 @@
 
 
                             url: "{{ route('user.message.store') }}",
-
+			
 
 
                             data: {
