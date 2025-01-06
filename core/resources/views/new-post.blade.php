@@ -58,7 +58,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="post_image" class="control-label" style="cursor: pointer;">
-                                    <img id="image_container" style="width: 100%;height: 300px;" src="http://via.placeholder.com/517x300?text=Click+For+Select+Image+(517x300)" alt="Select">
+                                    <img id="image_container" style="width: 100%;height: 300px;" src="https://via.placeholder.com/517x300?text=Click+For+Select+Image+(517x300)" alt="Select">
                                 </label>
                                 <input type="file" name="post_image" id="post_image" class="form-control" required style="display: none;">
                             </div>
@@ -78,7 +78,7 @@
 @endsection
 
 @section('js')
-    <script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
+    <script src="https://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
     <script type="text/javascript">bkLib.onDomLoaded(nicEditors.allTextAreas);</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script>

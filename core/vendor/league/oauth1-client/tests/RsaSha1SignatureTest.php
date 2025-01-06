@@ -20,7 +20,7 @@ class RsaSha1SignatureTest extends TestCase
     {
         $signature = new RsaSha1Signature($this->getClientCredentials());
 
-        $uri = 'http://www.example.com/?qux=corge';
+        $uri = 'https://www.example.com/?qux=corge';
         $parameters = ['foo' => 'bar', 'baz' => null];
 
         $this->assertEquals('h8vpV4CYnLwss+rWicKE4sY6AiW2+DT6Fe7qB8jA7LSLhX5jvLEeX1D8E2ynSePSksAY48j+OSLu9vo5juS2duwNK8UA2Rtnnvuj6UFxpx70dpjHAsQg6EbycGptL/SChDkxfpG8LhuwX1FlFa+H0jLYXI5Dy8j90g51GRJbj48=', $signature->sign($uri, $parameters));
@@ -108,7 +108,7 @@ class RsaSha1SignatureTest extends TestCase
     {
         $signature = new RsaSha1Signature($this->getClientCredentials());
 
-        $uri = 'http://www.example.com/';
+        $uri = 'https://www.example.com/';
         $parameters = [
             'a' => [
                 'b' => [

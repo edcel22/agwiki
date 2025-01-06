@@ -3,7 +3,7 @@
     <div class="author-header">
         <div class="header-area">
             <div class="cover-pic cover-pic-bg" style='background-image: url("{{asset('assets/front/img/'.auth()->user()->cover)}}");'>
-                <!-- <img src="http://via.placeholder.com/100x150" alt=""> -->
+                <!-- <img src="https://via.placeholder.com/100x150" alt=""> -->
             </div>
         </div>
         <div class="header-bottom">

@@ -1,0 +1,11 @@
+docker exec -it laravel-php bash
+docker exec -it laravel-mysql-backup bash
+db_password: root_password
+
+rpkrotz@gmail.com
+
+$2y$10$rsEFMn17tu1e57UNwKi/9e.IRtwGtlfPoD1rL/DZxULXM7AwX3dQS
+welcome
+
+$2y$10$rsEFMn17tu1e57UNwKi/9e.IRtwGtlfPoD1rL/DZxULXM7AwX3dQS
+$2y$10$rsEFMn17tu1e57UNwKi/9e.IRtwGtlfPoD1rL/DZxULXM7AwX3dQS

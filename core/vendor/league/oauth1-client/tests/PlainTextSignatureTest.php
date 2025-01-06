@@ -18,7 +18,7 @@ class PlainTextSignatureTest extends TestCase
     public function testSigningRequest()
     {
         $signature = new PlainTextSignature($this->getMockClientCredentials());
-        $this->assertEquals('clientsecret&', $signature->sign($uri = 'http://www.example.com/'));
+        $this->assertEquals('clientsecret&', $signature->sign($uri = 'https://www.example.com/'));
 
         $signature->setCredentials($this->getMockCredentials());
         $this->assertEquals('clientsecret&tokensecret', $signature->sign($uri));

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en" style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths js csstransforms csstransforms3d csstransitions responsejs "><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "https://www.w3.org/TR/html4/loose.dtd"><html xmlns="https://www.w3.org/1999/xhtml" lang="en" style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths js csstransforms csstransforms3d csstransitions responsejs "><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -94,27 +94,27 @@
             /* Opens sans font */
             @font-face {
               font-family: 'Open Sans';
-              src: url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Regular.WOFF') format('woff'),
-                   url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Regular.ttf')  format('truetype'); 
+              src: url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Regular.WOFF') format('woff'),
+                   url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Regular.ttf')  format('truetype'); 
               font-weight: 300;
             }
             @font-face {
               font-family: 'Open Sans';
-              src: url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Italic.WOFF') format('woff'),
-                   url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Italic.ttf')  format('truetype'); 
+              src: url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Italic.WOFF') format('woff'),
+                   url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-Italic.ttf')  format('truetype'); 
               font-weight: 300;
               font-style: italic;
             }
             @font-face {
               font-family: 'Open Sans';
-              src: url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBold.WOFF') format('woff'),
-                   url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBold.ttf')  format('truetype'); 
+              src: url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBold.WOFF') format('woff'),
+                   url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBold.ttf')  format('truetype'); 
               font-weight: 700;
             }
             @font-face {
               font-family: 'Open Sans';
-              src: url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBoldItalic.WOFF') format('woff'),
-                   url('http://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBoldItalic.ttf')  format('truetype'); 
+              src: url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBoldItalic.WOFF') format('woff'),
+                   url('https://mautic.agwiki.com/themes/vibrant/assets/open-sans/OpenSans-SemiBoldItalic.ttf')  format('truetype'); 
               font-weight: 700;
               font-style: italic;
             }

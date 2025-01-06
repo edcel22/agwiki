@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Ben Ramsey <ben@benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
+ * @license https://opensource.org/licenses/MIT MIT
  * @link https://benramsey.com/projects/ramsey-uuid/ Documentation
  * @link https://packagist.org/packages/ramsey/uuid Packagist
  * @link https://github.com/ramsey/uuid GitHub
@@ -177,7 +177,7 @@ interface UuidInterface extends JsonSerializable, Serializable
      * generated 48-bit value as described in RFC 4122, Section 4.4.
      *
      * @return string Hexadecimal value of node
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.6
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.6
      */
     public function getNodeHex();
 
@@ -217,7 +217,7 @@ interface UuidInterface extends JsonSerializable, Serializable
      *
      * @return string Hexadecimal value of the timestamp
      * @throws UnsupportedOperationException If this UUID is not a version 1 UUID
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.4
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.4
      */
     public function getTimestampHex();
 
@@ -225,7 +225,7 @@ interface UuidInterface extends JsonSerializable, Serializable
      * Returns the string representation of the UUID as a URN.
      *
      * @return string
-     * @link http://en.wikipedia.org/wiki/Uniform_Resource_Name
+     * @link https://en.wikipedia.org/wiki/Uniform_Resource_Name
      */
     public function getUrn();
 
@@ -241,7 +241,7 @@ interface UuidInterface extends JsonSerializable, Serializable
      * * 7 - Reserved for future definition
      *
      * @return int
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.1
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.1
      */
     public function getVariant();
 
@@ -261,7 +261,7 @@ interface UuidInterface extends JsonSerializable, Serializable
      * is only meaningful for this variant.
      *
      * @return int|null
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.3
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.3
      */
     public function getVersion();
 

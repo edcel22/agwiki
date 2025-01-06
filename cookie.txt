@@ -106,7 +106,7 @@ www.ramblinfarmers.com	FALSE	/	FALSE	0	crumb	BeWKCSjLGIKBZDMyNjc4MWI3MzVlY2NkYzM
 .westport-news.com	TRUE	/	TRUE	0	hnpdiudpf2	sFvlralXEr/bCNsPDfQzeUaJfCk1lFifJRTHq3xEJwU=
 www.westport-news.com	FALSE	/	TRUE	0	location_data	{"is_eu":false,"country_code":"US","postal_code":"1"}
 www.westport-news.com	FALSE	/	FALSE	0	btype	web
-#HttpOnly_www.universiteitleiden.nl	FALSE	/	TRUE	0	ROUTEID	http://10.0.3.141:8080
+#HttpOnly_www.universiteitleiden.nl	FALSE	/	TRUE	0	ROUTEID	https://10.0.3.141:8080
 #HttpOnly_news.trust.org	FALSE	/	TRUE	0	JSESSIONID	081C7BAE6F6DB3BB3184D6AE0DC3921E
 news.trust.org	FALSE	/	FALSE	1786048591	dmid	36bf9b91-c8d6-44ed-a43e-e3bcd411dda1
 www.israelcollective.org	FALSE	/	FALSE	0	crumb	BYRHL5MTW56iZWYxOWQwM2YzNTgxMWRhMmQzZjY3MzE3ZGVjMTYy

@@ -42,7 +42,7 @@ class EmailLexer extends AbstractLexer
     const ASCII_INVALID_TO   = 199;
 
     /**
-     * US-ASCII visible characters not valid for atext (@link http://tools.ietf.org/html/rfc5322#section-3.2.3)
+     * US-ASCII visible characters not valid for atext (@link https://tools.ietf.org/html/rfc5322#section-3.2.3)
      *
      * @var array
      */

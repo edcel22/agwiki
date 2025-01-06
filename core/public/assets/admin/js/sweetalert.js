@@ -270,7 +270,7 @@ var fadeOut = function fadeOut(elem, interval) {
 };
 
 var fireClick = function fireClick(node) {
-  // Taken from http://www.nonobtrusive.com/2011/11/29/programatically-fire-crossbrowser-click-event-with-javascript/
+  // Taken from https://www.nonobtrusive.com/2011/11/29/programatically-fire-crossbrowser-click-event-with-javascript/
   // Then fixed for today's Chrome browser.
   if (typeof MouseEvent === 'function') {
     // Up-to-date approach

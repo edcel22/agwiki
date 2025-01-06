@@ -7,7 +7,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/oauth1-client.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/oauth1-client)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/oauth1-client.svg?style=flat-square)](https://packagist.org/packages/thephpleague/oauth1-client)
 
-OAuth 1 Client is an OAuth [RFC 5849 standards-compliant](http://tools.ietf.org/html/rfc5849) library for authenticating against OAuth 1 servers.
+OAuth 1 Client is an OAuth [RFC 5849 standards-compliant](https://tools.ietf.org/html/rfc5849) library for authenticating against OAuth 1 servers.
 
 It has built in support for:
 
@@ -103,7 +103,7 @@ $ composer require league/oauth1-client
 $server = new League\OAuth1\Client\Server\Bitbucket([
     'identifier' => 'your-identifier',
     'secret' => 'your-secret',
-    'callback_uri' => "http://your-callback-uri/",
+    'callback_uri' => "https://your-callback-uri/",
 ]);
 ```
 
@@ -113,7 +113,7 @@ $server = new League\OAuth1\Client\Server\Bitbucket([
 $server =  new League\OAuth1\Client\Server\Trello([
     'identifier' => 'your-identifier',
     'secret' => 'your-secret',
-    'callback_uri' => 'http://your-callback-uri/',
+    'callback_uri' => 'https://your-callback-uri/',
     'name' => 'your-application-name', // optional, defaults to null
     'expiration' => 'your-application-expiration', // optional ('never', '1day', '2days'), defaults to '1day'
     'scope' => 'your-application-scope' // optional ('read', 'read,write'), defaults to 'read'
@@ -126,7 +126,7 @@ $server =  new League\OAuth1\Client\Server\Trello([
 $server = new League\OAuth1\Client\Server\Tumblr([
     'identifier' => 'your-identifier',
     'secret' => 'your-secret',
-    'callback_uri' => "http://your-callback-uri/",
+    'callback_uri' => "https://your-callback-uri/",
 ]);
 ```
 
@@ -136,7 +136,7 @@ $server = new League\OAuth1\Client\Server\Tumblr([
 $server = new League\OAuth1\Client\Server\Twitter([
     'identifier' => 'your-identifier',
     'secret' => 'your-secret',
-    'callback_uri' => "http://your-callback-uri/",
+    'callback_uri' => "https://your-callback-uri/",
     'scope' => 'your-application-scope' // optional ('read', 'write'), empty by default
 ]);
 ```
@@ -147,7 +147,7 @@ $server = new League\OAuth1\Client\Server\Twitter([
 $server = new League\OAuth1\Client\Server\Xing([
     'identifier' => 'your-consumer-key',
     'secret' => 'your-consumer-secret',
-    'callback_uri' => "http://your-callback-uri/",
+    'callback_uri' => "https://your-callback-uri/",
 ]);
 ```
 

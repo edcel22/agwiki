@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Ben Ramsey <ben@benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
+ * @license https://opensource.org/licenses/MIT MIT
  * @link https://benramsey.com/projects/ramsey-uuid/ Documentation
  * @link https://packagist.org/packages/ramsey/uuid Packagist
  * @link https://github.com/ramsey/uuid GitHub
@@ -20,7 +20,7 @@ use Exception;
  * RandomBytesGenerator provides functionality to generate strings of random
  * binary data using `random_bytes()` function in PHP 7+ or paragonie/random_compat
  *
- * @link http://php.net/random_bytes
+ * @link https://php.net/random_bytes
  * @link https://github.com/paragonie/random_compat
  */
 class RandomBytesGenerator implements RandomGeneratorInterface

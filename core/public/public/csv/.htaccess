@@ -1,6 +1,0 @@
-Allow from all
-order allow,deny
-
-# secure directory by disabling script execution
-#AddHandler cgi-script .php .pl .py .jsp .asp .htm .shtml .sh .cgi
-#Options -ExecCGI

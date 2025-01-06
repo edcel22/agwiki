@@ -123,7 +123,7 @@ class RegisterController extends Controller
 		
 			$segment = 8;//master
 		
-		$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
+		$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
 		//$data = array('key1' => 'value1', 'key2' => 'value2');
 		
 		// use key 'http' even if you send the request to https://...
@@ -366,7 +366,7 @@ class RegisterController extends Controller
 
         $ip = $request->ip();
 
-        $r = file_get_contents('http://ip-api.com/json/' . $ip);
+        $r = file_get_contents('https://ip-api.com/json/' . $ip);
         $info = json_decode($r);
 
         if ($info->status && $info->status == 'success') {

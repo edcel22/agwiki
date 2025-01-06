@@ -408,7 +408,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      *
      * @return string
      *
-     * @see http://davenport.sourceforge.net/ntlm.html#theNtlmResponse
+     * @see https://davenport.sourceforge.net/ntlm.html#theNtlmResponse
      */
     protected function createNTLMv2Hash($password, $username, $domain, $challenge, $targetInfo, $timestamp, $client)
     {

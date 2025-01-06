@@ -237,7 +237,7 @@ class RssFeedsController extends Controller
 										$html = '<div >';
 										if ($image != '') {
 											
-											if(strstr($image,'https://') || strstr($image,'http://'))
+											if(strstr($image,'https://') || strstr($image,'https://'))
 											{
 												//$imgcnt = file_get_contents($image);
 											}
@@ -254,7 +254,7 @@ class RssFeedsController extends Controller
 
 											//die(print_r($headers));
 											//die($image);
-											if (@is_array(getimagesize($image)) && $image != '' && $image !='http://' && $image !='https://' && (strstr($headers[0],'OK') || strstr($headers[0],'301'))  ) { //$headers[0] == 'HTTP/1.1 200 OK'
+											if (@is_array(getimagesize($image)) && $image != '' && $image !='https://' && $image !='https://' && (strstr($headers[0],'OK') || strstr($headers[0],'301'))  ) { //$headers[0] == 'HTTP/1.1 200 OK'
 
 
 

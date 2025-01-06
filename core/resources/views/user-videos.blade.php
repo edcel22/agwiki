@@ -39,7 +39,7 @@
                                         @endif
                                     @elseif($video->type == 'vimeo')
                                         @php
-                                            $hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$video->link.php"));
+                                            $hash = unserialize(file_get_contents("https://vimeo.com/api/v2/video/$video->link.php"));
                                         @endphp
                                         <img width="125" height="125" src="{{$hash[0]['thumbnail_medium']}}" class="videopopupcls" type="vimeo" link="{{ $video->link }}">
                                     @else
@@ -118,7 +118,7 @@
                             @endif
                         @elseif($video->type == 'vimeo')
                             @php
-                                $hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$video->link.php"));
+                                $hash = unserialize(file_get_contents("https://vimeo.com/api/v2/video/$video->link.php"));
                             @endphp
                             <img width="125" height="125" src="{{$hash[0]['thumbnail_medium']}}" type="vimeo" link="{{ $video->link }}">
                         @else

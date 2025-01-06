@@ -10,7 +10,7 @@ PHP `getallheaders()` polyfill. Compatible with PHP >= 5.3.
 [![License](https://poser.pugx.org/ralouphie/getallheaders/license.png)](https://packagist.org/packages/ralouphie/getallheaders)
 
 
-This is a simple polyfill for [`getallheaders()`](http://www.php.net/manual/en/function.getallheaders.php).
+This is a simple polyfill for [`getallheaders()`](https://www.php.net/manual/en/function.getallheaders.php).
 
 ## Install
 

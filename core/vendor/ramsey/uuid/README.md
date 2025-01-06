@@ -21,7 +21,7 @@ This project adheres to a [Contributor Code of Conduct][conduct]. By
 participating in this project and its community, you are expected to uphold this
 code.
 
-From [Wikipedia](http://en.wikipedia.org/wiki/Universally_unique_identifier):
+From [Wikipedia](https://en.wikipedia.org/wiki/Universally_unique_identifier):
 
 > The intent of UUIDs is to enable distributed systems to uniquely identify
 > information without significant central coordination. In this context the word
@@ -161,11 +161,11 @@ licensed for use under the MIT License (MIT). Please see [LICENSE][] for more
 information.
 
 
-[rfc4122]: http://tools.ietf.org/html/rfc4122
+[rfc4122]: https://tools.ietf.org/html/rfc4122
 [conduct]: https://github.com/ramsey/uuid/blob/master/.github/CODE_OF_CONDUCT.md
-[javauuid]: http://docs.oracle.com/javase/6/docs/api/java/util/UUID.html
-[pyuuid]: http://docs.python.org/3/library/uuid.html
-[composer]: http://getcomposer.org/
+[javauuid]: https://docs.oracle.com/javase/6/docs/api/java/util/UUID.html
+[pyuuid]: https://docs.python.org/3/library/uuid.html
+[composer]: https://getcomposer.org/
 [moontoast\math]: https://packagist.org/packages/moontoast/math
 [wiki-cookbook]: https://github.com/ramsey/uuid/wiki/Ramsey%5CUuid-Cookbook
 [contributing.md]: https://github.com/ramsey/uuid/blob/master/.github/CONTRIBUTING.md

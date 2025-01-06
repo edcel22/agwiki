@@ -620,7 +620,7 @@ trait Date
      *
      * @return CarbonTimeZone
      *
-     * @link http://php.net/manual/en/datetime.gettimezone.php
+     * @link https://php.net/manual/en/datetime.gettimezone.php
      */
     public function getTimezone()
     {
@@ -1725,7 +1725,7 @@ trait Date
 
     /**
      * Format the instance with the current locale.  You can set the current
-     * locale using setlocale() http://php.net/setlocale.
+     * locale using setlocale() https://php.net/setlocale.
      *
      * @param string $format
      *
@@ -2153,7 +2153,7 @@ trait Date
     }
 
     /**
-     * Format as ->format() do (using date replacements patterns from http://php.net/manual/fr/function.date.php)
+     * Format as ->format() do (using date replacements patterns from https://php.net/manual/fr/function.date.php)
      * but translate words whenever possible (months, day names, etc.) using the current locale.
      *
      * @param string $format

@@ -189,60 +189,135 @@ class HomeController extends Controller
 		echo '<iframe id="iframe1" height="600" width="100%" frameborder="0" marginheight="0" marginwidth="0" src="/'.$filename.'" ></iframe>';
 	}
 
-	public function feed()
+    // public function feed()
+    // {
+    //     $page_title = 'Feed';
+
+    //     if (Auth::check()) {
+    //         $page_title = 'Feed';
+    //         $user = Auth::user();
+
+    //         // Fetch groups for the authenticated user
+    //         $groups = GroupMember::where('user_id', $user->id)
+    //             ->orderBy('id', 'DESC')
+    //             ->get();
+
+    //         // Fetch posts with pinned ones first
+    //         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //             ->select('shares.*') // Select only necessary columns
+    //             ->where('shares.user_id', $user->id)
+    //             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //             ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+    //             ->paginate(10);
+
+    //         // Fetch user's interests
+    //         $interest = Interest::all();
+
+    //         // Fetch personalized ads for the user
+    //         $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+    //                         inner join interest_user iu on ip.interest_id = iu.interest_id 
+    //                         inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+    //             ->inRandomOrder()
+    //             ->first();
+    //         $ads = array($ads);
+
+    //         return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
+    //     } else {
+    //         $user = User::where('username', 'ktschomakoff-860')->first();
+
+    //         // Fetch interests
+    //         $interest = Interest::all();
+
+    //         if (isset($_GET['topic'])) {
+    //             // Fetch topic-specific shares with pinned posts first
+    //             $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //                 ->select('shares.*')
+    //                 ->whereRaw('post_id in (select post_id from interest_post ip 
+    //                     inner join posts p on p.id = ip.post_id 
+    //                     where ip.interest_id = ' . $_GET['topic'] . ')')
+    //                 ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //                 ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+    //                 ->paginate(10);
+    //         } else {
+    //             // Fetch all shares for non-logged-in users
+    //             $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
+    //                 ->select('shares.*')
+    //                 ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
+    //                 ->orderBy('shares.id', 'DESC')   // Then sort by share ID
+    //                 ->paginate(10);
+    //         }
+
+    //         // Fetch groups for the non-authenticated user
+    //         $groups = GroupMember::where('user_id', $user->id)
+    //             ->orderBy('id', 'DESC')
+    //             ->inRandomOrder()
+    //             ->get();
+
+    //         // Fetch ads for non-authenticated users
+    //         $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+    //                         inner join interest_user iu on ip.interest_id = iu.interest_id 
+    //                         inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+    //             ->inRandomOrder()
+    //             ->first();
+    //         $ads = array($ads);
+
+    //         return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
+    //     }
+    // }
+    public function feed()
     {
+
         $page_title = 'Feed';
-        if (Auth::check()){
-            //$user = User::find(rand(2225,2290));
-            //Auth::login($user);
-            // to use, comment out the auth at the top
 
-            $page_title = 'Feed';
-            $groups = GroupMember::where('user_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
-            
-            $shares = Auth::user()->timeline();
+        if (Auth::check()) {
             $user = Auth::user();
-            $interest = Interest::all();
-            
-            //$ads = array(['link'=>'https://www.eatkidfriendly.com/info/','image'=>'http://agwiki.dev.blayzer.com/assets/front/img/s6hauarvTzfjcKWlk3ORMlJRBhwBGa3ymoBtMBR7.png','content'=>"We provide families with kid friendly restaurants, products and other great information."]);
-            //$ads = json_decode(json_encode($ads), FALSE);
-            
-            //$ads = Ads::inRandomOrder()->first();
 
-            
-            $ads = Ads::WhereRaw('id in (select ads_id from interest_ads ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join ads p on p.id = ip.ads_id where iu.user_id = '.Auth::user()->id.' )')->inRandomOrder()->first();
-            
+            // Use the timeline method for fetching shares
+            $shares = $user->timeline();
+
+            // Fetch groups for the authenticated user
+            $groups = GroupMember::where('user_id', $user->id)
+                ->orderBy('id', 'DESC')
+                ->get();
+
+            // Fetch user's interests
+            $interest = Interest::all();
+
+            // Fetch personalized ads for the user
+            $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+                                inner join interest_user iu on ip.interest_id = iu.interest_id 
+                                inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+                ->inRandomOrder()
+                ->first();
             $ads = array($ads);
-    
-        return view('feed', compact('page_title', 'shares','user','interest','groups','ads'));
+
+            return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
         } else {
 
-                $user = User::where('username', 'ktschomakoff-860')->first();
-                $interest = Interest::all();
+            $user = User::where('username', 'ktschomakoff-860')->first();
 
-                if(isset($_GET['topic'])) {
-                    
-                    //die($_GET['topic']);
-                    $shares = Share::distinct('shares.post_id')->WhereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = '.$_GET['topic'].') ')->groupBy('shares.post_id')->orderBy('id', 'DESC')->paginate(10);//need to get pagination to work properly for topic feed
-                    // $shares= $shares->shuffle();
-                    // $shares->setPath('');
-			
-                } else {
-                    
-                    // DB::enableQueryLog();
-                    $shares = $user->nonuserTimeline();
-                    // dd(DB::getQueryLog());
+            // Use the nonuserTimeline method for fetching shares
+            $shares = $user->nonuserTimeline();
 
-                    // dd($shares);
-                }
-                $groups = GroupMember::where('user_id', $user->id)->orderBy('id', 'DESC')->inRandomOrder()->get();
+            // Fetch interests
+            $interest = Interest::all();
 
-                $ads = Ads::WhereRaw('id in (select ads_id from interest_ads ip inner join interest_user iu on ip.interest_id = iu.interest_id inner join ads p on p.id = ip.ads_id where iu.user_id = '.$user->id.' )')->inRandomOrder()->first();
-                $ads = array($ads);
+            // Fetch groups for the non-authenticated user
+            $groups = GroupMember::where('user_id', $user->id)
+                ->orderBy('id', 'DESC')
+                ->inRandomOrder()
+                ->get();
+
+            // Fetch ads for non-authenticated users
+            $ads = Ads::whereRaw('id in (select ads_id from interest_ads ip 
+                                inner join interest_user iu on ip.interest_id = iu.interest_id 
+                                inner join ads p on p.id = ip.ads_id where iu.user_id = ' . $user->id . ')')
+                ->inRandomOrder()
+                ->first();
+            $ads = array($ads);
 
             return view('feed', compact('page_title', 'shares', 'user', 'interest', 'groups', 'ads'));
         }
-       
     }
 
     // public function nonuserfeed() {
@@ -275,13 +350,13 @@ class HomeController extends Controller
       if ($platform == 'facebook') {
           $link = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($post_url).'&quote='.$text;
       } elseif ($platform == 'twitter') {
-          $link = 'http://twitter.com/intent/tweet?url=' . urlencode($post_url).'&text='.$text;
+          $link = 'https://twitter.com/intent/tweet?url=' . urlencode($post_url).'&text='.$text;
       } elseif ($platform == 'google') {
           $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
       } elseif ($platform == 'linkedin') {
-          $link = 'http://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
+          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
       } elseif ($platform == 'pinterest') {
-          $link = 'http://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
+          $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
       } else {
           return redirect()->back();
       }
@@ -511,180 +586,317 @@ class HomeController extends Controller
 
     }
 
-    public function profileUpdate(Request $request)
+    // public function profileUpdate(Request $request)
 
-    {
+    // {
 
-        $request->validate([
-            /*'name' => 'required|string',
-            'mobile' => 'required',
-            'position' => 'required',
-            'quote' => 'required',
-            'country' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'zip' => 'required',
-            'cover' => 'image',
-            'avatar' => 'image',
-            'work' => 'required',
-            'workplace' => 'required'*/
-        ]);
+    //     $request->validate([
+    //         /*'name' => 'required|string',
+    //         'mobile' => 'required',
+    //         'position' => 'required',
+    //         'quote' => 'required',
+    //         'country' => 'required',
+    //         'city' => 'required',
+    //         'state' => 'required',
+    //         'zip' => 'required',
+    //         'cover' => 'image',
+    //         'avatar' => 'image',
+    //         'work' => 'required',
+    //         'workplace' => 'required'*/
+    //     ]);
 
-        if (isset($request->notificationtype) && count($request->notificationtype) > 0) {
-            $notifystsimp = implode(',', $request->notificationtype);
-        } else {
-            $notifystsimp = '';
-        }
+    //     if (isset($request->notificationtype) && count($request->notificationtype) > 0) {
+    //         $notifystsimp = implode(',', $request->notificationtype);
+    //     } else {
+    //         $notifystsimp = '';
+    //     }
 
-        $user = Auth::user();
+    //     $user = Auth::user();
 
-        $user->name = $request->fname. ' ' . $request->lname;
-		$user->fname = $request->fname;
-		$user->lname = $request->lname;
-		$user->bio = $request->bio;
+    //     $user->name = $request->fname. ' ' . $request->lname;
+	// 	$user->fname = $request->fname;
+	// 	$user->lname = $request->lname;
+	// 	$user->bio = $request->bio;
 
-		$user->facebook = $request->facebook;
-		$user->twitter = $request->twitter;
-		$user->linkedin = $request->linkedin;
+	// 	$user->facebook = $request->facebook;
+	// 	$user->twitter = $request->twitter;
+	// 	$user->linkedin = $request->linkedin;
 
-       // $user->mobile = $request->mobile;
-       // $user->position = $request->position;
-       // $user->quote = $request->quote;
-        $user->country = $request->country;
-        $user->city = $request->city;
-        $user->state = $request->state;
-        $user->zip = $request->zip;
-       // $user->work = $request->work;
-        $user->workplace = $request->workplace;
-       // $user->notifystatus = $notifystsimp;
-
-
-
-	   // url encode the address
-		$address = urlencode($request->city." ".$request->state." ".$request->zip." ".$request->country);
-
-		// google map geocode api url
-		$url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$address."&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
-
-		// get the json response
-		$resp_json = file_get_contents($url);
-
-		// decode the json
-		$resp = json_decode($resp_json, true);
-
-		//die(print_r($resp));
-
-		// response status will be 'OK', if able to geocode given address
-		if($resp['status']=='OK'){
-
-			// get the important data
-			$lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
-			$longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
-
-			//die($lati. " ".$longi );
-
-			$user->lat = $lati;
-			$user->lng = $longi;
-		}
+    //    // $user->mobile = $request->mobile;
+    //    // $user->position = $request->position;
+    //    // $user->quote = $request->quote;
+    //     $user->country = $request->country;
+    //     $user->city = $request->city;
+    //     $user->state = $request->state;
+    //     $user->zip = $request->zip;
+    //    // $user->work = $request->work;
+    //     $user->workplace = $request->workplace;
+    //    // $user->notifystatus = $notifystsimp;
 
 
 
-        if ($request->hasFile('cover')) {
-            $file = $request->file('cover');
-            $cover = $file->hashName();
-            $im = Image::make($file);
-            $im->orientate();
-            $im->resize(2200, 912);
-            $im->save('assets/front/img/' . $cover);
-            if ($user->cover != 'cover.jpg') {
-                @unlink('assets/front/img/' . $user->cover);
-            }
-            $user->cover = $cover;
-        }
+	//    // url encode the address
+	// 	$address = urlencode($request->city." ".$request->state." ".$request->zip." ".$request->country);
 
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $avatar = $file->hashName();
-            $im = Image::make($file);
-            $im->orientate();
-            //$im->resize(380, 295);
+	// 	// google map geocode api url
+	// 	$url = "https://maps.googleapis.com/maps/api/geocode/json?address=".$address."&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
 
-			/*$im->resize(300, null, function ($constraint) {
-				$constraint->aspectRatio();
-			});*/
+	// 	// get the json response
+	// 	$resp_json = file_get_contents($url);
 
-			$im->fit(300);
+	// 	// decode the json
+	// 	$resp = json_decode($resp_json, true);
 
-            $im->save('assets/front/img/' . $avatar);
-            if ($user->avatar != 'male.png' && $user->avatar != 'female.png') {
-                @unlink('assets/front/img/' . $user->avatar);
-            }
-            $user->avatar = $avatar;
-        }
+	// 	//die(print_r($resp));
+
+	// 	// response status will be 'OK', if able to geocode given address
+	// 	if($resp['status']=='OK'){
+
+	// 		// get the important data
+	// 		$lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
+	// 		$longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
+
+	// 		//die($lati. " ".$longi );
+
+	// 		$user->lat = $lati;
+	// 		$user->lng = $longi;
+	// 	}
+
+
+
+    //     if ($request->hasFile('cover')) {
+    //         $file = $request->file('cover');
+    //         $cover = $file->hashName();
+    //         $im = Image::make($file);
+    //         $im->orientate();
+    //         $im->resize(2200, 912);
+    //         $im->save('assets/front/img/' . $cover);
+    //         if ($user->cover != 'cover.jpg') {
+    //             @unlink('assets/front/img/' . $user->cover);
+    //         }
+    //         $user->cover = $cover;
+    //     }
+
+    //     if ($request->hasFile('avatar')) {
+    //         $file = $request->file('avatar');
+    //         $avatar = $file->hashName();
+    //         $im = Image::make($file);
+    //         $im->orientate();
+    //         //$im->resize(380, 295);
+
+	// 		/*$im->resize(300, null, function ($constraint) {
+	// 			$constraint->aspectRatio();
+	// 		});*/
+
+	// 		$im->fit(300);
+
+    //         $im->save('assets/front/img/' . $avatar);
+    //         if ($user->avatar != 'male.png' && $user->avatar != 'female.png') {
+    //             @unlink('assets/front/img/' . $user->avatar);
+    //         }
+    //         $user->avatar = $avatar;
+    //     }
 		
 		
-		//mautic///////////////////////
+	// 	//mautic///////////////////////
 		
 		
-		$email = Auth::user()->email;
+	// 	$email = Auth::user()->email;
 		
 		
-		$segment = 3;
+	// 	$segment = 3;
 		
-		$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
-		//$data = array('key1' => 'value1', 'key2' => 'value2');
+	// 	$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
+	// 	//$data = array('key1' => 'value1', 'key2' => 'value2');
 		
-		// use key 'http' even if you send the request to https://...
-		$options = array(
-			'http' => array(
-				'header'  => array("Content-type: application/x-www-form-urlencoded",
-		"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-				'content' => '',
-				'method' => 'GET',
-				"ssl"=>array(
-						"verify_peer"=>false,
-						"verify_peer_name"=>false,
-					)
+	// 	// use key 'http' even if you send the request to https://...
+	// 	$options = array(
+	// 		'http' => array(
+	// 			'header'  => array("Content-type: application/x-www-form-urlencoded",
+	// 	"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+	// 			'content' => '',
+	// 			'method' => 'GET',
+	// 			"ssl"=>array(
+	// 					"verify_peer"=>false,
+	// 					"verify_peer_name"=>false,
+	// 				)
 				
-			),
+	// 		),
 			
-		);
-		$context  = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
-		$contact = json_decode($result, true);
-		if(isset(array_keys($contact['contacts'])[0]))
-		{
-			$contact_id = array_keys($contact['contacts'])[0];
+	// 	);
+	// 	$context  = stream_context_create($options);
+	// 	$result = file_get_contents($url, false, $context);
+	// 	$contact = json_decode($result, true);
+	// 	if(isset(array_keys($contact['contacts'])[0]))
+	// 	{
+	// 		$contact_id = array_keys($contact['contacts'])[0];
 			
 			
-			$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
-			//$data = array('key1' => 'value1', 'key2' => 'value2');
+	// 		$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
+	// 		//$data = array('key1' => 'value1', 'key2' => 'value2');
 			
-			// use key 'http' even if you send the request to https://...
-			$options = array(
-				'http' => array(
-					'header'  => array("Content-type: application/x-www-form-urlencoded",
-			"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-					'content' => '',
-					'Cache-Control: no-cache' ,
-					'method' => 'POST'
-				)
-			);
-			$context  = stream_context_create($options);
-			$result = file_get_contents($url, false, $context);
-			$dnc_result = json_decode($result, true);
+	// 		// use key 'http' even if you send the request to https://...
+	// 		$options = array(
+	// 			'http' => array(
+	// 				'header'  => array("Content-type: application/x-www-form-urlencoded",
+	// 		"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+	// 				'content' => '',
+	// 				'Cache-Control: no-cache' ,
+	// 				'method' => 'POST'
+	// 			)
+	// 		);
+	// 		$context  = stream_context_create($options);
+	// 		$result = file_get_contents($url, false, $context);
+	// 		$dnc_result = json_decode($result, true);
 			
-		}
+	// 	}
 		
-		///////////////////////////////
+	// 	///////////////////////////////
 
-        $user->save();
+    //     $user->save();
 
-        //return redirect()->back()->withSuccess('Profile Updated Successfully');
-		return redirect()->route('profile',$user->username)->withSuccess('Profile Updated Successfully');
+    //     //return redirect()->back()->withSuccess('Profile Updated Successfully');
+	// 	return redirect()->route('profile',$user->username)->withSuccess('Profile Updated Successfully');
 
 
+    // }
+    public function profileUpdate(Request $request)
+{
+
+    return 'wow';
+    $request->validate([
+        /*'name' => 'required|string',
+        'mobile' => 'required',
+        'position' => 'required',
+        'quote' => 'required',
+        'country' => 'required',
+        'city' => 'required',
+        'state' => 'required',
+        'zip' => 'required',
+        'cover' => 'image',
+        'avatar' => 'image',
+        'work' => 'required',
+        'workplace' => 'required'*/
+    ]);
+
+    if (isset($request->notificationtype) && count($request->notificationtype) > 0) {
+        $notifystsimp = implode(',', $request->notificationtype);
+    } else {
+        $notifystsimp = '';
     }
+
+    $user = Auth::user();
+
+    $user->name = $request->fname . ' ' . $request->lname;
+    $user->fname = $request->fname;
+    $user->lname = $request->lname;
+    $user->bio = $request->bio;
+
+    $user->facebook = $request->facebook;
+    $user->twitter = $request->twitter;
+    $user->linkedin = $request->linkedin;
+
+    $user->country = $request->country;
+    $user->city = $request->city;
+    $user->state = $request->state;
+    $user->zip = $request->zip;
+    $user->workplace = $request->workplace;
+
+    // Commented out Google Maps Geocoding API call
+    // /*
+    // $address = urlencode($request->city . " " . $request->state . " " . $request->zip . " " . $request->country);
+
+    // $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&key=AIzaSyBnpLwQWEjPKannY5dzSTknl8BPcZFa2Y0";
+
+    // $resp_json = file_get_contents($url);
+
+    // $resp = json_decode($resp_json, true);
+
+    // if ($resp['status'] == 'OK') {
+    //     $lati = isset($resp['results'][0]['geometry']['location']['lat']) ? $resp['results'][0]['geometry']['location']['lat'] : "";
+    //     $longi = isset($resp['results'][0]['geometry']['location']['lng']) ? $resp['results'][0]['geometry']['location']['lng'] : "";
+
+    //     $user->lat = $lati;
+    //     $user->lng = $longi;
+    // }
+    // */
+
+    if ($request->hasFile('cover')) {
+        $file = $request->file('cover');
+        $cover = $file->hashName();
+        $im = Image::make($file);
+        $im->orientate();
+        $im->resize(2200, 912);
+        $im->save('assets/front/img/' . $cover);
+        if ($user->cover != 'cover.jpg') {
+            @unlink('assets/front/img/' . $user->cover);
+        }
+        $user->cover = $cover;
+    }
+
+    if ($request->hasFile('avatar')) {
+        $file = $request->file('avatar');
+        $avatar = $file->hashName();
+        $im = Image::make($file);
+        $im->orientate();
+        $im->fit(300);
+        $im->save('assets/front/img/' . $avatar);
+        if ($user->avatar != 'male.png' && $user->avatar != 'female.png') {
+            @unlink('assets/front/img/' . $user->avatar);
+        }
+        $user->avatar = $avatar;
+    }
+
+    // // Commented out Mautic API integration
+    // /*
+    // $email = Auth::user()->email;
+    // $segment = 3;
+
+    // $url = 'https://mautic.agwiki.com/api/contacts?search=' . $email;
+
+    // $options = array(
+    //     'http' => array(
+    //         'header' => array(
+    //             "Content-type: application/x-www-form-urlencoded",
+    //             "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
+    //         ),
+    //         'content' => '',
+    //         'method' => 'GET',
+    //         "ssl" => array(
+    //             "verify_peer" => false,
+    //             "verify_peer_name" => false,
+    //         )
+    //     ),
+    // );
+    // $context = stream_context_create($options);
+    // $result = file_get_contents($url, false, $context);
+    // $contact = json_decode($result, true);
+    // if (isset(array_keys($contact['contacts'])[0])) {
+    //     $contact_id = array_keys($contact['contacts'])[0];
+
+    //     $url = 'https://mautic.agwiki.com/api/segments/' . $segment . '/contact/' . $contact_id . '/remove';
+
+    //     $options = array(
+    //         'http' => array(
+    //             'header' => array(
+    //                 "Content-type: application/x-www-form-urlencoded",
+    //                 "Authorization: Basic " . base64_encode("sitecontrol:flattir3")
+    //             ),
+    //             'content' => '',
+    //             'Cache-Control: no-cache',
+    //             'method' => 'POST'
+    //         )
+    //     );
+    //     $context = stream_context_create($options);
+    //     $result = file_get_contents($url, false, $context);
+    //     $dnc_result = json_decode($result, true);
+    // }
+    // */
+
+    $user->save();
+
+    return redirect()->route('profile', $user->username)->withSuccess('Profile Updated Successfully');
+}
 
     public function search()
 
@@ -1740,8 +1952,8 @@ class HomeController extends Controller
         if ($request->ajax()) {
             return response()->json(['success' => 'Post Published Successfully.']);
         } else {
-            if ($post->group_id != 0) return redirect()->route('user.groups', $member->group->slug)->withSuccess('Post Published Successfully.');
-            return redirect()->route('feed')->withSuccess('Post Published Successfully.');
+            if ($post->group_id != 0) return redirect()->route('user.groups', $member->group->slug);
+            return redirect()->route('feed');
         }
 
     }
@@ -1765,7 +1977,10 @@ class HomeController extends Controller
 		if ($post->type == 'feed' && Auth::user()->id == 1) {
            //check for feed and set as inactive
 			//$share = Share::find('post_id',$request->post_id);
-			$share = Share::distinct('shares.post_id')->where('shares.post_id',$request->post_id)->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->update(['active'=>0]);
+			$share = Share::distinct('shares.post_id')->where('shares.post_id',$request->post_id)->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->update(['active' => 0]);
+			// $share = Share::distinct('shares.post_id')->where('shares.post_id',$request->post_id)->groupBy('shares.post_id')->orderBy('shares.id', 'DESC')->get();
+
+            // return $share;
 			
 			//die(print_r($share));
 				
@@ -2852,7 +3067,7 @@ class HomeController extends Controller
 
 
 
-		if(strstr($image,'https://') || strstr($image,'http://'))
+		if(strstr($image,'https://') || strstr($image,'https://'))
 		{
 
 		}
@@ -2869,7 +3084,7 @@ class HomeController extends Controller
 
 		//die(print_r($headers));
 		//die($image);
-        if (@is_array(getimagesize($image)) && $image != '' && $image !='http://' && $image !='https://' && (strstr($headers[0],'OK') || strstr($headers[0],'301'))  ) { //$headers[0] == 'HTTP/1.1 200 OK'
+        if (@is_array(getimagesize($image)) && $image != '' && $image !='https://' && $image !='https://' && (strstr($headers[0],'OK') || strstr($headers[0],'301'))  ) { //$headers[0] == 'HTTP/1.1 200 OK'
 
 
 
@@ -2972,7 +3187,7 @@ class HomeController extends Controller
            // if(file_exists($image))
 			//if(@is_array(getimagesize($image)))
 			//die($image . ' - '.$path);
-            	$html .= '<p class="article-img"><a href="/ajaxpage?url=' . $request->urllink . '" rel="modal:open"><img src="'.((strstr($path,'https://') || strstr($path,'http://'))?$path:'/' . $path ). '" style="width:100%;"></a></p>';
+            	$html .= '<p class="article-img"><a href="/ajaxpage?url=' . $request->urllink . '" rel="modal:open"><img src="'.((strstr($path,'https://') || strstr($path,'https://'))?$path:'/' . $path ). '" style="width:100%;"></a></p>';
         }
         $html .= '</div>';
         $html .= '<div >';

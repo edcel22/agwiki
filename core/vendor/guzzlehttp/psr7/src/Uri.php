@@ -407,7 +407,7 @@ class Uri implements UriInterface
      *
      * @return UriInterface
      *
-     * @link http://php.net/manual/en/function.parse-url.php
+     * @link https://php.net/manual/en/function.parse-url.php
      *
      * @throws \InvalidArgumentException If the components do not form a valid URI.
      */

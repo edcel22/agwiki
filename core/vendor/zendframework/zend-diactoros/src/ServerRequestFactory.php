@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -20,8 +20,8 @@ use function is_callable;
  *
  * Logic largely refactored from the ZF2 Zend\Http\PhpEnvironment\Request class.
  *
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://framework.zend.com/license/new-bsd New BSD License
  */
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {

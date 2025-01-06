@@ -18,6 +18,7 @@ use App\rss_feeds;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
 
 class AdminController extends Controller
 {
@@ -56,17 +57,77 @@ class AdminController extends Controller
 	}
 
 	public function posts()
-
     {
-
         $data['sitename'] = $this->sitename;
         $data['page_title'] = 'All Post';
 
-       // $posts = Post::where('report', '>', 0)->orderBy('report', 'DESC')->paginate(10);
-		$posts = Post::where('user_id', '!=' , 1)->orderBy('id', 'DESC')->get();
+        // Paginate the posts
+        $posts = Post::where('user_id', '!=', 1)
+                    ->orderBy('id', 'DESC')
+                    ->paginate(10); // 10 items per page
 
         return view('admin.post.index', compact('data', 'posts'));
+    }
 
+    public function getPostsData()
+    {
+        $posts = Post::with('user') // Load the 'user' relationship
+                     ->where('user_id', '!=', 1)
+                     ->orderBy('id', 'DESC');
+    
+        return DataTables::of($posts)
+            ->addColumn('views', function ($post) {
+                return number_format_short($post->viewCount()); // Assuming viewCount() is a method in your Post model
+            })
+            ->addColumn('likes', function ($post) {
+                return number_format_short($post->likeCount());
+            })
+            ->addColumn('shares', function ($post) {
+                return number_format_short($post->shareCount());
+            })
+            ->addColumn('comments', function ($post) {
+                return number_format_short($post->commentCount());
+            })
+            ->addColumn('reports', function ($post) {
+                return number_format_short($post->reportCount());
+            })
+            ->addColumn('actions', function ($post) {
+                return '
+                    <a target="_blank" href="/post/' . $post->id . '" class="btn btn-primary" data-toggle="tooltip" title="View">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    ' . ($post->pinned ? 
+                    '<button class="btn btn-warning unpin" data-id="' . $post->id . '" data-toggle="tooltip" title="Unpin">
+                        <i class="fa fa-thumb-tack"></i>
+                    </button>' : 
+                    '<button class="btn btn-success pin" data-id="' . $post->id . '" data-toggle="tooltip" title="Pin">
+                        <i class="fa fa-thumb-tack"></i>
+                    </button>') . '
+                    <button class="btn btn-danger delete" data-id="' . $post->id . '" data-toggle="tooltip" title="Delete">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                ';
+            })
+            ->rawColumns(['actions']) // Ensure the 'actions' column is treated as raw HTML
+            ->make(true);
+    }
+
+    public function pinPost(Request $request)
+    {
+        $post = Post::findOrFail($request->id);
+        $post->pinned = 1;
+        $post->save();
+
+        return redirect()->back()->with('success', 'Post has been pinned successfully.');
+    }
+
+    public function unpinPost(Request $request)
+    {
+        $post = Post::findOrFail($request->id);
+        $post->pinned = 0;
+        $post->save();
+
+        return redirect()->back()->with('success', 'Post has been unpinned successfully.');
     }
 	
 	public function rss()

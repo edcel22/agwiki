@@ -42,7 +42,7 @@ class TestHttpServer
 
         do {
             usleep(50000);
-        } while (!@fopen('http://127.0.0.1:'.$port, 'r'));
+        } while (!@fopen('https://127.0.0.1:'.$port, 'r'));
 
         return $process;
     }

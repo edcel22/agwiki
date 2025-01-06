@@ -2,7 +2,7 @@
 /**
  * This file is part of Lcobucci\JWT, a simple library to handle JWT and JWS
  *
- * @license http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ * @license https://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
 
 namespace Lcobucci\JWT\Parsing;
@@ -21,7 +21,7 @@ use function json_last_error_msg;
  * @author Luís Otávio Cobucci Oblonczyk <lcobucci@gmail.com>
  * @since 0.1.0
  *
- * @link http://tools.ietf.org/html/rfc4648#section-5
+ * @link https://tools.ietf.org/html/rfc4648#section-5
  */
 class Decoder
 {

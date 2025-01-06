@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Ben Ramsey <ben@benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
+ * @license https://opensource.org/licenses/MIT MIT
  * @link https://benramsey.com/projects/ramsey-uuid/ Documentation
  * @link https://packagist.org/packages/ramsey/uuid Packagist
  * @link https://github.com/ramsey/uuid GitHub
@@ -31,7 +31,7 @@ interface TimeConverterInterface
      * @return string[] An array guaranteed to contain `low`, `mid`, and `hi` keys
      * @throws UnsatisfiedDependencyException if called on a 32-bit system and
      *     `Moontoast\Math\BigNumber` is not present
-     * @link http://tools.ietf.org/html/rfc4122#section-4.2.2
+     * @link https://tools.ietf.org/html/rfc4122#section-4.2.2
      */
     public function calculateTime($seconds, $microSeconds);
 }

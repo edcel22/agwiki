@@ -37,7 +37,7 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('League\OAuth1\Client\Credentials\ClientCredentialsInterface', $credentials);
         $this->assertEquals('myidentifier', $credentials->getIdentifier());
         $this->assertEquals('mysecret', $credentials->getSecret());
-        $this->assertEquals('http://app.dev/', $credentials->getCallbackUri());
+        $this->assertEquals('https://app.dev/', $credentials->getCallbackUri());
     }
 
     public function testCreatingWithArrayRsa()
@@ -63,7 +63,7 @@ class ServerTest extends TestCase
         $credentials = new ClientCredentials;
         $credentials->setIdentifier('myidentifier');
         $credentials->setSecret('mysecret');
-        $credentials->setCallbackUri('http://app.dev/');
+        $credentials->setCallbackUri('https://app.dev/');
 
         $server = new ServerStub($credentials);
 
@@ -84,7 +84,7 @@ class ServerTest extends TestCase
         $server->shouldReceive('createHttpClient')->andReturn($client = m::mock('stdClass'));
 
         $me = $this;
-        $client->shouldReceive('post')->with('http://www.example.com/temporary', m::on(function ($options) use ($me) {
+        $client->shouldReceive('post')->with('https://www.example.com/temporary', m::on(function ($options) use ($me) {
             $headers = $options['headers'];
 
             $me->assertTrue(isset($headers['Authorization']));
@@ -114,7 +114,7 @@ class ServerTest extends TestCase
     {
         $server = new ServerStub($this->getMockClientCredentials());
 
-        $expected = 'http://www.example.com/authorize?oauth_token=foo';
+        $expected = 'https://www.example.com/authorize?oauth_token=foo';
 
         $this->assertEquals($expected, $server->getAuthorizationUrl('foo'));
 
@@ -126,10 +126,10 @@ class ServerTest extends TestCase
     public function testGettingAuthorizationUrlWithOptions()
     {
         $server = new ServerStub($this->getMockClientCredentials());
-        $expected = 'http://www.example.com/authorize?oauth_token=foo';
+        $expected = 'https://www.example.com/authorize?oauth_token=foo';
         $this->assertEquals($expected, $server->getAuthorizationUrl('foo', ['oauth_token' => 'bar']));
 
-        $expected = 'http://www.example.com/authorize?test=bar&oauth_token=foo';
+        $expected = 'https://www.example.com/authorize?test=bar&oauth_token=foo';
         $this->assertEquals($expected, $server->getAuthorizationUrl('foo', ['test' => 'bar']));
     }
 
@@ -156,7 +156,7 @@ class ServerTest extends TestCase
         $server->shouldReceive('createHttpClient')->andReturn($client = m::mock('stdClass'));
 
         $me = $this;
-        $client->shouldReceive('post')->with('http://www.example.com/token', m::on(function ($options) use ($me) {
+        $client->shouldReceive('post')->with('https://www.example.com/token', m::on(function ($options) use ($me) {
             $headers = $options['headers'];
             $body = $options['form_params'];
 
@@ -197,7 +197,7 @@ class ServerTest extends TestCase
         $server->shouldReceive('createHttpClient')->andReturn($client = m::mock('stdClass'));
 
         $me = $this;
-        $client->shouldReceive('post')->with('http://www.example.com/token', m::on(function ($options) use ($me, $userAgent) {
+        $client->shouldReceive('post')->with('https://www.example.com/token', m::on(function ($options) use ($me, $userAgent) {
             $headers = $options['headers'];
             $body = $options['form_params'];
 
@@ -242,7 +242,7 @@ class ServerTest extends TestCase
         $server->shouldReceive('createHttpClient')->andReturn($client = m::mock('stdClass'));
 
         $me = $this;
-        $client->shouldReceive('get')->with('http://www.example.com/user', m::on(function ($options) use ($me) {
+        $client->shouldReceive('get')->with('https://www.example.com/user', m::on(function ($options) use ($me) {
             $headers = $options['headers'];
 
             $me->assertTrue(isset($headers['Authorization']));
@@ -288,14 +288,14 @@ class ServerTest extends TestCase
             = '/OAuth oauth_consumer_key=".*?", oauth_nonce="[a-zA-Z0-9]+", oauth_signature_method="HMAC-SHA1", oauth_timestamp="\d{10}", oauth_version="1.0", oauth_token="mock_identifier", oauth_signature=".*?"/';
 
         // With a GET request
-        $headers = $server->getHeaders($tokenCredentials, 'GET', 'http://example.com/');
+        $headers = $server->getHeaders($tokenCredentials, 'GET', 'https://example.com/');
         $this->assertTrue(isset($headers['Authorization']));
 
         $matches = preg_match($pattern, $headers['Authorization']);
         $this->assertEquals(1, $matches, 'Asserting that the authorization header contains the correct expression.');
 
         // With a POST request
-        $headers = $server->getHeaders($tokenCredentials, 'POST', 'http://example.com/', ['body' => 'params']);
+        $headers = $server->getHeaders($tokenCredentials, 'POST', 'https://example.com/', ['body' => 'params']);
         $this->assertTrue(isset($headers['Authorization']));
 
         $matches = preg_match($pattern, $headers['Authorization']);
@@ -307,7 +307,7 @@ class ServerTest extends TestCase
         return [
             'identifier' => 'myidentifier',
             'secret' => 'mysecret',
-            'callback_uri' => 'http://app.dev/',
+            'callback_uri' => 'https://app.dev/',
         ];
     }
 }

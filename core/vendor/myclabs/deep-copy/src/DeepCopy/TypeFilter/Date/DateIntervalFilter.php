@@ -18,7 +18,7 @@ class DateIntervalFilter implements TypeFilter
      *
      * @param DateInterval $element
      *
-     * @see http://news.php.net/php.bugs/205076
+     * @see https://news.php.net/php.bugs/205076
      */
     public function apply($element)
     {

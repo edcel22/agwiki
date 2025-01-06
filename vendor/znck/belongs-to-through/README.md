@@ -133,5 +133,5 @@ If you discover any security related issues, please email hi@znck.me instead of 
 
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
-[link-author]: http://znck.me/
+[link-author]: https://znck.me/
 [link-contributors]: ../../contributors

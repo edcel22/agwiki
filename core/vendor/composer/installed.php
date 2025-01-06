@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'c989b1e2216e4111bc0972e2770753925ecad2e2',
+        'reference' => '58026f279082d651296b972fa8520856e0de32ef',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -382,7 +382,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'c989b1e2216e4111bc0972e2770753925ecad2e2',
+            'reference' => '58026f279082d651296b972fa8520856e0de32ef',
             'dev_requirement' => false,
         ),
         'laravel/nexmo-notification-channel' => array(
@@ -1168,6 +1168,15 @@
             'aliases' => array(),
             'reference' => 'bafc69caeb4d49c39fd0779086c03a3738cbb389',
             'dev_requirement' => true,
+        ),
+        'yajra/laravel-datatables-oracle' => array(
+            'pretty_version' => 'v8.13.7',
+            'version' => '8.13.7.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../yajra/laravel-datatables-oracle',
+            'aliases' => array(),
+            'reference' => '17b50e3ee91ceb5b1cc6e596c366718af4ff45cc',
+            'dev_requirement' => false,
         ),
         'zendframework/zend-diactoros' => array(
             'pretty_version' => '2.2.1',

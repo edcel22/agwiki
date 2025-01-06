@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
  * CompiledUrlGeneratorDumper creates a PHP array to be used with CompiledUrlGenerator.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- * @author Tobias Schultze <http://tobion.de>
+ * @author Tobias Schultze <https://tobion.de>
  * @author Nicolas Grekas <p@tchwork.com>
  */
 class CompiledUrlGeneratorDumper extends GeneratorDumper

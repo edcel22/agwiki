@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Ben Ramsey <ben@benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
+ * @license https://opensource.org/licenses/MIT MIT
  * @link https://benramsey.com/projects/ramsey-uuid/ Documentation
  * @link https://packagist.org/packages/ramsey/uuid Packagist
  * @link https://github.com/ramsey/uuid GitHub
@@ -35,64 +35,64 @@ use ReturnTypeWillChange;
  * Note that `uuid1()` may compromise privacy since it creates a UUID containing
  * the computer’s network address. `uuid4()` creates a random UUID.
  *
- * @link http://tools.ietf.org/html/rfc4122
- * @link http://en.wikipedia.org/wiki/Universally_unique_identifier
- * @link http://docs.python.org/3/library/uuid.html
- * @link http://docs.oracle.com/javase/6/docs/api/java/util/UUID.html
+ * @link https://tools.ietf.org/html/rfc4122
+ * @link https://en.wikipedia.org/wiki/Universally_unique_identifier
+ * @link https://docs.python.org/3/library/uuid.html
+ * @link https://docs.oracle.com/javase/6/docs/api/java/util/UUID.html
  */
 class Uuid implements UuidInterface
 {
     /**
      * When this namespace is specified, the name string is a fully-qualified domain name.
-     * @link http://tools.ietf.org/html/rfc4122#appendix-C
+     * @link https://tools.ietf.org/html/rfc4122#appendix-C
      */
     const NAMESPACE_DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * When this namespace is specified, the name string is a URL.
-     * @link http://tools.ietf.org/html/rfc4122#appendix-C
+     * @link https://tools.ietf.org/html/rfc4122#appendix-C
      */
     const NAMESPACE_URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * When this namespace is specified, the name string is an ISO OID.
-     * @link http://tools.ietf.org/html/rfc4122#appendix-C
+     * @link https://tools.ietf.org/html/rfc4122#appendix-C
      */
     const NAMESPACE_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * When this namespace is specified, the name string is an X.500 DN in DER or a text output format.
-     * @link http://tools.ietf.org/html/rfc4122#appendix-C
+     * @link https://tools.ietf.org/html/rfc4122#appendix-C
      */
     const NAMESPACE_X500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
 
     /**
      * The nil UUID is special form of UUID that is specified to have all 128 bits set to zero.
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.7
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.7
      */
     const NIL = '00000000-0000-0000-0000-000000000000';
 
     /**
      * Reserved for NCS compatibility.
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.1
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.1
      */
     const RESERVED_NCS = 0;
 
     /**
      * Specifies the UUID layout given in RFC 4122.
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.1
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.1
      */
     const RFC_4122 = 2;
 
     /**
      * Reserved for Microsoft compatibility.
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.1
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.1
      */
     const RESERVED_MICROSOFT = 6;
 
     /**
      * Reserved for future definition.
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.1
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.1
      */
     const RESERVED_FUTURE = 7;
 
@@ -172,9 +172,9 @@ class Uuid implements UuidInterface
      * use Ramsey\Uuid\Uuid;
      *
      * $timeBasedUuid     = Uuid::uuid1();
-     * $namespaceMd5Uuid  = Uuid::uuid3(Uuid::NAMESPACE_URL, 'http://php.net/');
+     * $namespaceMd5Uuid  = Uuid::uuid3(Uuid::NAMESPACE_URL, 'https://php.net/');
      * $randomUuid        = Uuid::uuid4();
-     * $namespaceSha1Uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, 'http://php.net/');
+     * $namespaceSha1Uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, 'https://php.net/');
      * ```
      *
      * @param array $fields An array of fields from which to construct a UUID;
@@ -199,7 +199,7 @@ class Uuid implements UuidInterface
      * string context.
      *
      * @return string
-     * @link http://www.php.net/manual/en/language.oop5.magic.php#object.tostring
+     * @link https://www.php.net/manual/en/language.oop5.magic.php#object.tostring
      */
     public function __toString()
     {
@@ -211,7 +211,7 @@ class Uuid implements UuidInterface
      * with `json_encode()`
      *
      * @return string
-     * @link http://php.net/manual/en/class.jsonserializable.php
+     * @link https://php.net/manual/en/class.jsonserializable.php
      */
     #[ReturnTypeWillChange]
     public function jsonSerialize()
@@ -224,7 +224,7 @@ class Uuid implements UuidInterface
      * with `serialize()`
      *
      * @return string
-     * @link http://php.net/manual/en/class.serializable.php
+     * @link https://php.net/manual/en/class.serializable.php
      */
     #[ReturnTypeWillChange]
     public function serialize()
@@ -245,7 +245,7 @@ class Uuid implements UuidInterface
      * Re-constructs the object from its serialized form.
      *
      * @param string $serialized
-     * @link http://php.net/manual/en/class.serializable.php
+     * @link https://php.net/manual/en/class.serializable.php
      * @throws InvalidUuidStringException
      */
     #[ReturnTypeWillChange]
@@ -354,7 +354,7 @@ class Uuid implements UuidInterface
      * generated 14-bit value as described in RFC 4122, Section 4.4.
      *
      * @return int Unsigned 14-bit integer value of clock sequence
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.5
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.5
      */
     public function getClockSequence()
     {
@@ -402,7 +402,7 @@ class Uuid implements UuidInterface
      *   integer
      *
      * @return array The UUID fields represented as integer values
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.2
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.2
      */
     public function getFields()
     {
@@ -498,7 +498,7 @@ class Uuid implements UuidInterface
      * generated 48-bit value as described in RFC 4122, Section 4.4.
      *
      * @return int Unsigned 48-bit integer value of node
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.6
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.6
      */
     public function getNode()
     {
@@ -570,7 +570,7 @@ class Uuid implements UuidInterface
      *
      * @return int Unsigned 60-bit integer value of the timestamp
      * @throws UnsupportedOperationException If this UUID is not a version 1 UUID
-     * @link http://tools.ietf.org/html/rfc4122#section-4.1.4
+     * @link https://tools.ietf.org/html/rfc4122#section-4.1.4
      */
     public function getTimestamp()
     {

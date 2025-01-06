@@ -29,7 +29,7 @@ class TwitterServerTest extends TestCase
         $twitter = new Twitter([
             'identifier' => 'mykey',
             'secret' => 'mysecret',
-            'callback_uri' => 'http://app.dev/',
+            'callback_uri' => 'https://app.dev/',
             'scope' => $applicationScope,
         ]);
 

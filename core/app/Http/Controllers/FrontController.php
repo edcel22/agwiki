@@ -415,7 +415,7 @@ class FrontController extends Controller
         else
         {
             $code = str_random(8);
-            //$msg = 'Your Verification code is: <a href="http://agwiki.dev.blayzer.com/emailverify?code='.$code.'">http://agwiki.dev.blayzer.com/emailverify?code='.$code.'</a><br>Please follow link to verify';
+            //$msg = 'Your Verification code is: <a href="https://agwiki.dev.blayzer.com/emailverify?code='.$code.'">https://agwiki.dev.blayzer.com/emailverify?code='.$code.'</a><br>Please follow link to verify';
 			$msg = '			
 The verification code you are about to click will take you to your profile page at AgWiki.com.<Br><br> 
 
@@ -822,7 +822,7 @@ AgWiki - President  <br>
                 }
                 else{
 
-                  $hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/".$albumimg->value.".php"));
+                  $hash = unserialize(file_get_contents("https://vimeo.com/api/v2/video/".$albumimg->value.".php"));
                                        
                   $html.='<img width="200" height="200" src="'.$hash[0]['thumbnail_medium'].'">';
                 }

@@ -339,7 +339,7 @@ class SetCookie
         }
 
         // Remove the leading '.' as per spec in RFC 6265.
-        // http://tools.ietf.org/html/rfc6265#section-5.2.3
+        // https://tools.ietf.org/html/rfc6265#section-5.2.3
         $cookieDomain = ltrim(strtolower($cookieDomain), '.');
 
         $domain = strtolower($domain);
@@ -350,7 +350,7 @@ class SetCookie
         }
 
         // Matching the subdomain according to RFC 6265.
-        // http://tools.ietf.org/html/rfc6265#section-5.1.3
+        // https://tools.ietf.org/html/rfc6265#section-5.1.3
         if (filter_var($domain, FILTER_VALIDATE_IP)) {
             return false;
         }

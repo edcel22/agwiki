@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -26,8 +26,8 @@ use function strlen;
  * Code is largely lifted from the Zend\Http\Header\HeaderValue implementation in
  * Zend Framework, released with the copyright and license below.
  *
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://framework.zend.com/license/new-bsd New BSD License
  */
 final class HeaderSecurity
 {
@@ -51,7 +51,7 @@ final class HeaderSecurity
      * This method filters any values not allowed from the string, and is
      * lossy.
      *
-     * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     * @see https://en.wikipedia.org/wiki/HTTP_response_splitting
      */
     public static function filter(string $value) : string
     {
@@ -99,7 +99,7 @@ final class HeaderSecurity
      * a single CRLF sequence followed by a space or horizontal tab.
      *
      * @param string|int|float $value
-     * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     * @see https://en.wikipedia.org/wiki/HTTP_response_splitting
      */
     public static function isValid($value) : bool
     {
@@ -152,7 +152,7 @@ final class HeaderSecurity
     /**
      * Assert whether or not a header name is valid.
      *
-     * @see http://tools.ietf.org/html/rfc7230#section-3.2
+     * @see https://tools.ietf.org/html/rfc7230#section-3.2
      * @param mixed $name
      * @throws Exception\InvalidArgumentException
      */

@@ -3,13 +3,13 @@
 ## Parsedown
 
 [![Build Status](https://img.shields.io/travis/erusev/parsedown/master.svg?style=flat-square)](https://travis-ci.org/erusev/parsedown)
-<!--[![Total Downloads](http://img.shields.io/packagist/dt/erusev/parsedown.svg?style=flat-square)](https://packagist.org/packages/erusev/parsedown)-->
+<!--[![Total Downloads](https://img.shields.io/packagist/dt/erusev/parsedown.svg?style=flat-square)](https://packagist.org/packages/erusev/parsedown)-->
 
 Better Markdown Parser in PHP
 
-[Demo](http://parsedown.org/demo) |
-[Benchmarks](http://parsedown.org/speed) |
-[Tests](http://parsedown.org/tests/) |
+[Demo](https://parsedown.org/demo) |
+[Benchmarks](https://parsedown.org/speed) |
+[Tests](https://parsedown.org/tests/) |
 [Documentation](https://github.com/erusev/parsedown/wiki/)
 
 ### Features
@@ -34,7 +34,7 @@ $Parsedown = new Parsedown();
 echo $Parsedown->text('Hello _Parsedown_!'); # prints: <p>Hello <em>Parsedown</em>!</p>
 ```
 
-More examples in [the wiki](https://github.com/erusev/parsedown/wiki/) and in [this video tutorial](http://youtu.be/wYZBY8DEikI).
+More examples in [the wiki](https://github.com/erusev/parsedown/wiki/) and in [this video tutorial](https://youtu.be/wYZBY8DEikI).
 
 ### Security
 
@@ -46,7 +46,7 @@ $parsedown = new Parsedown;
 $parsedown->setSafeMode(true);
 ```
 
-If instead, you wish to allow HTML within untrusted user-input, but still want output to be free from XSS it is recommended that you make use of a HTML sanitiser that allows HTML tags to be whitelisted, like [HTML Purifier](http://htmlpurifier.org/).
+If instead, you wish to allow HTML within untrusted user-input, but still want output to be free from XSS it is recommended that you make use of a HTML sanitiser that allows HTML tags to be whitelisted, like [HTML Purifier](https://htmlpurifier.org/).
 
 In both cases you should strongly consider employing defence-in-depth measures, like [deploying a Content-Security-Policy](https://scotthelme.co.uk/content-security-policy-an-introduction/) (a browser security feature) so that your page is likely to be safe even if an attacker finds a vulnerability in one of the first lines of defence above.
 
@@ -79,7 +79,7 @@ It passes most of the CommonMark tests. Most of the tests that don't pass deal w
 
 **Who uses it?**
 
-[Laravel Framework](https://laravel.com/), [Bolt CMS](http://bolt.cm/), [Grav CMS](http://getgrav.org/), [Herbie CMS](http://www.getherbie.org/), [Kirby CMS](http://getkirby.com/), [October CMS](http://octobercms.com/), [Pico CMS](http://picocms.org), [Statamic CMS](http://www.statamic.com/), [phpDocumentor](http://www.phpdoc.org/), [RaspberryPi.org](http://www.raspberrypi.org/), [Symfony demo](https://github.com/symfony/symfony-demo) and [more](https://packagist.org/packages/erusev/parsedown/dependents).
+[Laravel Framework](https://laravel.com/), [Bolt CMS](https://bolt.cm/), [Grav CMS](https://getgrav.org/), [Herbie CMS](https://www.getherbie.org/), [Kirby CMS](https://getkirby.com/), [October CMS](https://octobercms.com/), [Pico CMS](https://picocms.org), [Statamic CMS](https://www.statamic.com/), [phpDocumentor](https://www.phpdoc.org/), [RaspberryPi.org](https://www.raspberrypi.org/), [Symfony demo](https://github.com/symfony/symfony-demo) and [more](https://packagist.org/packages/erusev/parsedown/dependents).
 
 **How can I help?**
 

@@ -908,7 +908,7 @@ class CarbonInterval extends DateInterval
      *
      * @return static
      *
-     * @link http://php.net/manual/en/dateinterval.createfromdatestring.php
+     * @link https://php.net/manual/en/dateinterval.createfromdatestring.php
      */
     public static function createFromDateString($time)
     {

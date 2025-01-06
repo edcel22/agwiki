@@ -100,7 +100,7 @@ class LoginController extends Controller
 
 						$segment = 8;//master
 
-					$url = 'http://mautic.agwiki.com/api/contacts?search='.$email;
+					$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
 					//$data = array('key1' => 'value1', 'key2' => 'value2');
 
 					// use key 'http' even if you send the request to https://...
@@ -374,7 +374,7 @@ class LoginController extends Controller
 //                    $ip = $_SERVER['HTTP_CLIENT_IP'];
 //            }
 //        }
-//        $xml = simplexml_load_file("http://www.geoplugin.net/xml.gp?ip=".$ip);
+//        $xml = simplexml_load_file("https://www.geoplugin.net/xml.gp?ip=".$ip);
 //
 //        $country =  $xml->geoplugin_countryName ;
 //        $city = $xml->geoplugin_city;

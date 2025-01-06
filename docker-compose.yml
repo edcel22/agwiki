@@ -1,19 +1,61 @@
-version: '3.8'
-
 services:
-  db:
-    image: mysql:5.7
-    container_name: mysql_container
-    restart: unless-stopped
+  php:
+    image: webdevops/php-apache:7.1
+    container_name: laravel-php
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ~/.ssh:/root/.ssh
+    working_dir: /var/www/html
     environment:
-      MYSQL_ROOT_PASSWORD: mysql_root
-      MYSQL_DATABASE: agwiki
-      MYSQL_USER: mysql_root
-      MYSQL_PASSWORD: mysql_root
+      WEB_DOCUMENT_ROOT: /var/www/html/core/public
+    networks:
+      - laravel
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    platform: linux/amd64
+    container_name: laravel-mysql-backup
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
     ports:
       - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel
+    command: --default-authentication-plugin=mysql_native_password
+
+  composer:
+    image: composer:2.2
+    container_name: laravel-composer
+    volumes:
+      - .:/app
+    working_dir: /app
+    networks:
+      - laravel
+
+  node:
+    image: node:12
+    platform: linux/amd64
+    container_name: laravel-node
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: npm install && npm run dev
+    networks:
+      - laravel
 
 volumes:
-  db_data:
+  dbdata:
+
+networks:
+  laravel:
+    driver: bridge

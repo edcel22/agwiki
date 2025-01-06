@@ -1,30 +1,41 @@
 .auth-layout__login-container-wrapper {
-  width: 100%;
-  position: fixed;
-  z-index: 999;
-  background-color: #fff;
-  left: 0;
-  right: 0;
+ width: 100%;
+ position: fixed;
+ z-index: 999;
+ background-color: #fff;
+ left: 0;
+ right: 0;
 }
 .auth-layout__login-container-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 30px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding: 10px 30px;
 }
 .auth-layout__login-container-content .logo-image {
-  max-width: 110px;
+ max-width: 110px;
 }
 .auth-layout__login-container-content .login-button {
-  margin: 0;
+ margin: 0;
 }
 .sidebar.sidebar-loggedout {
-  margin-top: 88px;
+ margin-top: 88px;
 }
 
 .center-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px 0;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin: 20px 0;
+}
+@media (max-width: 500px) {
+ 
+ .auth-layout__login-container-content {
+   padding: 10px;
+ }
+ .auth-layout__login-container-content .navigation-buttons-chr .button {
+   padding: 8px !important;
+   margin: 0 !important;
+   font-size: 10px;
+ }
 }

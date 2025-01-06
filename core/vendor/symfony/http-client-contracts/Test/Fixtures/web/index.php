@@ -41,8 +41,8 @@ switch ($vars['REQUEST_URI']) {
 
     case '/':
     case '/?a=a&b=b':
-    case 'http://127.0.0.1:8057/':
-    case 'http://localhost:8057/':
+    case 'https://127.0.0.1:8057/':
+    case 'https://localhost:8057/':
         ob_start('ob_gzhandler');
         break;
 
@@ -74,12 +74,12 @@ switch ($vars['REQUEST_URI']) {
 
     case '/301':
         if ('Basic Zm9vOmJhcg==' === $vars['HTTP_AUTHORIZATION']) {
-            header('Location: http://127.0.0.1:8057/302', true, 301);
+            header('Location: https://127.0.0.1:8057/302', true, 301);
         }
         break;
 
     case '/301/bad-tld':
-        header('Location: http://foo.example.', true, 301);
+        header('Location: https://foo.example.', true, 301);
         break;
 
     case '/301/invalid':
@@ -88,7 +88,7 @@ switch ($vars['REQUEST_URI']) {
 
     case '/302':
         if (!isset($vars['HTTP_AUTHORIZATION'])) {
-            header('Location: http://localhost:8057/', true, 302);
+            header('Location: https://localhost:8057/', true, 302);
         }
         break;
 
@@ -103,7 +103,7 @@ switch ($vars['REQUEST_URI']) {
         return;
 
     case '/307':
-        header('Location: http://localhost:8057/post', true, 307);
+        header('Location: https://localhost:8057/post', true, 307);
         break;
 
     case '/length-broken':
