@@ -7,3 +7,7 @@ agwiki_site.sql
 /core/public/cookie.txt
 /core/public/*
 core/public/*
+core/public/cookie.txt
+core/public/testfile*.html
+/core/public/cookie.txt
+/core/public/testfile*.html
