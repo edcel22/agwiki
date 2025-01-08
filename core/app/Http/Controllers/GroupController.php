@@ -178,9 +178,9 @@ class GroupController extends Controller
         return view('group.new', compact('page_title','interest'));
 
     }
+
     //ORIGNAL
     // public function storeGroup(Request $request)
-
     // {
 	// 	//print_r($request->interest);
 
@@ -317,166 +317,123 @@ class GroupController extends Controller
         curl_close($ch);
         return $response;
     }
-    public function getAvailableSegments()
-    {
-        $url = 'https://mautic.agwiki.com/api/segments';
-        $result = $this->makeApiRequest($url);
-        $segments = json_decode($result, true);
-        
-        \Log::info("Available segments:", ['segments' => $segments]);
-        return $segments;
-    }
-    public function verifySegment($segmentId)
-{
-    $url = "https://mautic.agwiki.com/api/segments/" . $segmentId;
-    $result = $this->makeApiRequest($url);
-    $segment = json_decode($result, true);
-    
-    \Log::info("Segment verification:", [
-        'segment_id' => $segmentId,
-        'response' => $segment
-    ]);
-    
-    return isset($segment['list']);
-}
-public function listSegments()
-{
-    try {
-        $url = 'https://mautic.agwiki.com/api/segments';
-        $result = $this->makeApiRequest($url);
-        $response = json_decode($result, true);
-        
-        \Log::info("Segments list response:", ['response' => $response]);
-        
-        // Return all available segments
-        return response()->json([
-            'success' => true,
-            'segments' => $response['lists'] ?? []
-        ]);
-        
-    } catch (\Exception $e) {
-        \Log::error("Error listing segments: " . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ]);
-    }
-}
+
     //NEW STOREGROUP
     public function storeGroup(Request $request)
-{
-   try {
-       // Validate request
-       $request->validate([
-           'name' => 'required',
-           'acceptance' => 'required|in:0,1',
-           'type' => 'required|in:0,1'
-       ]);
+    {
+    try {
+        // Validate request
+        $request->validate([
+            'name' => 'required',
+            'acceptance' => 'required|in:0,1',
+            'type' => 'required|in:0,1'
+        ]);
 
-       $param = $request->except(['_token','interest']);
+        $param = $request->except(['_token','interest']);
 
-       // Handle cover image upload
-       if ($request->hasFile('cover')) {
-           $file = $request->file('cover');
-           $cover = $file->hashName();
-           $im = Image::make($file);
-           
-           $im->orientate();
-           $im->save('assets/front/img/' . $cover);
+        // Handle cover image upload
+        if ($request->hasFile('cover')) {
+            $file = $request->file('cover');
+            $cover = $file->hashName();
+            $im = Image::make($file);
+            
+            $im->orientate();
+            $im->save('assets/front/img/' . $cover);
 
-           $param['cover'] = $cover;
-       }
+            $param['cover'] = $cover;
+        }
 
-       // Create group and attach topics
-       $group = Group::create($param);
-       $group->topics()->attach($request->interest);
+        // Create group and attach topics
+        $group = Group::create($param);
+        $group->topics()->attach($request->interest);
 
-       if ($group) {
-           // Set slug and save
-           $group->slug = str_slug($group->name . ' ' . $group->id);
-           $group->save();
+        if ($group) {
+            // Set slug and save
+            $group->slug = str_slug($group->name . ' ' . $group->id);
+            $group->save();
 
-           // Create group member
-           $group->members()->create([
-               'user_id' => Auth::user()->id,
-               'role' => 1
-           ]);
+            // Create group member
+            $group->members()->create([
+                'user_id' => Auth::user()->id,
+                'role' => 1
+            ]);
 
-           // Handle Mautic API integration
-           $email = Auth::user()->email;
-           $segment = 6;
-           
-           // First API call - get contact
-           $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
-           
-           $ch = curl_init($url);
-           curl_setopt_array($ch, [
-               CURLOPT_URL => $url,
-               CURLOPT_RETURNTRANSFER => true,
-               CURLOPT_SSL_VERIFYPEER => false,
-               CURLOPT_HTTPHEADER => [
-                   "Content-type: application/json",
-                   "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
-                   "User-Agent: Mozilla/5.0",
-                   "Accept: application/json"
-               ]
-           ]);
+            // Handle Mautic API integration
+            $email = Auth::user()->email;
+            $segment = 6;
+            
+            // First API call - get contact
+            $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
+            
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_HTTPHEADER => [
+                    "Content-type: application/json",
+                    "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
+                    "User-Agent: Mozilla/5.0",
+                    "Accept: application/json"
+                ]
+            ]);
 
-           $response = curl_exec($ch);
-           
-           if (curl_errno($ch)) {
-               \Log::error("Mautic API contact fetch error: " . curl_error($ch));
-           }
-           
-           curl_close($ch);
-           $contact = json_decode($response, true);
+            $response = curl_exec($ch);
+            
+            if (curl_errno($ch)) {
+                \Log::error("Mautic API contact fetch error: " . curl_error($ch));
+            }
+            
+            curl_close($ch);
+            $contact = json_decode($response, true);
 
-           // If contact exists, remove from segment
-           if(isset($contact['contacts']) && !empty($contact['contacts'])) {
-               $contact_id = array_keys($contact['contacts'])[0];
-               $removeUrl = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
-               
-               // Second API call - remove from segment
-               $ch = curl_init();
-               curl_setopt_array($ch, [
-                   CURLOPT_URL => $removeUrl,
-                   CURLOPT_RETURNTRANSFER => true,
-                   CURLOPT_SSL_VERIFYPEER => false,
-                   CURLOPT_CUSTOMREQUEST => 'POST',
-                   CURLOPT_HTTPHEADER => [
-                       "Content-type: application/json",
-                       "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
-                       "User-Agent: Mozilla/5.0",
-                       "Accept: application/json",
-                       "Cache-Control: no-cache"
-                   ]
-               ]);
+            // If contact exists, remove from segment
+            if(isset($contact['contacts']) && !empty($contact['contacts'])) {
+                $contact_id = array_keys($contact['contacts'])[0];
+                $removeUrl = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
+                
+                // Second API call - remove from segment
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => $removeUrl,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_HTTPHEADER => [
+                        "Content-type: application/json",
+                        "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
+                        "User-Agent: Mozilla/5.0",
+                        "Accept: application/json",
+                        "Cache-Control: no-cache"
+                    ]
+                ]);
 
-               $result = curl_exec($ch);
-               
-               if (curl_errno($ch)) {
-                   \Log::error("Mautic API segment remove error: " . curl_error($ch));
-               }
-               
-               curl_close($ch);
-           }
+                $result = curl_exec($ch);
+                
+                if (curl_errno($ch)) {
+                    \Log::error("Mautic API segment remove error: " . curl_error($ch));
+                }
+                
+                curl_close($ch);
+            }
 
-           return redirect()
-               ->route('user.groups', $group->slug)
-               ->withSuccess('Group Created Successfully');
-       }
+            return redirect()
+                ->route('user.groups', $group->slug)
+                ->withSuccess('Group Created Successfully');
+        }
 
-       return redirect()
-           ->back()
-           ->withErrors('Unexpected Error! Please try again');
+        return redirect()
+            ->back()
+            ->withErrors('Unexpected Error! Please try again');
 
-   } catch (\Exception $e) {
-       \Log::error("Store group error: " . $e->getMessage());
-       return redirect()
-           ->back()
-           ->withErrors('An error occurred while creating the group');
-   }
-}
+    } catch (\Exception $e) {
+        \Log::error("Store group error: " . $e->getMessage());
+        return redirect()
+            ->back()
+            ->withErrors('An error occurred while creating the group');
+    }
+    }
+
     // ORIGINAL GROUP FOLLOW
     // public function groupFollow(Request $request, $slug)
 
@@ -658,147 +615,147 @@ public function listSegments()
     
     // NEW GROUP FOLLOW
     public function groupFollow(Request $request, $slug)
-{
-   try {
-       // Mautic API call for contact fetch
-       $email = Auth::user()->email;
-       $segment = 6;
-       $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
+    {
+    try {
+        // Mautic API call for contact fetch
+        $email = Auth::user()->email;
+        $segment = 6;
+        $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
 
-       $ch = curl_init($url);
-       curl_setopt_array($ch, [
-           CURLOPT_URL => $url,
-           CURLOPT_RETURNTRANSFER => true,
-           CURLOPT_SSL_VERIFYPEER => false,
-           CURLOPT_HTTPHEADER => [
-               "Content-type: application/json",
-               "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
-               "User-Agent: Mozilla/5.0",
-               "Accept: application/json"
-           ]
-       ]);
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER => [
+                "Content-type: application/json",
+                "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
+                "User-Agent: Mozilla/5.0",
+                "Accept: application/json"
+            ]
+        ]);
 
-       $response = curl_exec($ch);
-       
-       if (curl_errno($ch)) {
-           \Log::error("Mautic API error: " . curl_error($ch));
-       }
-       
-       curl_close($ch);
-       $contact = json_decode($response, true);
+        $response = curl_exec($ch);
+        
+        if (curl_errno($ch)) {
+            \Log::error("Mautic API error: " . curl_error($ch));
+        }
+        
+        curl_close($ch);
+        $contact = json_decode($response, true);
 
-       // If contact exists, remove from segment
-       if(isset($contact['contacts']) && !empty($contact['contacts'])) {
-           $contact_id = array_keys($contact['contacts'])[0];
-           $removeUrl = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
-           
-           // Second curl request to remove from segment
-           $ch = curl_init();
-           curl_setopt_array($ch, [
-               CURLOPT_URL => $removeUrl,
-               CURLOPT_RETURNTRANSFER => true,
-               CURLOPT_SSL_VERIFYPEER => false,
-               CURLOPT_CUSTOMREQUEST => 'POST',
-               CURLOPT_HTTPHEADER => [
-                   "Content-type: application/json",
-                   "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
-                   "User-Agent: Mozilla/5.0",
-                   "Accept: application/json",
-                   "Cache-Control: no-cache"
-               ]
-           ]);
+        // If contact exists, remove from segment
+        if(isset($contact['contacts']) && !empty($contact['contacts'])) {
+            $contact_id = array_keys($contact['contacts'])[0];
+            $removeUrl = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
+            
+            // Second curl request to remove from segment
+            $ch = curl_init();
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $removeUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_HTTPHEADER => [
+                    "Content-type: application/json",
+                    "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
+                    "User-Agent: Mozilla/5.0",
+                    "Accept: application/json",
+                    "Cache-Control: no-cache"
+                ]
+            ]);
 
-           $result = curl_exec($ch);
-           
-           if (curl_errno($ch)) {
-               \Log::error("Mautic segment remove error: " . curl_error($ch));
-           }
-           
-           curl_close($ch);
-       }
+            $result = curl_exec($ch);
+            
+            if (curl_errno($ch)) {
+                \Log::error("Mautic segment remove error: " . curl_error($ch));
+            }
+            
+            curl_close($ch);
+        }
 
-       // Original group follow logic
-       $group = Group::where('slug', $slug)->first();
-       if (!$group) {
-           return redirect()->route('front')->withErrors('Not Found');
-       }
+        // Original group follow logic
+        $group = Group::where('slug', $slug)->first();
+        if (!$group) {
+            return redirect()->route('front')->withErrors('Not Found');
+        }
 
-       $user = Auth::user();
-       $member = GroupMember::where('group_id', $group->id)
-                          ->where('user_id', $user->id)
-                          ->first();
+        $user = Auth::user();
+        $member = GroupMember::where('group_id', $group->id)
+                            ->where('user_id', $user->id)
+                            ->first();
 
-       if (!$member) {
-           // New member logic
-           if ($group->acceptance == 0) {
-               $member = $group->members()->create([
-                   'user_id' => $user->id,
-                   'role' => 4,
-                   'status' => 1
-               ]);
-               
-               return redirect()->route('user.groups', $group->slug)
-                              ->withSuccess('Joined Successfully');
-           } else {
-               $member = $group->members()->create([
-                   'user_id' => $user->id,
-                   'role' => 4,
-                   'status' => 4
-               ]);
+        if (!$member) {
+            // New member logic
+            if ($group->acceptance == 0) {
+                $member = $group->members()->create([
+                    'user_id' => $user->id,
+                    'role' => 4,
+                    'status' => 1
+                ]);
+                
+                return redirect()->route('user.groups', $group->slug)
+                                ->withSuccess('Joined Successfully');
+            } else {
+                $member = $group->members()->create([
+                    'user_id' => $user->id,
+                    'role' => 4,
+                    'status' => 4
+                ]);
 
-               $adminAndModerators = GroupMember::where('group_id', $group->id)
-                                              ->where('role', '!=', 4)
-                                              ->where('status', 1)
-                                              ->get();
+                $adminAndModerators = GroupMember::where('group_id', $group->id)
+                                                ->where('role', '!=', 4)
+                                                ->where('status', 1)
+                                                ->get();
 
-               foreach($adminAndModerators as $adminuser) {
-                   Notify::create([
-                       'group_id' => $group->id,
-                       'to_id' => $adminuser->user_id,
-                       'type' => 'group_request',
-                       'by_id' => $user->id,
-                       'status' => '0'
-                   ]);
-               }
+                foreach($adminAndModerators as $adminuser) {
+                    Notify::create([
+                        'group_id' => $group->id,
+                        'to_id' => $adminuser->user_id,
+                        'type' => 'group_request',
+                        'by_id' => $user->id,
+                        'status' => '0'
+                    ]);
+                }
 
-               return redirect()->route('user.groups', $group->slug)
-                              ->withSuccess('Your join request is pending');
-           }
-       } else {
-           // Existing member logic
-           if ($member->status == 3) {
-               if ($group->acceptance == 0) {
-                   $member->status = 1;
-                   $member->save();
-                   return redirect()->route('user.groups', $group->slug)
-                                  ->withSuccess('Joined Successfully');
-               } else {
-                   $member->status = 4;
-                   $member->save();
-                   return redirect()->route('user.groups', $group->slug)
-                                  ->withSuccess('Your join request is pending');
-               }
-           } elseif ($member->status == 4 || $member->status == 1) {
-               if ($member->role == 1) {
-                   $group->delete();
-                   return redirect()->route('user.groups')
-                                  ->withSuccess('Group Deleted Successfully');
-               }
+                return redirect()->route('user.groups', $group->slug)
+                                ->withSuccess('Your join request is pending');
+            }
+        } else {
+            // Existing member logic
+            if ($member->status == 3) {
+                if ($group->acceptance == 0) {
+                    $member->status = 1;
+                    $member->save();
+                    return redirect()->route('user.groups', $group->slug)
+                                    ->withSuccess('Joined Successfully');
+                } else {
+                    $member->status = 4;
+                    $member->save();
+                    return redirect()->route('user.groups', $group->slug)
+                                    ->withSuccess('Your join request is pending');
+                }
+            } elseif ($member->status == 4 || $member->status == 1) {
+                if ($member->role == 1) {
+                    $group->delete();
+                    return redirect()->route('user.groups')
+                                    ->withSuccess('Group Deleted Successfully');
+                }
 
-               $member->delete();
-               return redirect()->route('user.groups', $group->slug);
-           } else {
-               return redirect()->route('user.groups')->withErrors('Not Found');
-           }
-       }
+                $member->delete();
+                return redirect()->route('user.groups', $group->slug);
+            } else {
+                return redirect()->route('user.groups')->withErrors('Not Found');
+            }
+        }
 
-       return redirect()->route('front')->withErrors('Unexpected Error');
+        return redirect()->route('front')->withErrors('Unexpected Error');
 
-   } catch (\Exception $e) {
-       \Log::error("Group follow error: " . $e->getMessage());
-       return redirect()->route('front')->withErrors('An error occurred');
-   }
-}
+    } catch (\Exception $e) {
+        \Log::error("Group follow error: " . $e->getMessage());
+        return redirect()->route('front')->withErrors('An error occurred');
+    }
+    }
 
     public function groupUserAction($slug, $username, $action)
 
