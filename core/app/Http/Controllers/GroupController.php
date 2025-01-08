@@ -450,7 +450,7 @@ public function listSegments()
 
         curl_close($ch);
         $contact = json_decode($response, true);
-        // return response()->json($data ?? ['message' => 'Request completed but returned no data']);
+        return response()->json($contact ?? ['message' => 'Request completed but returned no data']);
 
 
 
