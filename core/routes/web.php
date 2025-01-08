@@ -110,6 +110,8 @@ Route::get('/home', 'HomeController@index')->name('front');
 Route::get('/oldhome', 'HomeController@oldhome')->name('front');
 #feed
 Route::get('/feed', 'HomeController@feed')->name('feed');
+
+Route::get('/list-segments', 'GroupController@listSegments');
 #KT
 Route::get('/non-userfeed', 'HomeController@nonuserfeed')->name('nonuserfeed');
 Route::get('/all', 'HomeController@allPosts')->name('all');

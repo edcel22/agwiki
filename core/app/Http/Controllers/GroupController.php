@@ -280,65 +280,120 @@ class GroupController extends Controller
 
     //     return redirect()->back()->withErrors('Unexpected Error! Please try again');
     // }
-
-    // NEW 
-    public function makeApiRequest($url)
+    public function getAvailableSegments()
     {
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Basic ' . base64_encode("sitecontrol:flattir3"),
-                'User-Agent: Mozilla/5.0', // Add user agent
-                'Accept: application/json',
-                'Content-Type: application/json',
-                'Origin: https://mautic.agwiki.com', // Add origin
-                'Referer: https://mautic.agwiki.com' // Add referer
-            ],
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false
-        ]);
-    
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $url = 'https://mautic.agwiki.com/api/segments';
+        $result = $this->makeApiRequest($url);
+        $segments = json_decode($result, true);
         
-        if (curl_errno($ch)) {
-            \Log::error('Curl error: ' . curl_error($ch));
-        }
-        
-        curl_close($ch);
-        return $response;
+        \Log::info("Available segments:", ['segments' => $segments]);
+        return $segments;
     }
-
+    public function verifySegment($segmentId)
+{
+    $url = "https://mautic.agwiki.com/api/segments/" . $segmentId;
+    $result = $this->makeApiRequest($url);
+    $segment = json_decode($result, true);
+    
+    \Log::info("Segment verification:", [
+        'segment_id' => $segmentId,
+        'response' => $segment
+    ]);
+    
+    return isset($segment['list']);
+}
+public function listSegments()
+{
+    try {
+        $url = 'https://mautic.agwiki.com/api/segments';
+        $result = $this->makeApiRequest($url);
+        $response = json_decode($result, true);
+        
+        \Log::info("Segments list response:", ['response' => $response]);
+        
+        // Return all available segments
+        return response()->json([
+            'success' => true,
+            'segments' => $response['lists'] ?? []
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error("Error listing segments: " . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+    // NEW 
     public function storeGroup(Request $request)
 {
     try {
         $email = $request->input('email');
         $segment = $request->input('segment');
+        
+        // Log request data
+        \Log::info("Processing request:", [
+            'email' => $email,
+            'segment_id' => $segment
+        ]);
 
-        // First API call to get contact
+        // Get all segments first to debug
+        $allSegments = $this->getAvailableSegments();
+        \Log::info("Available segments:", ['segments' => $allSegments]);
+
+        // First API call - get contact
         $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
-        $contact = $this->makeApiRequest($url);
+        $result = $this->makeApiRequest($url);
+        $contact = json_decode($result, true);
 
-        if (isset($contact['contacts']) && !empty($contact['contacts'])) {
-            $contact_id = array_keys($contact['contacts'])[0];
-            
-            // Second API call to remove contact
-            $removeUrl = "https://mautic.agwiki.com/api/segments/{$segment}/contact/{$contact_id}/remove";
-            $result = $this->makeApiRequest($removeUrl, 'POST');
-            
-            return response()->json(['success' => true, 'data' => $result]);
+        \Log::info("Contact lookup response:", ['response' => $contact]);
+
+        // Check if contact exists
+        if (empty($contact['contacts'])) {
+            \Log::error("Contact not found for email: " . $email);
+            return response()->json(['success' => false, 'message' => 'Contact not found']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Contact not found']);
+        $contact_id = array_keys($contact['contacts'])[0];
+        \Log::info("Found contact ID: " . $contact_id);
+
+        // Second API call - verify segment exists
+        $segmentUrl = "https://mautic.agwiki.com/api/segments/" . $segment;
+        $segmentResult = $this->makeApiRequest($segmentUrl);
+        $segmentData = json_decode($segmentResult, true);
+
+        \Log::info("Segment lookup response:", ['response' => $segmentData]);
+
+        if (!isset($segmentData['list'])) {
+            \Log::error("Segment not found: " . $segment);
+            return response()->json(['success' => false, 'message' => 'Segment not found']);
+        }
+
+        // Finally, remove contact from segment
+        $removeUrl = "https://mautic.agwiki.com/api/segments/{$segment}/contact/{$contact_id}/remove";
+        $removeResult = $this->makeApiRequest($removeUrl);
+        $removeData = json_decode($removeResult, true);
+
+        \Log::info("Remove contact result:", ['response' => $removeData]);
+
+        if (isset($removeData['errors'])) {
+            return response()->json([
+                'success' => false,
+                'message' => $removeData['errors'][0]['message'] ?? 'Unknown error occurred'
+            ]);
+        }
+
+        return response()->json(['success' => true, 'data' => $removeData]);
 
     } catch (\Exception $e) {
-        \Log::error('Group operation failed: ' . $e->getMessage());
-        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        \Log::error("Error in storeGroup:", [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return response()->json(['success' => false, 'message' => $e->getMessage()]);
     }
 }
-
     public function groupFollow(Request $request, $slug)
 
     {
