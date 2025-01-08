@@ -432,31 +432,23 @@ public function listSegments()
         $segment = 6;
         $url = 'https://mautic.agwiki.com/api/contacts?search=' . $email;
 
-        $options = [
-            'http' => [
-                'header'  => [
-                    "Content-type: application/x-www-form-urlencoded",
-                    "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
-                    "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                    "Accept: application/json",
-                ],
-                'method'  => 'GET',
-                'ignore_errors' => true,
-                'ssl' => [
-                    "verify_peer" => false,
-                    "verify_peer_name" => false,
-                ],
-            ],
-        ];
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-type: application/x-www-form-urlencoded",
+            "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
+            "User-Agent: Mozilla/5.0",
+            "Accept: application/json",
+        ]);
 
-        $context = stream_context_create($options);
-        $response = file_get_contents($url, false, $context);
+        $response = curl_exec($ch);
 
-        // Handle the response
-        if ($response === false) {
-            return response()->json(['error' => 'Failed to fetch data from the API'], 500);
+        if (curl_errno($ch)) {
+            return response()->json(['error' => 'Curl error: ' . curl_error($ch)], 500);
         }
 
+        curl_close($ch);
         $data = json_decode($response, true);
         return response()->json($data ?? ['message' => 'Request completed but returned no data']);
 
