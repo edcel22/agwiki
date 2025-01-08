@@ -459,11 +459,21 @@ public function listSegments()
 						),
 
 					);
-					$context  = stream_context_create($options);
+					$context = stream_context_create($options);
 
-                    return response()->json($context);
-					$result = file_get_contents($url, false, $context);
-					$contact = json_decode($result, true);
+// Perform the HTTP request
+$response = file_get_contents($url, false, $context);
+
+// Check if the response is valid
+if ($response === false) {
+    return response()->json(['error' => 'Failed to fetch data from the API'], 500);
+}
+
+// Decode JSON if the API returns JSON
+$data = json_decode($response, true);
+
+// Return the response
+return response()->json($data ?? ['message' => 'Request completed but returned no data']);
 					if(isset(array_keys($contact['contacts'])[0]))
 					{
 						$contact_id = array_keys($contact['contacts'])[0];
