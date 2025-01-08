@@ -333,6 +333,16 @@ class GroupController extends Controller
     curl_close($ch);
     return $response;
 }   
+
+public function getAvailableSegments()
+{
+    $url = 'https://mautic.agwiki.com/api/segments';
+    $result = $this->makeApiRequest($url);
+    $segments = json_decode($result, true);
+    
+    \Log::info("Available segments:", ['segments' => $segments]);
+    return $segments;
+}
     // NEW 
     public function storeGroup(Request $request)
     {
