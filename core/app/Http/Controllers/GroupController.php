@@ -178,107 +178,181 @@ class GroupController extends Controller
         return view('group.new', compact('page_title','interest'));
 
     }
+    //ORIGNAL
+    // public function storeGroup(Request $request)
 
-    public function storeGroup(Request $request)
+    // {
+	// 	//print_r($request->interest);
 
+    //     $request->validate([
+    //        // 'cover' => 'required|image',
+    //         'name' => 'required',
+    //         'acceptance' => 'required|in:0,1',
+    //         'type' => 'required|in:0,1'
+    //     ]);
+
+    //     $param = $request->except(['_token','interest']);
+
+    //     if ($request->hasFile('cover')) {
+    //         $file = $request->file('cover');
+    //         $cover = $file->hashName();
+    //         $im = Image::make($file);
+			
+	// 		$im->orientate();
+	// 		$im->save('assets/front/img/' . $cover);
+
+    //         $param['cover'] = $cover;
+    //     }
+
+    //     $group = Group::create($param);
+	// 	$group->topics()->attach($request->interest);
+    //     if ($group) {
+
+    //         $group->slug = str_slug($group->name . ' ' . $group->id);
+	// 		//
+    //         $group->save();
+			
+			
+
+    //         $group->members()->create([
+    //             'user_id' => Auth::user()->id,
+    //             'role' => 1
+    //         ]);
+			
+			
+	// 		//mautic///////////////////////
+		
+		
+	// 			$email = Auth::user()->email;
+
+
+	// 			$segment = 6;
+
+	// 			$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
+	// 			//$data = array('key1' => 'value1', 'key2' => 'value2');
+
+	// 			// use key 'http' even if you send the request to https://...
+	// 			$options = array(
+	// 				'http' => array(
+	// 					'header'  => array("Content-type: application/x-www-form-urlencoded",
+	// 			"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+	// 					'content' => '',
+	// 					'method' => 'GET',
+	// 					"ssl"=>array(
+	// 							"verify_peer"=>false,
+	// 							"verify_peer_name"=>false,
+	// 						)
+
+	// 				),
+
+	// 			);
+	// 			$context  = stream_context_create($options);
+	// 			$result = file_get_contents($url, false, $context);
+	// 			$contact = json_decode($result, true);
+	// 			if(isset(array_keys($contact['contacts'])[0]))
+	// 			{
+	// 				$contact_id = array_keys($contact['contacts'])[0];
+
+
+	// 				$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
+	// 				//$data = array('key1' => 'value1', 'key2' => 'value2');
+
+	// 				// use key 'http' even if you send the request to https://...
+	// 				$options = array(
+	// 					'http' => array(
+	// 						'header'  => array("Content-type: application/x-www-form-urlencoded",
+	// 				"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
+	// 						'content' => '',
+	// 						'Cache-Control: no-cache' ,
+	// 						'method' => 'POST'
+	// 					)
+	// 				);
+	// 				$context  = stream_context_create($options);
+	// 				$result = file_get_contents($url, false, $context);
+	// 				$dnc_result = json_decode($result, true);
+
+	// 			}
+
+	// 		///////////////////////////////
+
+    //         return redirect()->route('user.groups', $group->slug)->withSuccess('Group Created Successfully');
+    //     }
+
+    //     return redirect()->back()->withErrors('Unexpected Error! Please try again');
+    // }
+
+    //NEW
+    public function makeApiRequest($url, $method = 'GET', $data = null)
     {
-		//print_r($request->interest);
+        $ch = curl_init();
+        
+        $headers = [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . base64_encode("sitecontrol:flattir3")
+        ];
 
-        $request->validate([
-           // 'cover' => 'required|image',
-            'name' => 'required',
-            'acceptance' => 'required|in:0,1',
-            'type' => 'required|in:0,1'
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false
         ]);
 
-        $param = $request->except(['_token','interest']);
-
-        if ($request->hasFile('cover')) {
-            $file = $request->file('cover');
-            $cover = $file->hashName();
-            $im = Image::make($file);
-			
-			$im->orientate();
-			$im->save('assets/front/img/' . $cover);
-
-            $param['cover'] = $cover;
+        if ($data && $method === 'POST') {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         }
 
-        $group = Group::create($param);
-		$group->topics()->attach($request->interest);
-        if ($group) {
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        if (curl_errno($ch)) {
+            \Log::error('Curl error: ' . curl_error($ch));
+        }
+        
+        curl_close($ch);
 
-            $group->slug = str_slug($group->name . ' ' . $group->id);
-			//
-            $group->save();
-			
-			
-
-            $group->members()->create([
-                'user_id' => Auth::user()->id,
-                'role' => 1
-            ]);
-			
-			
-			//mautic///////////////////////
-		
-		
-				$email = Auth::user()->email;
-
-
-				$segment = 6;
-
-				$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
-				//$data = array('key1' => 'value1', 'key2' => 'value2');
-
-				// use key 'http' even if you send the request to https://...
-				$options = array(
-					'http' => array(
-						'header'  => array("Content-type: application/x-www-form-urlencoded",
-				"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-						'content' => '',
-						'method' => 'GET',
-						"ssl"=>array(
-								"verify_peer"=>false,
-								"verify_peer_name"=>false,
-							)
-
-					),
-
-				);
-				$context  = stream_context_create($options);
-				$result = file_get_contents($url, false, $context);
-				$contact = json_decode($result, true);
-				if(isset(array_keys($contact['contacts'])[0]))
-				{
-					$contact_id = array_keys($contact['contacts'])[0];
-
-
-					$url = 'https://mautic.agwiki.com/api/segments/'.$segment.'/contact/'.$contact_id.'/remove';
-					//$data = array('key1' => 'value1', 'key2' => 'value2');
-
-					// use key 'http' even if you send the request to https://...
-					$options = array(
-						'http' => array(
-							'header'  => array("Content-type: application/x-www-form-urlencoded",
-					"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-							'content' => '',
-							'Cache-Control: no-cache' ,
-							'method' => 'POST'
-						)
-					);
-					$context  = stream_context_create($options);
-					$result = file_get_contents($url, false, $context);
-					$dnc_result = json_decode($result, true);
-
-				}
-
-			///////////////////////////////
-
-            return redirect()->route('user.groups', $group->slug)->withSuccess('Group Created Successfully');
+        if ($httpCode === 403) {
+            \Log::error('API Authentication failed: ' . $response);
+            throw new \Exception('API Authentication failed');
         }
 
-        return redirect()->back()->withErrors('Unexpected Error! Please try again');
+        return json_decode($response, true);
+    }
+
+    // NEW 
+    public function storeGroup(Request $request)
+    {
+        try {
+            $email = $request->input('email');
+            $segment = $request->input('segment');
+
+            // First API call to get contact
+            $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
+            $contact = $this->makeApiRequest($url);
+
+            if (isset($contact['contacts']) && !empty($contact['contacts'])) {
+                $contact_id = array_keys($contact['contacts'])[0];
+                
+                // Second API call to remove contact
+                $removeUrl = "https://mautic.agwiki.com/api/segments/{$segment}/contact/{$contact_id}/remove";
+                $result = $this->makeApiRequest($removeUrl, 'POST');
+                
+                return response()->json(['success' => true, 'data' => $result]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Contact not found']);
+
+        } catch (\Exception $e) {
+            \Log::error('Group operation failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function groupFollow(Request $request, $slug)
