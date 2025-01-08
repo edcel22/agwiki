@@ -461,7 +461,7 @@ public function listSegments()
 					);
 					$context  = stream_context_create($options);
 
-                    return $context;
+                    return response()->json($context);
 					$result = file_get_contents($url, false, $context);
 					$contact = json_decode($result, true);
 					if(isset(array_keys($contact['contacts'])[0]))
