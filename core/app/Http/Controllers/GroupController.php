@@ -323,42 +323,68 @@ class GroupController extends Controller
 }   
     // NEW 
     public function storeGroup(Request $request)
-{
-    try {
-        $email = $request->input('email');
-        $segment = $request->input('segment');
-        
-        \Log::info("Starting storeGroup for email: " . $email);
-
-        // First API call - get contact
-        $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
-        $result = $this->makeApiRequest($url);
-        $contact = json_decode($result, true);
-
-        \Log::info("Contact lookup response: ", ['contact' => $contact]);
-
-        if (!$contact || isset($contact['errors'])) {
-            \Log::error("Contact lookup failed: ", ['response' => $contact]);
-            return response()->json(['success' => false, 'message' => 'Failed to find contact']);
-        }
-
-        if (isset($contact['contacts']) && !empty($contact['contacts'])) {
-            $contact_id = array_keys($contact['contacts'])[0];
+    {
+        try {
+            $email = $request->input('email');
+            $segment = $request->input('segment');
             
-            // Second API call - remove from segment
+            \Log::info("Processing request:", [
+                'email' => $email,
+                'segment' => $segment
+            ]);
+    
+            // First API call - get contact
+            $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
+            $result = $this->makeApiRequest($url);
+            $contact = json_decode($result, true);
+    
+            \Log::info("Contact lookup response:", ['response' => $contact]);
+    
+            // Check if contact exists
+            if (empty($contact['contacts'])) {
+                \Log::error("Contact not found for email: " . $email);
+                return response()->json(['success' => false, 'message' => 'Contact not found']);
+            }
+    
+            $contact_id = array_keys($contact['contacts'])[0];
+            \Log::info("Found contact ID: " . $contact_id);
+    
+            // Second API call - verify segment exists
+            $segmentUrl = "https://mautic.agwiki.com/api/segments/" . $segment;
+            $segmentResult = $this->makeApiRequest($segmentUrl);
+            $segmentData = json_decode($segmentResult, true);
+    
+            \Log::info("Segment lookup response:", ['response' => $segmentData]);
+    
+            if (!isset($segmentData['list'])) {
+                \Log::error("Segment not found: " . $segment);
+                return response()->json(['success' => false, 'message' => 'Segment not found']);
+            }
+    
+            // Finally, remove contact from segment
             $removeUrl = "https://mautic.agwiki.com/api/segments/{$segment}/contact/{$contact_id}/remove";
             $removeResult = $this->makeApiRequest($removeUrl);
-            
-            return response()->json(['success' => true, 'data' => json_decode($removeResult, true)]);
+            $removeData = json_decode($removeResult, true);
+    
+            \Log::info("Remove contact result:", ['response' => $removeData]);
+    
+            if (isset($removeData['errors'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $removeData['errors'][0]['message'] ?? 'Unknown error occurred'
+                ]);
+            }
+    
+            return response()->json(['success' => true, 'data' => $removeData]);
+    
+        } catch (\Exception $e) {
+            \Log::error("Error in storeGroup:", [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        return response()->json(['success' => false, 'message' => 'Contact not found']);
-
-    } catch (\Exception $e) {
-        \Log::error("storeGroup failed: " . $e->getMessage());
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
     }
-}
 
     public function groupFollow(Request $request, $slug)
 
