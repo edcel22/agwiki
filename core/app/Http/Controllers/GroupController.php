@@ -428,52 +428,40 @@ public function listSegments()
     public function groupFollow(Request $request, $slug)
 
     {
-		
-		
-		
-		//mautic///////////////////////
-		
-		
-					$email = Auth::user()->email;
-				
-					//die($email);
+        $email = Auth::user()->email;
+        $segment = 6;
+        $url = 'https://mautic.agwiki.com/api/contacts?search=' . $email;
+
+        $options = [
+            'http' => [
+                'header'  => [
+                    "Content-type: application/x-www-form-urlencoded",
+                    "Authorization: Basic " . base64_encode("sitecontrol:flattir3"),
+                    "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                    "Accept: application/json",
+                ],
+                'method'  => 'GET',
+                'ignore_errors' => true,
+                'ssl' => [
+                    "verify_peer" => false,
+                    "verify_peer_name" => false,
+                ],
+            ],
+        ];
+
+        $context = stream_context_create($options);
+        $response = file_get_contents($url, false, $context);
+
+        // Handle the response
+        if ($response === false) {
+            return response()->json(['error' => 'Failed to fetch data from the API'], 500);
+        }
+
+        $data = json_decode($response, true);
+        return response()->json($data ?? ['message' => 'Request completed but returned no data']);
 
 
-					$segment = 6;
 
-					$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
-					//$data = array('key1' => 'value1', 'key2' => 'value2');
-                    
-					// use key 'http' even if you send the request to https://...
-					$options = array(
-						'http' => array(
-							'header'  => array("Content-type: application/x-www-form-urlencoded",
-					"Authorization: Basic " . base64_encode("sitecontrol:flattir3")),
-							'content' => '',
-							'method' => 'GET',
-							"ssl"=>array(
-									"verify_peer"=>false,
-									"verify_peer_name"=>false,
-								)
-
-						),
-
-					);
-					$context = stream_context_create($options);
-
-// Perform the HTTP request
-$response = file_get_contents($url, false, $context);
-
-// Check if the response is valid
-if ($response === false) {
-    return response()->json(['error' => 'Failed to fetch data from the API'], 500);
-}
-
-// Decode JSON if the API returns JSON
-$data = json_decode($response, true);
-
-// Return the response
-return response()->json($data ?? ['message' => 'Request completed but returned no data']);
 					if(isset(array_keys($contact['contacts'])[0]))
 					{
 						$contact_id = array_keys($contact['contacts'])[0];
