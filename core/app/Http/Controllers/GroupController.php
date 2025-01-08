@@ -280,7 +280,19 @@ class GroupController extends Controller
 
     //     return redirect()->back()->withErrors('Unexpected Error! Please try again');
     // }
-
+    public function verifySegment($segmentId)
+    {
+        $url = "https://mautic.agwiki.com/api/segments/" . $segmentId;
+        $result = $this->makeApiRequest($url);
+        $segment = json_decode($result, true);
+        
+        \Log::info("Segment verification:", [
+            'segment_id' => $segmentId,
+            'response' => $segment
+        ]);
+        
+        return isset($segment['list']);
+    }
     //NEW
     public function makeApiRequest($url)
 {
@@ -328,10 +340,15 @@ class GroupController extends Controller
             $email = $request->input('email');
             $segment = $request->input('segment');
             
+            // Log request data
             \Log::info("Processing request:", [
                 'email' => $email,
-                'segment' => $segment
+                'segment_id' => $segment
             ]);
+    
+            // Get all segments first to debug
+            $allSegments = $this->getAvailableSegments();
+            \Log::info("Available segments:", ['segments' => $allSegments]);
     
             // First API call - get contact
             $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
