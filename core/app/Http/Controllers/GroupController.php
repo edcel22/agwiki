@@ -443,7 +443,8 @@ public function listSegments()
 
 					$url = 'https://mautic.agwiki.com/api/contacts?search='.$email;
 					//$data = array('key1' => 'value1', 'key2' => 'value2');
-
+                    
+                    return $url;
 					// use key 'http' even if you send the request to https://...
 					$options = array(
 						'http' => array(
