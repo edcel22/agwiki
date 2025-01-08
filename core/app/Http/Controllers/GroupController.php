@@ -280,45 +280,43 @@ class GroupController extends Controller
 
     //     return redirect()->back()->withErrors('Unexpected Error! Please try again');
     // }
-    public function makeApiRequest($url)
-{
-    $ch = curl_init();
-    
-    // Add better debugging
-    $authString = base64_encode("sitecontrol:flattir3");
-    \Log::info("Testing API URL: " . $url);
-    \Log::info("Auth string: " . $authString);
-
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => [
-            'Authorization: Basic ' . $authString,
-            'User-Agent: Mozilla/5.0',
+    private function makeApiRequest($url, $method = 'GET')
+    {
+        $ch = curl_init();
+        
+        $headers = [
+            'Authorization: Basic ' . base64_encode("sitecontrol:flattir3"),
             'Accept: application/json',
             'Content-Type: application/json'
-        ],
-        CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
-        // Add verbose debugging
-        CURLOPT_VERBOSE => true,
-        CURLINFO_HEADER_OUT => true
-    ]);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        ];
     
-    // Log response info
-    \Log::info("API Response Code: " . $httpCode);
-    \Log::info("API Response: " . $response);
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false
+        ]);
     
-    if (curl_errno($ch)) {
-        \Log::error('Curl error: ' . curl_error($ch));
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        \Log::info("API Request", [
+            'url' => $url,
+            'method' => $method,
+            'httpCode' => $httpCode,
+            'response' => $response
+        ]);
+    
+        if (curl_errno($ch)) {
+            \Log::error("Curl error", ['error' => curl_error($ch)]);
+            throw new \Exception("API request failed: " . curl_error($ch));
+        }
+        
+        curl_close($ch);
+        return $response;
     }
-    
-    curl_close($ch);
-    return $response;
-}
     public function getAvailableSegments()
     {
         $url = 'https://mautic.agwiki.com/api/segments';
@@ -366,73 +364,67 @@ public function listSegments()
 }
     // NEW 
     public function storeGroup(Request $request)
-{
-    try {
-        $email = $request->input('email');
-        $segment = $request->input('segment');
-        
-        // Log request data
-        \Log::info("Processing request:", [
-            'email' => $email,
-            'segment_id' => $segment
-        ]);
-
-        // Get all segments first to debug
-        $allSegments = $this->getAvailableSegments();
-        \Log::info("Available segments:", ['segments' => $allSegments]);
-
-        // First API call - get contact
-        $url = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
-        $result = $this->makeApiRequest($url);
-        $contact = json_decode($result, true);
-
-        \Log::info("Contact lookup response:", ['response' => $contact]);
-
-        // Check if contact exists
-        if (empty($contact['contacts'])) {
-            \Log::error("Contact not found for email: " . $email);
-            return response()->json(['success' => false, 'message' => 'Contact not found']);
-        }
-
-        $contact_id = array_keys($contact['contacts'])[0];
-        \Log::info("Found contact ID: " . $contact_id);
-
-        // Second API call - verify segment exists
-        $segmentUrl = "https://mautic.agwiki.com/api/segments/" . $segment;
-        $segmentResult = $this->makeApiRequest($segmentUrl);
-        $segmentData = json_decode($segmentResult, true);
-
-        \Log::info("Segment lookup response:", ['response' => $segmentData]);
-
-        if (!isset($segmentData['list'])) {
-            \Log::error("Segment not found: " . $segment);
-            return response()->json(['success' => false, 'message' => 'Segment not found']);
-        }
-
-        // Finally, remove contact from segment
-        $removeUrl = "https://mautic.agwiki.com/api/segments/{$segment}/contact/{$contact_id}/remove";
-        $removeResult = $this->makeApiRequest($removeUrl);
-        $removeData = json_decode($removeResult, true);
-
-        \Log::info("Remove contact result:", ['response' => $removeData]);
-
-        if (isset($removeData['errors'])) {
+    {
+        try {
+            $email = $request->input('email');
+            $segment = $request->input('segment');
+            
+            \Log::info("Starting storeGroup request", [
+                'email' => $email,
+                'segment_id' => $segment
+            ]);
+    
+            // Verify segment exists
+            $url = "https://mautic.agwiki.com/api/segments/$segment";
+            $segmentResult = $this->makeApiRequest($url);
+            $segmentData = json_decode($segmentResult, true);
+    
+            if (!isset($segmentData['list'])) {
+                \Log::error("Invalid segment ID", ['segment' => $segment]);
+                return response()->json([
+                    'success' => false, 
+                    'message' => "Invalid segment ID: $segment. Available segments are: 1-11"
+                ]);
+            }
+    
+            // Get contact
+            $contactUrl = 'https://mautic.agwiki.com/api/contacts?search=' . urlencode($email);
+            $contactResult = $this->makeApiRequest($contactUrl);
+            $contact = json_decode($contactResult, true);
+    
+            if (empty($contact['contacts'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Contact not found for email: $email"
+                ]);
+            }
+    
+            $contactId = array_keys($contact['contacts'])[0];
+    
+            // Remove from segment
+            $removeUrl = "https://mautic.agwiki.com/api/segments/$segment/contact/$contactId/remove";
+            $removeResult = $this->makeApiRequest($removeUrl, 'POST');
+            $removeResponse = json_decode($removeResult, true);
+    
+            \Log::info("Remove result", ['response' => $removeResponse]);
+    
+            return response()->json([
+                'success' => true,
+                'data' => $removeResponse
+            ]);
+    
+        } catch (\Exception $e) {
+            \Log::error("StoreGroup error", [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
-                'message' => $removeData['errors'][0]['message'] ?? 'Unknown error occurred'
+                'message' => $e->getMessage()
             ]);
         }
-
-        return response()->json(['success' => true, 'data' => $removeData]);
-
-    } catch (\Exception $e) {
-        \Log::error("Error in storeGroup:", [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
     }
-}
     public function groupFollow(Request $request, $slug)
 
     {
