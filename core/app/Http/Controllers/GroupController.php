@@ -280,6 +280,45 @@ class GroupController extends Controller
 
     //     return redirect()->back()->withErrors('Unexpected Error! Please try again');
     // }
+    public function makeApiRequest($url)
+{
+    $ch = curl_init();
+    
+    // Add better debugging
+    $authString = base64_encode("sitecontrol:flattir3");
+    \Log::info("Testing API URL: " . $url);
+    \Log::info("Auth string: " . $authString);
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Basic ' . $authString,
+            'User-Agent: Mozilla/5.0',
+            'Accept: application/json',
+            'Content-Type: application/json'
+        ],
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        // Add verbose debugging
+        CURLOPT_VERBOSE => true,
+        CURLINFO_HEADER_OUT => true
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    
+    // Log response info
+    \Log::info("API Response Code: " . $httpCode);
+    \Log::info("API Response: " . $response);
+    
+    if (curl_errno($ch)) {
+        \Log::error('Curl error: ' . curl_error($ch));
+    }
+    
+    curl_close($ch);
+    return $response;
+}
     public function getAvailableSegments()
     {
         $url = 'https://mautic.agwiki.com/api/segments';
