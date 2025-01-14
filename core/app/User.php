@@ -13,6 +13,8 @@ class User extends Authenticatable
     protected $guarded = [];
     protected $dates = ['birthday'];
 
+    const SUPER_ADMIN_IDS = [1623];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -714,5 +716,11 @@ class User extends Authenticatable
 
         return false;
 
+    }
+
+    // Add the accessor for the isSuperAdmin property
+    public function getIsSuperAdminAttribute()
+    {
+        return in_array($this->id, self::SUPER_ADMIN_IDS);
     }
 }

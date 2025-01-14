@@ -1961,6 +1961,7 @@ class HomeController extends Controller
     public function postDelete(Request $request)
 
     {
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
 
         $request->validate([
             'post_id' => 'required|numeric'
@@ -1968,7 +1969,7 @@ class HomeController extends Controller
 
         $post = Post::find($request->post_id);
 
-        if ($post->group && ($post->group->isCreator() || $post->group->isAdmin() || $post->group->isModerator())) {
+        if ($post->group && ($post->group->isCreator() || $post->group->isAdmin() || $post->group->isModerator() || $isSuperAdmin)) {
             $gr = true;
         } else {
             $gr = false;
@@ -1991,7 +1992,7 @@ class HomeController extends Controller
 
         }
 
-        if ($post && ($post->user_id == Auth::user()->id || Auth::user()->id == 9 || $gr)) {
+        if ($post && ($post->user_id == Auth::user()->id || Auth::user()->id == 9 || $gr) || $isSuperAdmin) {
             @unlink('assets/front/content/' . $post->link);
             $post->delete();
 
