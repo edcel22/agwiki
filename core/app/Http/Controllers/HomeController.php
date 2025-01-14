@@ -2065,8 +2065,13 @@ class HomeController extends Controller
         if (!$post) return redirect()->back();
 
         $user = Auth::user();
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
 
-        if ($post->user_id != $user->id) return redirect()->back()->withErrors('Unexpected Error!');
+        if ($post->user_id != $user->id) {
+            if (!$isSuperAdmin) {
+                return redirect()->back()->withErrors('Unexpected Error!');
+            }
+        }
 
         $currentInterestIDs = Post::getPostInterestIds($post->id);
 
@@ -2103,8 +2108,13 @@ class HomeController extends Controller
 		//dd($request->file('post_image')->getMimeType());
 
         $user = Auth::user();
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
 
-        if ($post->user_id != $user->id) return redirect()->back()->withErrors('Unexpected Error!');
+        if ($post->user_id != $user->id) {
+            if (!$isSuperAdmin) {
+                return redirect()->back()->withErrors('Unexpected Error!');
+            }
+        }
 
         if ($request->hasFile('post_image')) {
 
