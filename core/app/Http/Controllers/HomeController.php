@@ -2067,6 +2067,8 @@ class HomeController extends Controller
         $user = Auth::user();
         $isSuperAdmin = Auth::user()->isSuperAdmin;
 
+        
+
         if ($post->user_id != $user->id) {
             if (!$isSuperAdmin) {
                 return redirect()->back()->withErrors('Unexpected Error!');
