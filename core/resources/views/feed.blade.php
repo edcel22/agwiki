@@ -8,12 +8,15 @@
 @php 
     $theUser = '';
     $loggedIn = false;
+    $isSuperAdmin = false;
+
 @endphp
 
 @php
     if (Auth::check()) {
         $theUser = Auth::user();
         $loggedIn = true;
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
     } else {
         $theUser = $user;  
     }
@@ -189,7 +192,6 @@
 				<div id="searchDiv" class="col-md-7 col-lg-7 col-xs-7 col-sm-7">
 				  <form action="/feed" method="get">
 					<input type="input" value="@php if(isset($_GET['search'])) $_GET['search']; @endphp" name="search" placeholder="Search Posts">
-
 					@if (isset($_GET['fav']))
 
 						<input type="hidden" name="fav" value="{{$_GET['fav']}}">
@@ -261,7 +263,7 @@
                             @endphp
 
                                 @if(Auth::check())
-                                    @if($post->user_id == Auth::user()->id )
+                                    @if($post->user_id == Auth::user()->id || $isSuperAdmin )
                                         <ul class="postedit">
                                                                         <li>
                                         <a href="/posts/edit/{{$post->id}}"><i class="fas fa-edit" ></i></a>

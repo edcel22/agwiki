@@ -1961,6 +1961,7 @@ class HomeController extends Controller
     public function postDelete(Request $request)
 
     {
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
 
         $request->validate([
             'post_id' => 'required|numeric'
@@ -1968,7 +1969,7 @@ class HomeController extends Controller
 
         $post = Post::find($request->post_id);
 
-        if ($post->group && ($post->group->isCreator() || $post->group->isAdmin() || $post->group->isModerator())) {
+        if ($post->group && ($post->group->isCreator() || $post->group->isAdmin() || $post->group->isModerator() || $isSuperAdmin)) {
             $gr = true;
         } else {
             $gr = false;
@@ -1991,7 +1992,7 @@ class HomeController extends Controller
 
         }
 
-        if ($post && ($post->user_id == Auth::user()->id || Auth::user()->id == 9 || $gr)) {
+        if ($post && ($post->user_id == Auth::user()->id || Auth::user()->id == 9 || $gr) || $isSuperAdmin) {
             @unlink('assets/front/content/' . $post->link);
             $post->delete();
 
@@ -2064,8 +2065,13 @@ class HomeController extends Controller
         if (!$post) return redirect()->back();
 
         $user = Auth::user();
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
 
-        if ($post->user_id != $user->id) return redirect()->back()->withErrors('Unexpected Error!');
+        if ($post->user_id != $user->id) {
+            if (!$isSuperAdmin) {
+                return redirect()->back()->withErrors('Unexpected Error!');
+            }
+        }
 
         $currentInterestIDs = Post::getPostInterestIds($post->id);
 
@@ -2102,8 +2108,13 @@ class HomeController extends Controller
 		//dd($request->file('post_image')->getMimeType());
 
         $user = Auth::user();
+        $isSuperAdmin = Auth::user()->isSuperAdmin;
 
-        if ($post->user_id != $user->id) return redirect()->back()->withErrors('Unexpected Error!');
+        if ($post->user_id != $user->id) {
+            if (!$isSuperAdmin) {
+                return redirect()->back()->withErrors('Unexpected Error!');
+            }
+        }
 
         if ($request->hasFile('post_image')) {
 
