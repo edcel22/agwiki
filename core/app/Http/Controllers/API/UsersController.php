@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\User;
+
+class UsersController extends Controller
+{
+    public function login(Request $request)
+    {
+        // return 'try';
+        $user = [
+            'email' => $request->email,
+            'password' => $request->password
+        ];
+ 
+        if (auth()->attempt($user)) {
+            $token = uniqid();
+            $user = User::where('email', $request->email)->first();
+            $user->update([
+                'app_token' => $token
+            ]);
+
+            return response([
+                'token' => $token
+            ]);
+        } else {
+            return response()->json(['error' => 'UnAuthorised'], 401);
+        }
+    }
+}
