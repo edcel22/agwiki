@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '58026f279082d651296b972fa8520856e0de32ef',
+        'reference' => 'a1eb5fe9ba08824346e9966c641733012646518a',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -30,6 +30,15 @@
             'replaced' => array(
                 0 => '*',
             ),
+        ),
+        'defuse/php-encryption' => array(
+            'pretty_version' => 'v2.4.0',
+            'version' => '2.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../defuse/php-encryption',
+            'aliases' => array(),
+            'reference' => 'f53396c2d34225064647a05ca76c1da9d99e5828',
+            'dev_requirement' => false,
         ),
         'dnoegel/php-xdg-base-dir' => array(
             'pretty_version' => 'v0.1.1',
@@ -111,6 +120,15 @@
             'aliases' => array(),
             'reference' => 'befcdc0e5dce67252aa6322d82424be928214fa2',
             'dev_requirement' => true,
+        ),
+        'firebase/php-jwt' => array(
+            'pretty_version' => 'v5.5.1',
+            'version' => '5.5.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../firebase/php-jwt',
+            'aliases' => array(),
+            'reference' => '83b609028194aa042ea33b5af2d41a7427de80e6',
+            'dev_requirement' => false,
         ),
         'fzaninotto/faker' => array(
             'pretty_version' => 'v1.9.2',
@@ -382,7 +400,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '58026f279082d651296b972fa8520856e0de32ef',
+            'reference' => 'a1eb5fe9ba08824346e9966c641733012646518a',
             'dev_requirement' => false,
         ),
         'laravel/nexmo-notification-channel' => array(
@@ -392,6 +410,15 @@
             'install_path' => __DIR__ . '/../laravel/nexmo-notification-channel',
             'aliases' => array(),
             'reference' => '03edd42a55b306ff980c9950899d5a2b03260d48',
+            'dev_requirement' => false,
+        ),
+        'laravel/passport' => array(
+            'pretty_version' => 'v7.5.1',
+            'version' => '7.5.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laravel/passport',
+            'aliases' => array(),
+            'reference' => 'd63cdd672c3d65b3c35b73d0ef13a9dbfcb71c08',
             'dev_requirement' => false,
         ),
         'laravel/slack-notification-channel' => array(
@@ -430,6 +457,15 @@
             'reference' => '3ef8657a78278dfeae7707d51747251db4176240',
             'dev_requirement' => false,
         ),
+        'league/event' => array(
+            'pretty_version' => '2.2.0',
+            'version' => '2.2.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/event',
+            'aliases' => array(),
+            'reference' => 'd2cc124cf9a3fab2bb4ff963307f60361ce4d119',
+            'dev_requirement' => false,
+        ),
         'league/flysystem' => array(
             'pretty_version' => '1.0.70',
             'version' => '1.0.70.0',
@@ -447,6 +483,27 @@
             'aliases' => array(),
             'reference' => 'd6365b901b5c287dd41f143033315e2f777e1167',
             'dev_requirement' => false,
+        ),
+        'league/oauth2-server' => array(
+            'pretty_version' => '7.4.0',
+            'version' => '7.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/oauth2-server',
+            'aliases' => array(),
+            'reference' => '2eb1cf79e59d807d89c256e7ac5e2bf8bdbd4acf',
+            'dev_requirement' => false,
+        ),
+        'league/oauth2server' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
+        ),
+        'lncd/oauth2' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
         ),
         'mockery/mockery' => array(
             'pretty_version' => '1.3.6',
@@ -621,6 +678,15 @@
             'aliases' => array(),
             'reference' => '2e32a6d48972b2c1976ed5d8967145b6cec4a4a9',
             'dev_requirement' => true,
+        ),
+        'phpseclib/phpseclib' => array(
+            'pretty_version' => '2.0.48',
+            'version' => '2.0.48.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpseclib/phpseclib',
+            'aliases' => array(),
+            'reference' => 'eaa7be704b8b93a6913b69eb7f645a59d7731b61',
+            'dev_requirement' => false,
         ),
         'phpspec/prophecy' => array(
             'pretty_version' => 'v1.10.3',
@@ -1080,6 +1146,15 @@
             'install_path' => __DIR__ . '/../symfony/process',
             'aliases' => array(),
             'reference' => '5cee9cdc4f7805e2699d9fd66991a0e6df8252a2',
+            'dev_requirement' => false,
+        ),
+        'symfony/psr-http-message-bridge' => array(
+            'pretty_version' => 'v1.3.0',
+            'version' => '1.3.0.0',
+            'type' => 'symfony-bridge',
+            'install_path' => __DIR__ . '/../symfony/psr-http-message-bridge',
+            'aliases' => array(),
+            'reference' => '9d3e80d54d9ae747ad573cad796e8e247df7b796',
             'dev_requirement' => false,
         ),
         'symfony/routing' => array(
