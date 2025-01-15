@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\UsersController;
 use Illuminate\Http\Request;
 
 /*
@@ -16,3 +18,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('login', [UsersController::class,'login']);
+Route::post('create-post', [PostController::class,'store']);
