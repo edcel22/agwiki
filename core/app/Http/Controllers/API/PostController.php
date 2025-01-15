@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Share;
 use App\User;
 
 class PostController extends Controller
@@ -14,7 +15,8 @@ class PostController extends Controller
         $validator = \Validator::make($request->all(), [
             'app_token' => 'required|exists:users,app_token',
             'content' => 'required',
-            'link' => 'sometimes',
+            'link' => 'sometimes', // imageLink or doc link
+            'type' => 'required|in:article,image'
         ]);
 
         $user = User::select('id')
@@ -29,8 +31,16 @@ class PostController extends Controller
         $created_post = Post::create([
             'user_id' => $user->id,
             'content' => $request->content,
-            'type' => 'feed',
-            'pubDate' => $request->pub_date
+            'type' => $request->type,
+            'from_api' => true,
+            'link' => $request->link,
+        ]);
+        $created_post->interests()->attach($request->interest);
+
+        $share = Share::create([
+            'post_id' => $created_post->id,
+            'user_id' => $user->id,
+			'group_id' => 0,
         ]);
 
         return response([
