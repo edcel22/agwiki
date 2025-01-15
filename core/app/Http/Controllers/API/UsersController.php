@@ -24,7 +24,10 @@ class UsersController extends Controller
             ]);
 
             return response([
-                'token' => $token
+                'user_id' => $user->id,
+                'token' => $token,
+                'username' => $user->username,
+                'name' => $user->name,
             ]);
         } else {
             return response()->json(['error' => 'UnAuthorised'], 401);
