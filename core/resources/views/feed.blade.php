@@ -273,7 +273,7 @@
                                         </li>
                                         </ul>
                                     @elseif(!empty($theSharer))
-                                            @if($theSharer->user_id == Auth::user()->id )
+                                            @if($theSharer->user_id == Auth::user()->id || $isSuperAdmin )
                                             <ul class="postedit">
 
                                                 <li>
@@ -455,7 +455,7 @@
                                 @endphp
 
                                 @if (Auth::check())
-                                    @if($post->user_id == Auth::user()->id )
+                                    @if($post->user_id == Auth::user()->id || $isSuperAdmin )
                                         <ul class="postedit">
                                                                         <li>
                                         <a href="/posts/edit/{{$post->id}}"><i class="fas fa-edit" ></i></a>
@@ -465,7 +465,7 @@
                                         </li>
                                         </ul>
                                     @elseif(!empty($theSharer))
-                                            @if($theSharer->user_id == Auth::user()->id )
+                                            @if($theSharer->user_id == Auth::user()->id || $isSuperAdmin )
                                             <ul class="postedit">
 
                                                 <li>
