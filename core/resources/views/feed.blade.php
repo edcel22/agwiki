@@ -514,7 +514,10 @@
                                     @endif @elseif($post->type == 'image')
                                     <p class="article-img">{!! excerpt($post) !!}</p>
                                     <br>
-                                    <img src="{{ asset('assets/front/content/' . $post->link) }}" class="img-responsive imgclickcls preload-image responsive-image" data-toggle="modal" data-target="#imageModal"> @elseif($post->type == 'video')
+                                    <?php
+                                        $postLink = $post->from_api ? $post->link : asset('assets/front/content/' . $post->link);
+                                    ?>
+                                    <img src="{{ $postLink }}" class="img-responsive imgclickcls preload-image responsive-image" data-toggle="modal" data-target="#imageModal"> @elseif($post->type == 'video')
                                     <p>{!! excerpt($post) !!}</p>
                                     <br>
                                     <video class="player" playsinline controls id="{{ str_random(20) }}" style="width: 100%;">

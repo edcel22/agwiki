@@ -292,6 +292,9 @@ class Post extends Model
     public function getLinkAttribute($link)
     
     {
+        if ($this->from_api) {
+            return $link;
+        }
         
         $path = 'assets/front/content/' . $link;
         
