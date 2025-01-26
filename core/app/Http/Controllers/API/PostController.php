@@ -61,6 +61,7 @@ class PostController extends Controller
             ->when($interestIds, function ($query, $interestIds) {
                 return $query->orWhereIn('id', $interestIds);
             })
+            ->orderBy('name', 'asc')
             ->limit(20)
             ->get();
 
