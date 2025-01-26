@@ -50,9 +50,20 @@ class PostController extends Controller
         ]);
     }
 
-    public function getInterests ()
+    public function getInterests(Request $request)
     {
-        $interests = Interest::get();
+        $keyword = $request->input('keyword', '');
+        $interestIds = $request->input('interestIds', []);
+        $interests = Interest::query()
+            ->when($keyword, function ($query, $keyword) {
+                return $query->where('name', 'like', '%' . $keyword . '%');
+            })
+            ->when($interestIds, function ($query, $interestIds) {
+                return $query->orWhereIn('id', $interestIds);
+            })
+            ->orderBy('name', 'asc')
+            ->limit(20)
+            ->get();
 
         return response([
             'interests' => $interests,
