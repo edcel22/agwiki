@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Interest;
 use App\Post;
 use App\Share;
 use App\User;
@@ -16,7 +17,8 @@ class PostController extends Controller
             'app_token' => 'required|exists:users,app_token',
             'content' => 'required',
             'link' => 'sometimes', // imageLink or doc link
-            'type' => 'required|in:article,image'
+            'type' => 'required|in:article,image',
+            'interest' => 'sometimes|array'
         ]);
 
         $user = User::select('id')
@@ -45,6 +47,15 @@ class PostController extends Controller
 
         return response([
             'record' => $created_post
+        ]);
+    }
+
+    public function getInterests ()
+    {
+        $interests = Interest::get();
+
+        return response([
+            'interests' => $interests,
         ]);
     }
 }
