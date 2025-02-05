@@ -116,10 +116,10 @@ Route::get('/list-segments', 'GroupController@listSegments');
 Route::get('/non-userfeed', 'HomeController@nonuserfeed')->name('nonuserfeed');
 Route::get('/all', 'HomeController@allPosts')->name('all');
 
-Route::get('/weather', 'HomeController@weather')->name('weather');
+// Route::get('/weather', 'HomeController@weather')->name('weather');
 // Route::get('/commodities', 'HomeController@commodities')->name('commodities');
-Route::get('/commodities', 'CommoditiesController@index')->name('commodities');
-Route::get('/commodities/fetch-data', 'CommoditiesController@fetch')->name('commodities.fetch');
+// Route::get('/commodities', 'CommoditiesController@index')->name('commodities');
+// Route::get('/commodities/fetch-data', 'CommoditiesController@fetch')->name('commodities.fetch');
 Route::get('/menupage', 'HomeController@menupage')->name('menu');
 
 Route::get('search', 'HomeController@search')->name('search');

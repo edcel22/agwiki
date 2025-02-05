@@ -120,7 +120,7 @@
 						<em class="color-theme">People</em>
 					</a>
 
-                    @if (Auth::check())
+                    {{-- @if (Auth::check())
 					<a href="/commodities" >
                     @else
                     <a onclick= "return registerPopup()">
@@ -128,16 +128,16 @@
 						<!--<span class="badge">new!</span>-->
 						<i class="bg-mint-light shadow-icon-large far fa-chart-bar"></i>
 						<em class="color-theme">Commodities</em>
-					</a> 
+					</a>  --}}
 
-                    @if (Auth::check())
+                    {{-- @if (Auth::check())
                     <a href="/weather">
                     @else
                     <a onclick= "return registerPopup()">
                     @endif
 						<i class="bg-blue1-light shadow-icon-large fas fa-sun"></i>
                         <em class="color-theme">Weather</em>
-					</a>
+					</a> --}}
 
           <!-- <a href="/marketplace" class="inactive">
             <i class="bg-orange-dark shadow-icon-large fas fa-store"></i>

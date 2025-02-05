@@ -88,7 +88,7 @@ if (Auth::check()) {
                         <em class="color-theme">People</em>
                       </a>
 
-                      @if (Auth::check())
+                      {{-- @if (Auth::check())
                         <a href="/commodities" >
                         @else
                         <a onclick= "return registerPopup()">
@@ -96,7 +96,7 @@ if (Auth::check()) {
                         <i class="bg-mint-light shadow-icon-large far fa-chart-bar"></i>
                         <!--n class="badge">new!</span>-->
                         <em class="color-theme">Commodities</em>
-                      </a>
+                      </a> --}}
 <!--
                       <a href="#" data-menu="menu-warning">
             						<i class="bg-white shadow-icon-large fas fa-briefcase-medical" style="color:red"></i>
@@ -108,7 +108,7 @@ if (Auth::check()) {
                         <em class="color-theme">Marketplace</em>
                       </a>-->
 
-                      @if (Auth::check())
+                      {{-- @if (Auth::check())
                         <a href="/weather">
                         @else
                         <a onclick= "return registerPopup()">
@@ -116,7 +116,7 @@ if (Auth::check()) {
                         <i class="bg-blue1-light shadow-icon-large fas fa-sun"></i>
                         
                         <em class="color-theme">Weather</em>
-                      </a>
+                      </a> --}}
 
                       @if (Auth::check())
                         <a href="#" data-menu="menu-alerts">
