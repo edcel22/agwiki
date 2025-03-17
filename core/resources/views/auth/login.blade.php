@@ -2,7 +2,7 @@
 @section('css')
 @endsection
 @section('content')
- <script src="https://www.google.com/recaptcha/api.js"></script>
+ {{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
 
 
 <style>
@@ -243,7 +243,9 @@
 			<div class="clear"></div>
 			<!--id="ajaxSubmit" -->
             <!--data-menu="welcome-screen"-->
-            <button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
+            {{-- <button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
+												 --}}
+													<button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
 			<div class="clear"></div>
 		</form>
 		<div class="divider"></div>
