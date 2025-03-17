@@ -12,8 +12,8 @@ core/public/testfile*.html
 /core/public/cookie.txt
 /core/public/testfile*.html
 # Exception: ONLY allow the new_icons directory
-!/assets/front/img/new_icons/
-!/assets/front/img/new_icons/**
+!/core/public/assets/front/img/new_icons/
+!/core/public/assets/front/img/new_icons/**
 # Exception: ONLY allow the new_icons directory
 !/core/public/assets/front/img/new_icons/
 !/core/public/assets/front/img/new_icons/**
