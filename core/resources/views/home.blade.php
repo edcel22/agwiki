@@ -44,23 +44,23 @@ if (Auth::check()) {
                         <em class="color-theme">Feed</em>
                       </a>
 
-                      @if (Auth::check())
+                      @if(Auth::check())
                         <a href="/interests">
                         @else
-                        <a onclick= "return registerPopup()">
+                        <a onclick="return registerPopup()">
                         @endif
-                        <i class="shadow-icon-large far fa-file-alt" style="background: #7ED957; !important;"></i>
-                        <em class="color-theme">Topics</em>
-                      </a>
+                            <img src="{{ asset('assets/front/img/agwiki-topics-icon.svg') }}" alt="Topics Icon" style="height: 44px; width: 44px;">
+                            <em class="color-theme">Topics</em>
+                        </a>
 
                       @if (Auth::check())
                         <a href="/groups">
-                        @else    
-                        <a onclick= "return registerPopup()">
-                        @endif
-                        <i class="shadow-icon-large fas fa-users" style="background: #D2AC47; !important;"></i>
-                        <em class="color-theme">Groups</em>
-                      </a>
+                          @else    
+                          <a onclick= "return registerPopup()">
+                          @endif
+                          <i class="shadow-icon-large fas fa-users" style="background: #D2AC47; !important;"></i>
+                          <em class="color-theme">Groups</em>
+                        </a>
 
                       @if( Auth::check())
                         <a href="/profile/{{ Auth::user()->username }}">
