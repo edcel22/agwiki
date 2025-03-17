@@ -81,7 +81,12 @@
 
 					
 																			@if(Auth::check())
-																					<a href="/interests">
+																					<a href="/interests" style="
+																					display: flex;
+																					justify-content: center;
+																					align-items: center;
+																					flex-direction: column;
+																			">
 																					@else
 																					<a onclick="return registerPopup()" style="
 																									display: flex;
@@ -119,7 +124,12 @@
 					</a>
 						
                    @if (Auth::check())
-                    <a href="/feed?fav=1" >
+                    <a href="/feed?fav=1" style="
+																				display: flex;
+																				justify-content: center;
+																				align-items: center;
+																				flex-direction: column;
+																		">
                    @else
 																			<a onclick="return registerPopup()" style="
 																			display: flex;
@@ -140,7 +150,12 @@
 																	</a>
 
                    @if (Auth::check())
-					<a href="/peoples">
+					<a href="/peoples" style="
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					flex-direction: column;
+			">
                     @else 
 																				<a onclick="return registerPopup()" style="
 																				display: flex;
