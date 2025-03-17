@@ -81,7 +81,7 @@
 																					@else
 																					<a onclick="return registerPopup()">
 																					@endif
-																									<img src="{{ asset('assets/front/img/new_icons/agwiki-topics-icon.svg') }}" alt="Topics Icon" style="height: 44px; width: 44px;">
+																									<img src="{{ asset('assets/front/img/agwiki-topics-icon.svg') }}" alt="Topics Icon" style="height: 44px; width: 44px;">
 																									<em class="color-theme">Topics</em>
 																					</a>
 
