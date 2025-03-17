@@ -40,7 +40,7 @@ if (Auth::check()) {
                     <div class="landing-icons color-theme">
 
                       <a href="/feed">
-                        <i class="shadow-icon-large far fa-newspaper" style="background: #66C2E0;"></i>
+                        <i class="shadow-icon-large far fa-newspaper" style="background: #66C2E0; !important;"></i>
                         <em class="color-theme">Feed</em>
                       </a>
 
@@ -49,7 +49,7 @@ if (Auth::check()) {
                         @else
                         <a onclick= "return registerPopup()">
                         @endif
-                        <i class="bg-green1-dark shadow-icon-large far fa-file-alt"></i>
+                        <i class="shadow-icon-large far fa-file-alt" style="background: #7ED957; !important;"></i>
                         <em class="color-theme">Topics</em>
                       </a>
 
@@ -58,7 +58,7 @@ if (Auth::check()) {
                         @else    
                         <a onclick= "return registerPopup()">
                         @endif
-                        <i class="bg-yellow2-dark shadow-icon-large fas fa-users"></i>
+                        <i class="shadow-icon-large fas fa-users" style="background: #D2AC47; !important;"></i>
                         <em class="color-theme">Groups</em>
                       </a>
 
