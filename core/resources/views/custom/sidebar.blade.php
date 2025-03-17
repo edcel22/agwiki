@@ -244,15 +244,15 @@
                     @endif
 
 
-					<a href="https://go.agwiki.com/#features" target="_blank">
+					{{-- <a href="https://go.agwiki.com/#features" target="_blank">
 						<i class="bg-purple shadow-icon-large fas fa-info-circle"></i>
 						 <em class="color-theme">About</em>
-					</a>
+					</a> --}}
 					<!-- <a href="#" data-menu="menu-warning">
 						<i class="bg-white shadow-icon-large fas fa-briefcase-medical" style="color:red"></i>
 						<em class="color-theme">Support</em>
 					</a> -->
-					<a href="https://education.agwiki.com/" 
+					<a href="https://go.agwiki.com/agwiki-education/" 
 					style="
 						display: flex;
 						justify-content: center;

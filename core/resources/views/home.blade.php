@@ -219,13 +219,13 @@ if (Auth::check()) {
                             <em class="color-theme">Messages</em>
                         </a>
                         @endif
-
+{{-- 
 						<a href="https://go.agwiki.com/#features" target="_blank">
 							<i class="bg-purple shadow-icon-large fas fa-info-circle"></i>
 							 <em class="color-theme">About</em>
-						</a>
+						</a> --}}
 						
-						<a href="https://education.agwiki.com/" 
+						<a href="https://go.agwiki.com/agwiki-education/" 
               style="
                 display: flex;
                 justify-content: center;
@@ -244,6 +244,43 @@ if (Auth::check()) {
                 <em class="color-theme">Education</em>
               </a>
                       
+              <a href="https://go.agwiki.com/advertise/" 
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+              "
+              target="_blank">
+              <div style="
+                  padding: 10px;
+                  background: #C2CF5F;
+                  border-radius: 10px;
+                  box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+              ">
+                  <img src="{{ asset('assets/img/agwiki-ads-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+              </div>
+                <em class="color-theme">Advertise</em>
+              </a>
+              <a href="https://go.agwiki.com/become-a-thought-leader/" 
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+              "
+              target="_blank">
+              <div style="
+                  padding: 10px;
+                  background: #CB6CE6;
+                  border-radius: 10px;
+                  box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+              ">
+                  <img src="{{ asset('assets/img/agwiki-thought-leader-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+              </div>
+                <em class="color-theme">BECOME A THOUGHT LEADER</em>
+              </a>
+              
                       
                     
                         <div class="padding-10 clear" >
