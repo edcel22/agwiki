@@ -37,7 +37,11 @@ if (Auth::check()) {
                         <a href="/"><img src="/assets/front/img/logo_md.png" alt="img"></a>
                     </div>
 
-                    <div class="landing-icons color-theme">
+                    <div class="landing-icons color-theme" style="
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                ">
 
                       <a href="/feed">
                         <i class="shadow-icon-large far fa-newspaper" style="background: #66C2E0; !important;"></i>
@@ -219,11 +223,11 @@ if (Auth::check()) {
                             <em class="color-theme">Messages</em>
                         </a>
                         @endif
-{{-- 
+
 						<a href="https://go.agwiki.com/#features" target="_blank">
 							<i class="bg-purple shadow-icon-large fas fa-info-circle"></i>
 							 <em class="color-theme">About</em>
-						</a> --}}
+						</a>
 						
 						<a href="https://go.agwiki.com/agwiki-education/" 
               style="

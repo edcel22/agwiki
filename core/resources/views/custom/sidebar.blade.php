@@ -68,7 +68,11 @@
 
 
 
-				<div class="landing-icons color-theme">
+				<div class="landing-icons color-theme" style="
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+">
 
           <a href="/feed">
 						<i class="shadow-icon-large far fa-newspaper" style="background: #66C2E0; !important;"></i>
@@ -231,10 +235,10 @@
                     @endif
 
 
-					{{-- <a href="https://go.agwiki.com/#features" target="_blank">
+					<a href="https://go.agwiki.com/#features" target="_blank">
 						<i class="bg-purple shadow-icon-large fas fa-info-circle"></i>
 						 <em class="color-theme">About</em>
-					</a> --}}
+					</a>
 					<!-- <a href="#" data-menu="menu-warning">
 						<i class="bg-white shadow-icon-large fas fa-briefcase-medical" style="color:red"></i>
 						<em class="color-theme">Support</em>
