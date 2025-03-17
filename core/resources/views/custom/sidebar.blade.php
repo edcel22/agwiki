@@ -314,6 +314,7 @@
 							justify-content: center;
 							align-items: center;
 							flex-direction: column;
+							margin-bottom: 14px;
 					"
 					target="_blank">
 					<div style="
