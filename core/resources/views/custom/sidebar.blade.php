@@ -180,20 +180,7 @@
             <em class="color-theme">Marketplace</em>
           </a> -->
                     @if (Auth::check())
-					<a href="#" data-menu="menu-alerts" style="
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					flex-direction: column;
-				">
-						<div style="
-						padding: 10px;
-						background: #E3514C;
-						border-radius: 10px;
-						box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
-				">
-						<img src="{{ asset('assets/img/agwiki-alerts-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
-				</div>
+					<a href="#" data-menu="menu-alerts">
 						@if($countN>0)<span class="badge">{{$countN}}</span>@endif
 						<em class="color-theme">Alerts</em>
 					</a>
