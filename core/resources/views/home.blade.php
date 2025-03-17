@@ -40,7 +40,7 @@ if (Auth::check()) {
                     <div class="landing-icons color-theme">
 
                       <a href="/feed">
-                        <i class="bg-blue2-light shadow-icon-large far fa-newspaper"></i>
+                        <i class="shadow-icon-large far fa-newspaper" style="background: #66C2E0;"></i>
                         <em class="color-theme">Feed</em>
                       </a>
 
