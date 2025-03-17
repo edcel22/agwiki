@@ -78,25 +78,49 @@ if (Auth::check()) {
                         <a href="/profile/{{ Auth::user()->username }}">
                         
                         @else <a onclick= "return registerPopup()">@endif
-                        <i class="bg-dark2-dark shadow-icon-large fas fa-user-alt"></i>
+                        <i class="bg-dark2-dark shadow-icon-large fas fa-user-alt" style="background: #66B4AF; !important;"></i>
                         <em class="color-theme">Profile</em>
                       </a>
 
                       @if (Auth::check())
                             <a href="/feed?fav=1" >
                         @else
-                            <a onclick= "return registerPopup()">
-                        @endif
-                        <i class="bg-yellow1-light shadow-icon-large fas fa-star"></i>
+                        <a onclick="return registerPopup()" style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: column;
+                       ">
+                       @endif
+                        <div style="
+                          padding: 10px;
+                          background: #FFDB84;
+                          border-radius: 10px;
+                          box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+                        ">
+                          <img src="{{ asset('assets/img/agwiki-bookmarks-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+                        </div>
                         <em class="color-theme">Bookmarks</em>
                       </a>
 
                       @if (Auth::check())
                         <a href="/peoples">
                         @else 
-                        <a onclick= "return registerPopup()">
+                        <a onclick="return registerPopup()" style="
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          flex-direction: column;
+                        ">
                         @endif
-                        <i class="bg-orange-light shadow-icon-large fas fa-user-check"></i>
+                          <div style="
+                              padding: 10px;
+                              background: #FC6E51;
+                              border-radius: 10px;
+                              box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+                          ">
+                              <img src="{{ asset('assets/img/agwiki-people-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+                          </div>
                         <em class="color-theme">People</em>
                       </a>
 
@@ -131,14 +155,39 @@ if (Auth::check()) {
                       </a> --}}
 
                       @if (Auth::check())
-                        <a href="#" data-menu="menu-alerts">
-                            <i class="bg-gradient-red1 shadow-icon-large fas fa-bell"></i>
+                      <a href="#" data-menu="menu-alerts" style="
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      flex-direction: column;
+                    ">
+                        <div style="
+                        padding: 10px;
+                        background: #E3514C;
+                        border-radius: 10px;
+                        box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+                    ">
+                        <img src="{{ asset('assets/img/agwiki-alerts-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+                    </div>
                             @if($countN>0)<span class="badge">{{$countN}}</span>@endif
                             <em class="color-theme">Alerts</em>
                         </a>
                         @else
-                        <a onclick= "return registerPopup()">
-                            <i class="bg-gradient-red1 shadow-icon-large fas fa-bell"></i>
+                        <a onclick="return registerPopup()" style="
+																	display: flex;
+																	justify-content: center;
+																	align-items: center;
+																	flex-direction: column;
+																">
+																@endif
+																	<div style="
+																			padding: 10px;
+																			background: #E3514C;
+																			border-radius: 10px;
+																			box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+																	">
+																			<img src="{{ asset('assets/img/agwiki-alerts-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+																	</div>
                             <em class="color-theme">Alerts</em>
                         </a>
                         @endif
@@ -152,8 +201,21 @@ if (Auth::check()) {
                                 <em class="color-theme">Messages</em>
                         </a>
                         @else 
-                        <a onclick= "return registerPopup()">
-                            <i class="bg-gradient-blue2 shadow-icon-large fas fa-envelope"></i>
+                        <a onclick="return registerPopup()" style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: column;
+                      ">
+                      @endif
+                        <div style="
+                            padding: 10px;
+                            background: #5CE1E6;
+                            border-radius: 10px;
+                            box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+                        ">
+                            <img src="{{ asset('assets/img/agwiki-messages-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+                        </div>
                             <em class="color-theme">Messages</em>
                         </a>
                         @endif
@@ -163,10 +225,24 @@ if (Auth::check()) {
 							 <em class="color-theme">About</em>
 						</a>
 						
-						<a href="https://education.agwiki.com/" target="_blank">
-						<i class="bg-green1-dark shadow-icon-large fas fa-laptop-code"></i>
-						 <em class="color-theme">Education</em>
-						</a>
+						<a href="https://education.agwiki.com/" 
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+              "
+              target="_blank">
+              <div style="
+                  padding: 10px;
+                  background: #66E0A3;
+                  border-radius: 10px;
+                  box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+              ">
+                  <img src="{{ asset('assets/img/agwiki-education-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+              </div>
+                <em class="color-theme">Education</em>
+              </a>
                       
                       
                     
