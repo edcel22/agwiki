@@ -76,14 +76,14 @@
 					</a>
 
 					
-                    @if (Auth::check())
-                        <a href="/interests">
-                    @else
-                        <a onclick= "return registerPopup()">
-                    @endif
-                        <i class="shadow-icon-large far fa-file-alt" style="background: #7ED957; !important;"></i>
-                        <em class="color-theme">Topics</em>
-                        </a>
+																			@if(Auth::check())
+																					<a href="/interests">
+																					@else
+																					<a onclick="return registerPopup()">
+																					@endif
+																									<img src="{{ asset('assets/front/img/agwiki-topics-icon.svg') }}" alt="Topics Icon" style="height: 44px; width: 44px;">
+																									<em class="color-theme">Topics</em>
+																					</a>
 
                     @if (Auth::check())
 					<a href="/groups">
