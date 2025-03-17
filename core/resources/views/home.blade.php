@@ -47,7 +47,12 @@ if (Auth::check()) {
                       @if(Auth::check())
                         <a href="/interests">
                         @else
-                        <a onclick="return registerPopup()">
+                        <a onclick="return registerPopup()" style="
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          flex-direction: column;
+                        ">
                         @endif
                             <div style="
                               padding: 10px;
