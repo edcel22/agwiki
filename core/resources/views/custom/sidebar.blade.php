@@ -80,10 +80,17 @@
 																					<a href="/interests">
 																					@else
 																					<a onclick="return registerPopup()">
-																					@endif
-																									<img src="{{ asset('assets/img/agwiki-topics-icon.svg') }}" alt="Topics Icon" style="height: 44px; width: 44px;">
-																									<em class="color-theme">Topics</em>
-																					</a>
+																						@endif
+																										<div style="
+																												padding: 10px;
+																												background: #7ED957;
+																												border-radius: 10px;
+																												box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+																										">
+																												<img src="{{ asset('assets/img/agwiki-topics-icon.svg') }}" alt="Topics Icon" style="height: 22px; width: 22px;">
+																										</div>
+																										<em class="color-theme">Topics</em>
+																						</a>
 
                     @if (Auth::check())
 					<a href="/groups">
