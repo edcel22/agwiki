@@ -225,7 +225,6 @@ if (Auth::check()) {
                         align-items: center;
                         flex-direction: column;
                       ">
-                      @endif
                         <div style="
                             padding: 10px;
                             background: #5CE1E6;
