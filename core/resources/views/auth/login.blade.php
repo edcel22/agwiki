@@ -178,37 +178,62 @@
         </form>
 	</div>
 </div>
-<div id="menu-signin" class="menu menu-box-bottom" data-menu-height="70%" data-menu-effect="menu-over">
+<div id="menu-signin" class="menu menu-box-bottom" data-menu-height="500" data-menu-effect="menu-over">
 	<div class="content">
-		<h1 class="uppercase ultrabold top-20">LOGIN</h1>
-		<p class="font-11 under-heading bottom-20">
-			Hello, stranger! Please enter your credentials below.
-		</p>
-		<form method="POST" action="{{ route('login') }}">
-			@csrf
-			<div class="input-style input-style-1 input-required login">
-				<label>Email</label>
-				<em>(required)</em>
-				<input type="email" class="form-control" name="username" id="username" placeholder="Email" value="{{ old('username') }}" required autofocus>
-			</div>
-			<div class="input-style input-style-1 input-required login">
-				<label>Password</label>
-				<em>(required)</em>
-				<input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-			</div>
-			<input type="checkbox" onclick="showPassword()"> Show Password
-			<div class="top-30">
-				<div class="one-half"><a href="{{ route('password.request') }}" data-menu="menu-forgot" class="left-text font-10">Forgot Password?</a></div>
-				<div class="one-half last-column"><a data-menu="menu-signup" href="{{ route('register') }}" class="right-text font-10">Create Account</a></div>
-			</div>
-			<div class="clear"></div>
-			<button type="submit" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10" style="width:100%">Login</button>
-		</form>
-		<div class="divider"></div>
-		<a href="{{ url('/login/linkedin') }}" class="button bg-linkedin button-l shadow-large button-icon-left"><i class="fab fa-linkedin-in"></i> Log In With LinkedIn</a><br>
-		<a href="{{ url('/login/facebook') }}" class="button bg-facebook button-l shadow-large button-icon-left"><i class="fab fa-facebook-f"></i> Log In With Facebook</a><br>
+					<h1 class="uppercase ultrabold top-20">LOGIN</h1>
+					<p class="font-11 under-heading bottom-20">
+									Hello, stranger! Please enter your credentials below.
+					</p>
+
+					<!-- Email Input -->
+					<div class="input-style has-icon input-style-1 input-required">
+									<i class="input-icon fa fa-at"></i>
+									<span>Email</span>
+									<em>(required)</em>
+									<input type="email" id="email" name="email" placeholder="Email" required>
+					</div>
+
+					<!-- Password Input -->
+					<div class="input-style has-icon input-style-1 input-required">
+									<i class="input-icon fa fa-lock font-11"></i>
+									<span>Password</span>
+									<em>(required)</em>
+									<input type="password" id="password" name="password" placeholder="Password" required>
+					</div>
+
+					<!-- Show Password Checkbox -->
+					<div class="top-10">
+									<input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password
+					</div>
+
+					<div class="top-30">
+									<div class="one-half">
+													<a href="#" data-menu="menu-forgot" class="left-text font-10">Forgot Password?</a>
+									</div>
+									<div class="one-half last-column">
+													<a data-menu="menu-signup" href="#" class="right-text font-10">Create Account</a>
+									</div>
+					</div>
+
+					<div class="clear"></div>
+
+					<!-- Login Button (Uncomment if needed) -->
+					<!-- <a href="dashboard.html" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10">LOGIN</a> -->
+
+					<div class="divider"></div>
+
+					<!-- Social Login Buttons -->
+					<a href="#" class="button bg-linkedin button-l shadow-large button-icon-left">
+									<i class="fab fa-linkedin-in"></i> Log In With LinkedIn
+					</a>
+					<br>
+					<a href="#" class="button bg-facebook button-l shadow-large button-icon-left">
+									<i class="fab fa-facebook-f"></i> Log In With Facebook
+					</a>
+					<br>
 	</div>
 </div>
+
 <div id="menu-signup" class="menu menu-box-bottom" data-menu-height="92%" data-menu-effect="menu-parallax">
 	<div class="content">
 		<h1 class="uppercase ultrabold top-20">Register</h1>
@@ -355,13 +380,16 @@
 <script>
 	const player = new Plyr('#player');
 	function showPassword() {
-	  var x = document.getElementById("password");
-	  if (x.type === "password") {
-		x.type = "text";
-	  } else {
-		x.type = "password";
-	  }
-	}
+							var passwordField = document.getElementById("password");
+							var checkbox = document.getElementById("showPasswordCheckbox");
+
+							// Toggle password visibility
+							if (checkbox.checked) {
+											passwordField.type = "text";
+							} else {
+											passwordField.type = "password";
+							}
+			}
 </script>
 @endsection
 
