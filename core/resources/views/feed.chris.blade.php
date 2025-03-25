@@ -1074,7 +1074,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js">
     </script>
 
-    <script>
+    {{-- <script>
         function showPassword() {
             var passwordField = document.getElementById("password");
             var checkbox = document.getElementById("showPasswordCheckbox");
@@ -1086,7 +1086,7 @@
                 passwordField.type = "password";
             }
         }
-    </script>
+    </script> --}}
 
     <script>
         (function($) {
@@ -1859,5 +1859,18 @@
 
         }
     </script>
+    <script>
+        function showPassword() {
+            var passwordField = document.getElementById("password");
+            var checkbox = document.getElementById("showPasswordCheckbox");
 
+            // Toggle password visibility
+            if (checkbox.checked) {
+            passwordField.type = "text";
+            } else {
+            passwordField.type = "password";
+            }
+        }
+    </script>
+    
     @endsection
