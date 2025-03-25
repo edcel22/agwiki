@@ -1861,15 +1861,18 @@
     </script>
     <script>
         function showPassword() {
-            var passwordField = document.getElementById("password");
+            // Get password field from the active login form
+            var passwordField = document.querySelector("#menu-signin input[name='password']");
             var checkbox = document.getElementById("showPasswordCheckbox");
-
-            // Toggle password visibility
-            if (checkbox.checked) {
-            passwordField.type = "text";
-            } else {
-            passwordField.type = "password";
-            }
+            
+            if (passwordField && checkbox) {
+                // Toggle password visibility
+                if (checkbox.checked) {
+                passwordField.type = "text";
+                } else {
+                passwordField.type = "password";
+                }
+            } 
         }
     </script>
     
