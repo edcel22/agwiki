@@ -856,7 +856,9 @@
                     <label>Password</label>
                     <em>(required)</em>
                     <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-                </div>
+                </div>  
+
+                {{-- login: feed.blade.php --}}
     
                 <!-- Show Password Checkbox -->
                 <input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password

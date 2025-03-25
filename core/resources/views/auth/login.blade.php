@@ -200,6 +200,7 @@
 									<em>(required)</em>
 									<input type="password" id="password" name="password" placeholder="Password" required>
 					</div>
+                {{-- login: login.blade.php --}}
 
 					<!-- Show Password Checkbox -->
 					<div class="top-10">

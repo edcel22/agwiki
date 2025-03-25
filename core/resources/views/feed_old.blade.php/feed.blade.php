@@ -934,6 +934,7 @@
             <em>(required)</em>
             <input type="password" id="password" name="password" placeholder="Password" required>
         </div>
+                {{-- login: feed.old.blade.php /feed.blade.php --}}
 
         <!-- Show Password Checkbox -->
         <div class="top-10">
