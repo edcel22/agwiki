@@ -1204,22 +1204,7 @@
         <script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
         <script src="/assets/front/js/jquery.jscroll.min.js">
         </script>
-        
-        <script>
-            const player = new Plyr('#player');
-        
-            function showPassword() {
-                var passwordField = document.getElementById("password");
-                var checkbox = document.getElementById("showPasswordCheckbox");
-                
-                // Toggle password visibility
-                if (checkbox.checked) {
-                    passwordField.type = "text";
-                } else {
-                    passwordField.type = "password";
-                }
-            }
-        </script>
+    
         <script type="text/javascript">
             $(function() {
     
@@ -1760,6 +1745,22 @@
     
                 $('.emojionearea-editor').attr('placeholder', 'New Article')
     
+            }
+        </script>
+         <script>
+            function showPassword() {
+                // Get password field from the active login form
+                var passwordField = document.querySelector("#menu-signin input[name='password']");
+                var checkbox = document.getElementById("showPasswordCheckbox");
+                
+                if (passwordField && checkbox) {
+                    // Toggle password visibility
+                    if (checkbox.checked) {
+                    passwordField.type = "text";
+                    } else {
+                    passwordField.type = "password";
+                    }
+                } 
             }
         </script>
     @endsection
