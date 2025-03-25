@@ -936,7 +936,7 @@
         </div>
                 {{-- login: feed.old.blade.php /feed.blade.php --}}
 
-        <!-- Show Password Checkbox -->
+        <!-- Show Password Checkbox : login - feed.old.blade.php  -->
         <div class="top-10">
             <input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password
         </div>

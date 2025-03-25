@@ -860,7 +860,7 @@
 
                 {{-- login: feed.blade.php --}}
     
-                <!-- Show Password Checkbox -->
+                <!-- Show Password Checkbox : login - feed.blade.php -->
                 <input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password
     
                 <div class="top-30">
