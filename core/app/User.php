@@ -287,8 +287,8 @@ class User extends Authenticatable
             ->where('shares.active', 1) // Include active filter
             ->whereRaw('post_id in (select post_id from interest_post ip inner join posts p on p.id = ip.post_id where ip.interest_id = ' . $_GET['topic'] . ')')
             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
-            ->orderBy('id', 'DESC')
-            ->paginate(10); // Ensure pagination works properly for topic feed
+            ->orderBy('shares.id', 'DESC')  // Explicitly specify shares.id instead of just id
+            ->paginate(10);
         $shares->setPath('');
     } elseif (isset($_GET['rss'])) {
         $shares = Share::distinct('shares.post_id')
