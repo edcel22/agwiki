@@ -344,52 +344,87 @@ class FrontController extends Controller
 
     // }
 
+    // public function forgotPass(Request $request)
+    // {
+    //     \Log::info('Password reset requested for email: ' . $request->email);
+        
+    //     $this->validate($request,
+    //         [
+    //             'email' => 'required',
+    //         ]);
+    //     $user = User::where('email', $request->email)->first();
+
+    //     if (! $user) {
+    //         return redirect()->back()->withErrors('Email Not Available');
+    //     } else {
+    //         $to = $user->email;
+    //         $name = $user->name;
+    //         $subject = 'Password Reset';
+    //         $code = str_random(30);
+    //         $message = 'Use This Link to Reset Password: '.url('/').'/reset/'.$code;
+
+    //         DB::table('password_resets')->insert(
+    //             ['email' => $to, 'token' => $code, 'status' => 0, 'created_at' => date("Y-m-d h:i:s")]
+    //         );
+
+    //         try {
+    //             \Log::info('Sending password reset email to: ' . $to);
+                
+    //             \Mail::raw($message, function($message) use ($to, $name, $subject) {
+    //                 $message->to($to)
+    //                     ->from('no-reply@agwiki.com', 'AGWIKI')
+    //                     ->subject($subject);
+    //             });
+                
+    //             \Log::info('Password reset email sent successfully');
+    //             return redirect()->route('login')->withSuccess('Password Reset Email Sent Successfully');
+    //         } catch (\Exception $e) {
+    //             \Log::error('Error sending password reset email: ' . $e->getMessage());
+    //             return redirect()->route('login')->withErrors('Error sending email: ' . $e->getMessage());
+    //         }
+    //     }
+    // }
+
     public function forgotPass(Request $request)
     {
-
-        $client = new \Postmark\PostmarkClient('362472fb-178c-4cbd-94b2-c59bb5f112b3');
-        $response = $client->sendEmail(
-            'no-reply@agwiki.com',
-            $user->email,
-            'Password Reset',
-            'Use This Link to Reset Password: '.url('/').'/reset/'.$code,
-            '<html><body><p>Use This Link to Reset Password: <a href="'.url('/').'/reset/'.$code.'">'.url('/').'/reset/'.$code.'</a></p></body></html>'
-        );
-
-        return redirect()->route('login');
-        
-
         \Log::info('Password reset requested for email: ' . $request->email);
         
-        $this->validate($request,
-            [
-                'email' => 'required',
-            ]);
+        $this->validate($request, [
+            'email' => 'required',
+        ]);
+        
         $user = User::where('email', $request->email)->first();
 
-        if (! $user) {
+        if (!$user) {
             return redirect()->back()->withErrors('Email Not Available');
         } else {
             $to = $user->email;
             $name = $user->name;
             $subject = 'Password Reset';
             $code = str_random(30);
-            $message = 'Use This Link to Reset Password: '.url('/').'/reset/'.$code;
+            $resetLink = url('/') . '/reset/' . $code;
 
-            DB::table('password_resets')->insert(
-                ['email' => $to, 'token' => $code, 'status' => 0, 'created_at' => date("Y-m-d h:i:s")]
-            );
+            DB::table('password_resets')->insert([
+                'email' => $to, 
+                'token' => $code, 
+                'status' => 0, 
+                'created_at' => date("Y-m-d h:i:s")
+            ]);
 
             try {
                 \Log::info('Sending password reset email to: ' . $to);
                 
-                \Mail::raw($message, function($message) use ($to, $name, $subject) {
-                    $message->to($to)
-                        ->from('no-reply@agwiki.com', 'AGWIKI')
-                        ->subject($subject);
-                });
+                // Use Postmark API directly
+                $client = new \Postmark\PostmarkClient('362472fb-178c-4cbd-94b2-c59bb5f112b3');
+                $response = $client->sendEmail(
+                    'no-reply@agwiki.com',
+                    $to,
+                    $subject,
+                    'Use This Link to Reset Password: ' . $resetLink,
+                    '<html><body><p>Hello ' . $name . ',</p><p>Use This Link to Reset Password: <a href="' . $resetLink . '">' . $resetLink . '</a></p></body></html>'
+                );
                 
-                \Log::info('Password reset email sent successfully');
+                \Log::info('Password reset email sent successfully via Postmark API. MessageID: ' . $response['MessageID']);
                 return redirect()->route('login')->withSuccess('Password Reset Email Sent Successfully');
             } catch (\Exception $e) {
                 \Log::error('Error sending password reset email: ' . $e->getMessage());
