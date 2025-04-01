@@ -539,8 +539,8 @@ class ComposerStaticInit2b182f39da285d19fe266e89103c795c
         array (
             'Postmark\\' => 
             array (
-                0 => __DIR__ . '/..' . '/wildbit/swiftmailer-postmark/src',
-                1 => __DIR__ . '/..' . '/wildbit/postmark-php/src',
+                0 => __DIR__ . '/..' . '/wildbit/postmark-php/src',
+                1 => __DIR__ . '/..' . '/wildbit/swiftmailer-postmark/src',
             ),
             'Parsedown' => 
             array (
@@ -611,6 +611,7 @@ class ComposerStaticInit2b182f39da285d19fe266e89103c795c
         'App\\Interest' => __DIR__ . '/../..' . '/app/Interest.php',
         'App\\Jobs\\SendEmailBroadcastJob' => __DIR__ . '/../..' . '/app/Jobs/SendEmailBroadcastJob.php',
         'App\\Like' => __DIR__ . '/../..' . '/app/Like.php',
+        'App\\Mail\\PostmarkTransport' => __DIR__ . '/../..' . '/app/Mail/PostmarkTransport.php',
         'App\\Mention' => __DIR__ . '/../..' . '/app/Mention.php',
         'App\\Message' => __DIR__ . '/../..' . '/app/Message.php',
         'App\\Notify' => __DIR__ . '/../..' . '/app/Notify.php',

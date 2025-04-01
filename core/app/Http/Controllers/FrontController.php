@@ -387,7 +387,6 @@ class FrontController extends Controller
 
 public function forgotPass(Request $request)
 {
-    return 'sfsdf';
     // Step 1: Log that we received a request
     \Log::info('Password reset requested for email: ' . $request->email);
     
