@@ -11,6 +11,19 @@
 |
 */
 
+Route::get('/mail-test', function () {
+    try {
+        \Mail::raw('This is a test email via Postmark API at ' . now(), function ($message) {
+            $message->to('edcel.estadola.dev@gmail.com');
+            $message->subject('Postmark API Test');
+        });
+        
+        return 'Mail sent successfully via Postmark API!';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 #check php info for debugging the dependencies
 Route::get('/gd-test', function () {
     if (function_exists('gd_info')) {

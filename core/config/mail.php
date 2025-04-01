@@ -18,6 +18,13 @@ return [
 
     'driver' => env('MAIL_DRIVER', 'smtp'),//sendmail
 
+'driver' => env('MAIL_MAILER', 'postmark'),
+
+'postmark' => [
+    'transport' => 'postmark',
+    'token' => env('POSTMARK_TOKEN'),
+],
+
     /*
     |--------------------------------------------------------------------------
     | SMTP Host Address

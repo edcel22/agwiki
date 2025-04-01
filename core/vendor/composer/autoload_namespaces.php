@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'UpdateHelper\\' => array($vendorDir . '/kylekatarnls/update-helper/src'),
+    'Postmark\\' => array($vendorDir . '/wildbit/swiftmailer-postmark/src', $vendorDir . '/wildbit/postmark-php/src'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
 );
