@@ -229,18 +229,22 @@ Route::post('/forgot-pass', 'FrontController@forgotPass')->name('forgot.pass');
 Route::get('/reset/{token}', 'FrontController@resetLink')->name('reset.passlink');
 Route::post('/reset/password', 'FrontController@passwordReset')->name('reset.passw');
 Route::get('/test-forgot-password', function() {
-    $email = 'edcel.estadola.dev@gmail.com';
-    
     try {
-        \Mail::raw('This is a test password reset email', function($message) use ($email) {
+        $email = 'edcel.estadola.dev@gmail.com';
+        echo "Sending test email to: $email<br>";
+        
+        \Illuminate\Support\Facades\Mail::raw('Test email content', function($message) use ($email) {
             $message->to($email)
                    ->from('rpkrotz@agwiki.com', 'AGWIKI')
-                   ->subject('Test Password Reset Email');
+                   ->subject('Test Email ' . date('Y-m-d H:i:s'));
         });
         
-        return 'Test password reset email sent successfully to ' . $email;
+        echo "Mail sent successfully!<br>";
+        return "Email sent to $email. Please check your inbox.";
     } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage();
+        echo "Error: " . $e->getMessage() . "<br>";
+        echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+        return "Error sending email: " . $e->getMessage();
     }
 });
 
