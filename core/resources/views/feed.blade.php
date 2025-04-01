@@ -842,14 +842,15 @@
             <p class="font-11 under-heading bottom-20">
                 Let's get you back into your account. Enter your email to reset..
             </p>
-            <div class="input-style has-icon input-style-1 input-required bottom-30">
-                {{-- <i class="input-icon fa fa-at">
-</i> --}}
-                <span>Email</span>
-                <em>(required)</em>
-                <input type="email" placeholder="Email">
-            </div>
-            <a href="#" class="button button-full button-m shadow-large button-round-small bg-blue1-dark top-20">SEND RECOVERY EMAIL</a>
+            <form method="POST" action="{{ route('password.email') }}">
+                @csrf
+                <div class="input-style input-style-1 input-required bottom-30">
+                    <span>Email</span>
+                    <em>(required)</em>
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <button type="submit" class="button button-full button-m shadow-large button-round-small bg-blue1-dark top-20">SEND RECOVERY EMAIL</button>
+            </form>
         </div>
     </div>
     <div id="menu-signin" class="menu menu-box-bottom menu-chr" data-menu-height="500" data-menu-effect="menu-over">
