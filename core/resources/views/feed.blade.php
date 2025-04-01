@@ -840,11 +840,11 @@
         <div class="content">
             <h2 class="uppercase ultrabold top-20">Forgot Password?</h2>
             <p class="font-11 under-heading bottom-20">
-                Let's get you back into your account. Enter your email to reset.
+                Let's get you back into your account. Enter your email to reset..
             </p>
             <div class="input-style has-icon input-style-1 input-required bottom-30">
-                <i class="input-icon fa fa-at">
-</i>
+                {{-- <i class="input-icon fa fa-at">
+</i> --}}
                 <span>Email</span>
                 <em>(required)</em>
                 <input type="email" placeholder="Email">
