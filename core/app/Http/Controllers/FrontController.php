@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Postmark\PostmarkClient;
 use Image;
-ß
 class FrontController extends Controller
 {
 
@@ -386,82 +385,83 @@ class FrontController extends Controller
     //     }
     // }
 
-    public function forgotPass(Request $request)
-    {
-        // Step 1: Log that we received a request
-        \Log::info('Password reset requested for email: ' . $request->email);
-        
-        // Step 2: Validate the request
-        $this->validate($request, [
-            'email' => 'required|email',
+public function forgotPass(Request $request)
+{
+    return 'sfsdf';
+    // Step 1: Log that we received a request
+    \Log::info('Password reset requested for email: ' . $request->email);
+    
+    // Step 2: Validate the request
+    $this->validate($request, [
+        'email' => 'required|email',
+    ]);
+    
+    // Step 3: Find the user
+    $user = User::where('email', $request->email)->first();
+    
+    // Step 4: Check if user exists
+    if (!$user) {
+        \Log::warning('Password reset requested for non-existent email: ' . $request->email);
+        return redirect()->back()->withErrors('Email Not Available');
+    }
+    
+    // Step 5: Generate reset token
+    $email = $user->email;
+    $name = $user->name;
+    $code = str_random(30);
+    $resetLink = url('/') . '/reset/' . $code;
+    
+    // Step 6: Store token in database
+    try {
+        DB::table('password_resets')->insert([
+            'email' => $email,
+            'token' => $code,
+            'status' => 0,
+            'created_at' => date("Y-m-d h:i:s")
         ]);
         
-        // Step 3: Find the user
-        $user = User::where('email', $request->email)->first();
-        
-        // Step 4: Check if user exists
-        if (!$user) {
-            \Log::warning('Password reset requested for non-existent email: ' . $request->email);
-            return redirect()->back()->withErrors('Email Not Available');
-        }
-        
-        // Step 5: Generate reset token
-        $email = $user->email;
-        $name = $user->name;
-        $code = str_random(30);
-        $resetLink = url('/') . '/reset/' . $code;
-        
-        // Step 6: Store token in database
-        try {
-            DB::table('password_resets')->insert([
-                'email' => $email,
-                'token' => $code,
-                'status' => 0,
-                'created_at' => date("Y-m-d h:i:s")
-            ]);
-            
-            \Log::info('Reset token created for user: ' . $email);
-        } catch (\Exception $e) {
-            \Log::error('Failed to create reset token: ' . $e->getMessage());
-            return redirect()->route('login')->withErrors('System error. Please try again later.');
-        }
-        
-        // Step 7: Send email using Postmark API directly
-        try {
-            \Log::info('Attempting to send reset email to: ' . $email);
-            
-            $client = new PostmarkClient('362472fb-178c-4cbd-94b2-c59bb5f112b3');
-            $htmlBody = '
-            <html>
-            <body>
-                <p>Hello ' . $name . ',</p>
-                <p>You have requested a password reset for your AGWIKI account.</p>
-                <p>Please use this link to reset your password: <a href="' . $resetLink . '">' . $resetLink . '</a></p>
-                <p>If you did not request this reset, please ignore this email.</p>
-                <p>Regards,<br>AGWIKI Team</p>
-            </body>
-            </html>';
-            
-            $textBody = 'Hello ' . $name . ', You have requested a password reset for your AGWIKI account. Please use this link to reset your password: ' . $resetLink;
-            
-            $response = $client->sendEmail(
-                'no-reply@agwiki.com',
-                $email,
-                'AGWIKI Password Reset',
-                $textBody,
-                $htmlBody
-            );
-            
-            \Log::info('Password reset email sent successfully. MessageID: ' . $response['MessageID']);
-            
-            return redirect()->route('login')->withSuccess('Password Reset Email Sent Successfully');
-        } catch (\Exception $e) {
-            \Log::error('Failed to send reset email: ' . $e->getMessage());
-            \Log::error('Error details: ' . $e->getTraceAsString());
-            
-            return redirect()->route('login')->withErrors('Failed to send email. Please try again later.');
-        }
+        \Log::info('Reset token created for user: ' . $email);
+    } catch (\Exception $e) {
+        \Log::error('Failed to create reset token: ' . $e->getMessage());
+        return redirect()->route('login')->withErrors('System error. Please try again later.');
     }
+    
+    // Step 7: Send email using Postmark API directly
+    try {
+        \Log::info('Attempting to send reset email to: ' . $email);
+        
+        $client = new PostmarkClient('362472fb-178c-4cbd-94b2-c59bb5f112b3');
+        $htmlBody = '
+        <html>
+        <body>
+            <p>Hello ' . $name . ',</p>
+            <p>You have requested a password reset for your AGWIKI account.</p>
+            <p>Please use this link to reset your password: <a href="' . $resetLink . '">' . $resetLink . '</a></p>
+            <p>If you did not request this reset, please ignore this email.</p>
+            <p>Regards,<br>AGWIKI Team</p>
+        </body>
+        </html>';
+        
+        $textBody = 'Hello ' . $name . ', You have requested a password reset for your AGWIKI account. Please use this link to reset your password: ' . $resetLink;
+        
+        $response = $client->sendEmail(
+            'no-reply@agwiki.com',
+            $email,
+            'AGWIKI Password Reset',
+            $textBody,
+            $htmlBody
+        );
+        
+        \Log::info('Password reset email sent successfully. MessageID: ' . $response['MessageID']);
+        
+        return redirect()->route('login')->withSuccess('Password Reset Email Sent Successfully');
+    } catch (\Exception $e) {
+        \Log::error('Failed to send reset email: ' . $e->getMessage());
+        \Log::error('Error details: ' . $e->getTraceAsString());
+        
+        return redirect()->route('login')->withErrors('Failed to send email. Please try again later.');
+    }
+}
 
     public function resetLink($code)
     {
