@@ -60,6 +60,7 @@ return array(
     'App\\Interest' => $baseDir . '/app/Interest.php',
     'App\\Jobs\\SendEmailBroadcastJob' => $baseDir . '/app/Jobs/SendEmailBroadcastJob.php',
     'App\\Like' => $baseDir . '/app/Like.php',
+    'App\\Mail\\PostmarkTransport' => $baseDir . '/app/Mail/PostmarkTransport.php',
     'App\\Mention' => $baseDir . '/app/Mention.php',
     'App\\Message' => $baseDir . '/app/Message.php',
     'App\\Notify' => $baseDir . '/app/Notify.php',
