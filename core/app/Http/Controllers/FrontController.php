@@ -372,7 +372,7 @@ class FrontController extends Controller
                 
                 \Mail::raw($message, function($message) use ($to, $name, $subject) {
                     $message->to($to)
-                        ->from('rpkrotz@agwiki.com', 'AGWIKI')
+                        ->from('no-reply@agwiki.com', 'AGWIKI')
                         ->subject($subject);
                 });
                 
