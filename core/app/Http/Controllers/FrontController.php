@@ -346,6 +346,19 @@ class FrontController extends Controller
 
     public function forgotPass(Request $request)
     {
+
+        $client = new \Postmark\PostmarkClient('362472fb-178c-4cbd-94b2-c59bb5f112b3');
+        $response = $client->sendEmail(
+            'no-reply@agwiki.com',
+            $user->email,
+            'Password Reset',
+            'Use This Link to Reset Password: '.url('/').'/reset/'.$code,
+            '<html><body><p>Use This Link to Reset Password: <a href="'.url('/').'/reset/'.$code.'">'.url('/').'/reset/'.$code.'</a></p></body></html>'
+        );
+
+        return redirect()->route('login');
+        
+
         \Log::info('Password reset requested for email: ' . $request->email);
         
         $this->validate($request,
