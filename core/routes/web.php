@@ -235,7 +235,7 @@ Route::get('/test-forgot-password', function() {
         
         \Illuminate\Support\Facades\Mail::raw('Test email content', function($message) use ($email) {
             $message->to($email)
-                   ->from('rpkrotz@agwiki.com', 'AGWIKI')
+                   ->from('no-reply@agwiki.com', 'AGWIKI')
                    ->subject('Test Email ' . date('Y-m-d H:i:s'));
         });
         
@@ -247,7 +247,6 @@ Route::get('/test-forgot-password', function() {
         return "Error sending email: " . $e->getMessage();
     }
 });
-
 
 /// change by dinesh start ///
 
