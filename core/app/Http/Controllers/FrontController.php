@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Postmark\PostmarkClient;
 use Image;
+ß
 class FrontController extends Controller
 {
 
