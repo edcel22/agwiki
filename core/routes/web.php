@@ -228,6 +228,22 @@ Route::post('register', 'Auth\RegisterController@create')->name('register');
 Route::post('/forgot-pass', 'FrontController@forgotPass')->name('forgot.pass');
 Route::get('/reset/{token}', 'FrontController@resetLink')->name('reset.passlink');
 Route::post('/reset/password', 'FrontController@passwordReset')->name('reset.passw');
+Route::get('/test-forgot-password', function() {
+    $email = 'edcel.estadola.dev@gmail.com';
+    
+    try {
+        \Mail::raw('This is a test password reset email', function($message) use ($email) {
+            $message->to($email)
+                   ->from('rpkrotz@agwiki.com', 'AGWIKI')
+                   ->subject('Test Password Reset Email');
+        });
+        
+        return 'Test password reset email sent successfully to ' . $email;
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 
 /// change by dinesh start ///
 

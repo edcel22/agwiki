@@ -842,7 +842,7 @@
             <p class="font-11 under-heading bottom-20">
                 Let's get you back into your account. Enter your email to reset..
             </p>
-            <form method="POST" action="{{ route('password.email') }}">
+            <form method="POST" action="{{ route('forgot.pass') }}">
                 @csrf
                 <div class="input-style input-style-1 input-required bottom-30">
                     <span>Email</span>

@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Postmark\PostmarkClient;
 use Image;
 class FrontController extends Controller
 {
@@ -314,8 +316,38 @@ class FrontController extends Controller
         
     }
 
+    // public function forgotPass(Request $request)
+    // {
+    //     $this->validate($request,
+    //         [
+    //             'email' => 'required',
+    //         ]);
+    //     $user = User::where('email', $request->email)->first();
+
+    //     if (! $user) {
+    //         return redirect()->back()->withErrors('Email Not Available');
+    //     } else {
+    //         $to = $user->email;
+    //         $name = $user->name;
+    //         $subject = 'Password Reset';
+    //         $code = str_random(30);
+    //         $message = 'Use This Link to Reset Password: '.url('/').'/reset/'.$code;
+
+    //         DB::table('password_resets')->insert(
+    //             ['email' => $to, 'token' => $code, 'status' => 0, 'created_at' => date("Y-m-d h:i:s")]
+    //         );
+
+    //         send_email($to, $name, $subject, $message);
+
+    //         return redirect()->route('login')->withSuccess('Password Reset Email Sent Succesfully');
+    //     }
+
+    // }
+
     public function forgotPass(Request $request)
     {
+        \Log::info('Password reset requested for email: ' . $request->email);
+        
         $this->validate($request,
             [
                 'email' => 'required',
@@ -335,11 +367,22 @@ class FrontController extends Controller
                 ['email' => $to, 'token' => $code, 'status' => 0, 'created_at' => date("Y-m-d h:i:s")]
             );
 
-            send_email($to, $name, $subject, $message);
-
-            return redirect()->route('login')->withSuccess('Password Reset Email Sent Succesfully');
+            try {
+                \Log::info('Sending password reset email to: ' . $to);
+                
+                \Mail::raw($message, function($message) use ($to, $name, $subject) {
+                    $message->to($to)
+                        ->from('rpkrotz@agwiki.com', 'AGWIKI')
+                        ->subject($subject);
+                });
+                
+                \Log::info('Password reset email sent successfully');
+                return redirect()->route('login')->withSuccess('Password Reset Email Sent Successfully');
+            } catch (\Exception $e) {
+                \Log::error('Error sending password reset email: ' . $e->getMessage());
+                return redirect()->route('login')->withErrors('Error sending email: ' . $e->getMessage());
+            }
         }
-
     }
 
     public function resetLink($code)
