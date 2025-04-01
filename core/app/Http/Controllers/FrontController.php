@@ -394,7 +394,7 @@ class FrontController extends Controller
         ]);
         
         $user = User::where('email', $request->email)->first();
-
+    
         if (!$user) {
             return redirect()->back()->withErrors('Email Not Available');
         } else {
@@ -403,14 +403,14 @@ class FrontController extends Controller
             $subject = 'Password Reset';
             $code = str_random(30);
             $resetLink = url('/') . '/reset/' . $code;
-
+    
             DB::table('password_resets')->insert([
                 'email' => $to, 
                 'token' => $code, 
                 'status' => 0, 
                 'created_at' => date("Y-m-d h:i:s")
             ]);
-
+    
             try {
                 \Log::info('Sending password reset email to: ' . $to);
                 
