@@ -6,51 +6,35 @@ use App\General;
 
 if (! function_exists('send_email')) {
 
-    function send_email( $to, $name, $subject, $message1)
+    function send_email($to, $name, $subject, $message1)
     {
         $temp = Etemplate::first();
         $gnl = General::first();
 
         $template = $temp->emessage;
         $from = $temp->esender;
+        
         if($gnl->emailnotf == 1)
         {
-
-            $headers = "From: $gnl->title <$from> \r\n";
-            $headers .= "Reply-To: $gnl->title <$from> \r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-
-            $mm = str_replace("{{name}}",$name,$template);
-            $message1 = str_replace("{{message}}",$message1,$mm);
-			
-			/*$data['email'] = $to;
-			Mail::send('emails.welcome', $data, function($message) use ($data)
-			{
-				$message->from('no-reply@agwiki.com', "Agwiki");
-				$message->subject($subject);
-				$message->to($data['email']);
-			});*/
-			
-			$data = array('message1'=>$message1);
-			
-			Mail::send('emails.send', $data, function($message) use($to, $subject, $message1)
-			{
-				//$message->setBody($message1)->to($to)->subject($subject);
-				$message->from('no-reply@agwiki.com', "Agwiki");
-				$message->subject($subject);
-				//$message->setBody($message1, 'text/html');
-				$message->to($to);
-			});
-
-            /*if (mail($to, $subject, $message, $headers)) {
-                // echo 'Your message has been sent.';
-            } else {
-                //echo 'There was a problem sending the email.';
-            }*/
-
+            // Prepare template and message
+            $mm = str_replace("{{name}}", $name, $template);
+            $message1 = str_replace("{{message}}", $message1, $mm);
+            
+            $data = array('message1' => $message1);
+            
+            // Use Laravel's Mail facade which will now use Postmark
+            Mail::send('emails.send', $data, function($message) use($to, $subject, $from, $gnl)
+            {
+                // Use the verified sender from your Postmark account
+                $message->from('team@agwiki.com', $gnl->title);
+                $message->subject($subject);
+                $message->to($to);
+                
+                // Add message stream header for Postmark
+                $message->getHeaders()
+                        ->addTextHeader('X-PM-Message-Stream', 'outbound');
+            });
         }
-
     }
 }
 
