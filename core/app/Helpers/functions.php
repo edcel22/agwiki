@@ -12,7 +12,6 @@ if (! function_exists('send_email')) {
         $gnl = General::first();
 
         $template = $temp->emessage;
-        $from = $temp->esender;
         
         if($gnl->emailnotf == 1)
         {
@@ -22,17 +21,15 @@ if (! function_exists('send_email')) {
             
             $data = array('message1' => $message1);
             
-            // Use Laravel's Mail facade which will now use Postmark
-            Mail::send('emails.send', $data, function($message) use($to, $subject, $from, $gnl)
+            // Use Laravel's Mail facade with configuration from .env
+            Mail::send('emails.send', $data, function($message) use($to, $subject, $gnl)
             {
-                // Use the verified sender from your Postmark account
-                $message->from('team@agwiki.com', $gnl->title);
+                // Use the from address and name from .env
+                $message->from(env('MAIL_FROM_ADDRESS'), $gnl->title);
                 $message->subject($subject);
                 $message->to($to);
                 
-                // Add message stream header for Postmark
-                $message->getHeaders()
-                        ->addTextHeader('X-PM-Message-Stream', 'outbound');
+                // No need for Postmark-specific headers when using SES
             });
         }
     }
