@@ -11,6 +11,18 @@
 |
 */
 
+Route::get('/test-ses', function () {
+    try {
+        Mail::raw('This is a test email from Laravel using Amazon SES', function ($message) {
+            $message->to('edcel@socialowl.com')
+                    ->subject('Test Email from AgWiki');
+        });
+        return 'Email sent successfully!';
+    } catch (\Exception $e) {
+        return 'Error sending email: ' . $e->getMessage();
+    }
+});
+
 Route::get('/mail-test', function () {
     try {
         \Mail::raw('This is a test email via Postmark API at ' . now(), function ($message) {
