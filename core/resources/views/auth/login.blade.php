@@ -180,58 +180,61 @@
 </div>
 <div id="menu-signin" class="menu menu-box-bottom" data-menu-height="500" data-menu-effect="menu-over">
 	<div class="content">
-					<h1 class="uppercase ultrabold top-20">LOGIN</h1>
-					<p class="font-11 under-heading bottom-20">
-									Hello, stranger! Please enter your credentials below.
-					</p>
+		<h1 class="uppercase ultrabold top-20">LOGIN</h1>
+		<p class="font-11 under-heading bottom-20">
+			Hello, stranger! Please enter your credentials below.
+		</p>
 
-					<!-- Email Input -->
-					<div class="input-style has-icon input-style-1 input-required">
-									<i class="input-icon fa fa-at"></i>
-									<span>Email</span>
-									<em>(required)</em>
-									<input type="email" id="email" name="email" placeholder="Email" required>
-					</div>
+		<form method="POST" action="{{ route('login') }}">
+			@csrf
+			<!-- Email Input -->
+			<div class="input-style has-icon input-style-1 input-required">
+				<i class="input-icon fa fa-at"></i>
+				<span>Email</span>
+				<em>(required)</em>
+				<input type="email" id="email" name="username" placeholder="Email" value="{{ old('username') }}" required>
+			</div>
 
-					<!-- Password Input -->
-					<div class="input-style has-icon input-style-1 input-required">
-									<i class="input-icon fa fa-lock font-11"></i>
-									<span>Password</span>
-									<em>(required)</em>
-									<input type="password" id="password" name="password" placeholder="Password" required>
-					</div>
-                {{-- login: login.blade.php --}}
+			<!-- Password Input -->
+			<div class="input-style has-icon input-style-1 input-required">
+				<i class="input-icon fa fa-lock font-11"></i>
+				<span>Password</span>
+				<em>(required)</em>
+				<input type="password" id="password" name="password" placeholder="Password" required>
+			</div>
+			{{-- login: login.blade.php --}}
 
-					<!-- Show Password Checkbox : login - login.blade.php  -->
-					<div class="top-10">
-									<input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password
-					</div>
+			<!-- Show Password Checkbox : login - login.blade.php  -->
+			<div class="top-10">
+				<input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password
+			</div>
 
-					<div class="top-30">
-									<div class="one-half">
-													<a href="#" data-menu="menu-forgot" class="left-text font-10">Forgot Password?</a>
-									</div>
-									<div class="one-half last-column">
-													<a data-menu="menu-signup" href="#" class="right-text font-10">Create Account</a>
-									</div>
-					</div>
+			<div class="top-30">
+				<div class="one-half">
+					<a href="#" data-menu="menu-forgot" class="left-text font-10">Forgot Password?</a>
+				</div>
+				<div class="one-half last-column">
+					<a data-menu="menu-signup" href="#" class="right-text font-10">Create Account</a>
+				</div>
+			</div>
 
-					<div class="clear"></div>
+			<div class="clear"></div>
 
-					<!-- Login Button (Uncomment if needed) -->
-					<a href="dashboard.html" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10">LOGIN</a> 
+			<!-- Login Button -->
+			<button type="submit" class="button button-full button-s shadow-large button-round-small bg-green1-dark top-10">LOGIN</button>
 
-					<div class="divider"></div>
+			<div class="divider"></div>
+		</form>
 
-					<!-- Social Login Buttons -->
-					<a href="#" class="button bg-linkedin button-l shadow-large button-icon-left">
-									<i class="fab fa-linkedin-in"></i> Log In With LinkedIn
-					</a>
-					<br>
-					<a href="#" class="button bg-facebook button-l shadow-large button-icon-left">
-									<i class="fab fa-facebook-f"></i> Log In With Facebook
-					</a>
-					<br>
+		<!-- Social Login Buttons -->
+		<a href="{{ url('/login/linkedin') }}" class="button bg-linkedin button-l shadow-large button-icon-left">
+			<i class="fab fa-linkedin-in"></i> Log In With LinkedIn
+		</a>
+		<br>
+		<a href="{{ url('/login/facebook') }}" class="button bg-facebook button-l shadow-large button-icon-left">
+			<i class="fab fa-facebook-f"></i> Log In With Facebook
+		</a>
+		<br>
 	</div>
 </div>
 
@@ -271,7 +274,7 @@
             <!--data-menu="welcome-screen"-->
             {{-- <button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
 												 --}}
-													<button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
+			<button type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit' class="button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
 			<div class="clear"></div>
 		</form>
 		<div class="divider"></div>
@@ -328,69 +331,44 @@
 @endsection
 @section('js')
 <script>
-	
-	   function onSubmit(token) {
-		 document.getElementById("regForm").submit();
-	   }
+	function onSubmit(token) {
+		document.getElementById("regForm").submit();
+	}
 
-	
 	$(document).ready(function(){
-
-	   $('#ajaxSubmit').click(function(e){
-
-	      e.preventDefault();
-
-	      $.ajaxSetup({
-
-	         headers: {
-
-	             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-
-	         }
-
-	     });
-
-	      $.ajax({
-
-	         url: "{{ route('register') }}",
-
-	         method: 'post',
-
-	         data: {
-
-	            email: $('#email').val(),
-
-
-
-	         },
-
-	         success: function(result){
-
-	            console.log(result);
-
-	         }});
-
-	      });
-
-	   });
-
-
-
+		$('#ajaxSubmit').click(function(e){
+			e.preventDefault();
+			$.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				}
+			});
+			$.ajax({
+				url: "{{ route('register') }}",
+				method: 'post',
+				data: {
+					email: $('#email').val(),
+				},
+				success: function(result){
+					console.log(result);
+				}
+			});
+		});
+	});
 </script>
 <script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
 <script>
 	const player = new Plyr('#player');
 	function showPassword() {
-							var passwordField = document.getElementById("password");
-							var checkbox = document.getElementById("showPasswordCheckbox");
+		var passwordField = document.getElementById("password");
+		var checkbox = document.getElementById("showPasswordCheckbox");
 
-							// Toggle password visibility
-							if (checkbox.checked) {
-											passwordField.type = "text";
-							} else {
-											passwordField.type = "password";
-							}
-			}
+		// Toggle password visibility
+		if (checkbox.checked) {
+			passwordField.type = "text";
+		} else {
+			passwordField.type = "password";
+		}
+	}
 </script>
 @endsection
-
