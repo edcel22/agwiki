@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\User;
-use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 
 class CleanupInvalidEmails extends Command
@@ -15,28 +14,34 @@ class CleanupInvalidEmails extends Command
     public function handle()
     {
         $apiKey = '8b1f1364eac54d159aaf14e236a4387c';
+        $client = new Client();
 
         $users = User::whereNull('deleted_at')->get();
 
         foreach ($users as $user) {
-            $response = Http::get("https://emailvalidation.abstractapi.com/v1/", [
-                'api_key' => $apiKey,
-                'email' => $user->email
-            ]);
+            try {
+                $response = $client->request('GET', 'https://emailvalidation.abstractapi.com/v1/', [
+                    'query' => [
+                        'api_key' => $apiKey,
+                        'email' => $user->email,
+                    ],
+                    'timeout' => 10,
+                ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
-                if ($data['deliverability'] !== 'DELIVERABLE') {
+                $data = json_decode($response->getBody(), true);
+
+                if (isset($data['deliverability']) && $data['deliverability'] !== 'DELIVERABLE') {
                     $this->info("Soft deleting: {$user->email} ({$data['deliverability']})");
-                    $user->delete();
+                    $user->delete(); // Soft delete
                 } else {
                     $this->line("Valid: {$user->email}");
                 }
-            } else {
-                $this->error("Failed to check {$user->email}: {$response->status()}");
+
+            } catch (\Exception $e) {
+                $this->error("Error checking {$user->email}: " . $e->getMessage());
             }
 
-            sleep(1); // Avoid hitting API rate limits
+            sleep(1); // Prevent API rate limiting
         }
 
         $this->info('Email validation and cleanup done!');
