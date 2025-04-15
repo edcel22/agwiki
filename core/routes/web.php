@@ -14,7 +14,7 @@
 Route::get('/test-ses', function () {
     try {
         Mail::raw('This is a test email from Laravel using Amazon SES', function ($message) {
-            $message->to('edcel@socialowl.com')
+            $message->to('agwiki.com')
                     ->subject('Test Email from AgWiki');
         });
         return 'Email sent successfully!';
