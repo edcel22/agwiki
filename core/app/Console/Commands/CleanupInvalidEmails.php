@@ -13,7 +13,7 @@ class CleanupInvalidEmails extends Command
 
     public function handle()
     {
-        $apiKey = '8b1f1364eac54d159aaf14e236a4387c';
+        $apiKey = '3f8529bb06454cb4befec360390c016c';
         $client = new Client();
 
         $users = User::whereNull('deleted_at')->get();
