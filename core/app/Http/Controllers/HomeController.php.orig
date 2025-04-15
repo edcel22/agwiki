@@ -616,11 +616,7 @@ class HomeController extends Controller
 
         $messages = $messages->reverse();
 
-<<<<<<< HEAD
-        $page_title = $from->name . 'â‡†' . $to->name;
-=======
         $page_title = $from->name . '⇆' . $to->name;
->>>>>>> 7f6124b16f598c763be831d7f6bfb90052be3165
 
         return view('message', compact('page_title', 'to', 'from', 'messages', 'convarsations'));
 
