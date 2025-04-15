@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\User;
+use App\User;
 use Illuminate\Support\Facades\Http;
 
 class CleanupInvalidEmails extends Command
