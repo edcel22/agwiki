@@ -601,6 +601,7 @@ class ComposerStaticInit2b182f39da285d19fe266e89103c795c
         'App\\Comment' => __DIR__ . '/../..' . '/app/Comment.php',
         'App\\Commodity' => __DIR__ . '/../..' . '/app/Commodity.php',
         'App\\CommodityType' => __DIR__ . '/../..' . '/app/CommodityType.php',
+        'App\\Console\\Commands\\CleanupInvalidEmails' => __DIR__ . '/../..' . '/app/Console/Commands/CleanupInvalidEmails.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Dislike' => __DIR__ . '/../..' . '/app/Dislike.php',
         'App\\Etemplate' => __DIR__ . '/../..' . '/app/Etemplate.php',

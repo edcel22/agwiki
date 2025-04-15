@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f61d3486a296c7709639279c4ba452f3",
+    "content-hash": "52217672313251eec9689f2040d9bebf",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -813,7 +813,7 @@
                 }
             ],
             "description": "Guzzle is a PHP HTTP client library",
-            "homepage": "https://guzzlephp.org/",
+            "homepage": "http://guzzlephp.org/",
             "keywords": [
                 "client",
                 "curl",

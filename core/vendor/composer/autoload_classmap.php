@@ -38,6 +38,7 @@ return array(
     'App\\Comment' => $baseDir . '/app/Comment.php',
     'App\\Commodity' => $baseDir . '/app/Commodity.php',
     'App\\CommodityType' => $baseDir . '/app/CommodityType.php',
+    'App\\Console\\Commands\\CleanupInvalidEmails' => $baseDir . '/app/Console/Commands/CleanupInvalidEmails.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Dislike' => $baseDir . '/app/Dislike.php',
     'App\\Etemplate' => $baseDir . '/app/Etemplate.php',
