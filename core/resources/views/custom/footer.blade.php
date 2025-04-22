@@ -1,5 +1,4 @@
 @php
-
 $theUser = Auth::user();
 
 if(isset($theUser->id)) {
@@ -52,34 +51,33 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 			//$notification->save();
 			//|| $notification->post->type == 'article'
 			@endphp
-			@if($notification->type == 'post'  )
-			@if($notification->post)
+			@if($notification->type == 'post' && isset($notification->post) && isset($notification->post->user))
 
-			<a href="/profile/{{$notification->post->user->username}}/"><img class="profile-image" src="{{ asset('assets/front/img/' .$notification->post->user->avatar) }}" data-src="{{ asset('assets/front/img/' . $notification->post->user->avatar) }}"> </a>
+			<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}" data-src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}"> </a>
 			 <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 
 			<span>
-				<a href="/profile/{{$notification->post->user->username}}/">
-					<h4 class="name">{{ optional($notification->post->user)->name }} </h4>
+				<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}">
+					<h4 class="name">{{ optional($notification->post->user)->name ?? 'Unknown User' }} </h4>
 				</a>
 			</span>
 
 			<span class="notify-name">
-            <a href="{{ route('user.post.single', $notification->post->id) }}">
-            <i class="fas fa-newspaper" aria-hidden="true"></i> Posted a new {{ $notification->post->type }}.</a>
+            <a href="{{ route('user.post.single', optional($notification->post)->id ?? 0) }}">
+            <i class="fas fa-newspaper" aria-hidden="true"></i> Posted a new {{ optional($notification->post)->type ?? 'post' }}.</a>
 			</span>
-			@endif
+			
 			@elseif($notification->type == 'follow')
 			@php
 			$follower = App\User::find($notification->by_id);
 			@endphp
-			@if($follower)
+			@if(isset($follower))
 
-			<a href="/profile/{{$follower->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$follower->avatar) }}" data-src="{{ asset('assets/front/img/' . $follower->avatar) }}"></a>
+			<a href="/profile/{{ $follower->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $follower->avatar) }}" data-src="{{ asset('assets/front/img/' . $follower->avatar) }}"></a>
 				<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-				<a href="{{ route('profile', $follower->username) }}">
-					<h4 class="name">{{ $follower->name }} </h4>
+				<a href="{{ route('profile', $follower->username ?? '') }}">
+					<h4 class="name">{{ $follower->name ?? 'Unknown User' }} </h4>
 				</a>
 			</span>
 
@@ -87,162 +85,121 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 
 			@endif
 
-			@elseif($notification->type == 'group')
+			@elseif($notification->type == 'group' && isset($notification->post) && isset($notification->post->group) && isset($notification->post->user))
 
-			@if($notification->post && $notification->post->group)
-
-			<a href="/profile/{{$notification->post->user->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .($notification->post->user)->avatar) }}" data-src="{{ asset('assets/front/img/' . ($notification->post->user)->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}" data-src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="/profile/{{$notification->post->user->username}}">
-
-					<h4 class="name">{{ optional($notification->post->user)->name }} </h4>
-
+				<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}">
+					<h4 class="name">{{ optional($notification->post->user)->name ?? 'Unknown User' }} </h4>
 				</a>
-
 			</span>
 
 			@if(optional($notification->post->user)->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif
-            <a href="{{ route('user.post.single', $notification->post->id) }}">
+            <a href="{{ route('user.post.single', optional($notification->post)->id ?? 0) }}">
                 <span class="notify-name">
-
-                <i class="fas fa-newspaper" aria-hidden="true"></i> Posted a new {{ $notification->post->type }} in {{ $notification->post->group->name }}.</span>
+                <i class="fas fa-newspaper" aria-hidden="true"></i> Posted a new {{ optional($notification->post)->type ?? 'post' }} in {{ optional($notification->post->group)->name ?? 'a group' }}.</span>
             </a>
-
-			@endif
 
 			@elseif($notification->type == 'group_request')
 
 			@php
-
 			$invitie = App\User::find($notification->to_id);
-
 			@endphp
 
-			@if($invitie && $notification->group)
+			@if(isset($invitie) && isset($notification->group))
 
-			<a href="/profile/{{$invitie->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$invitie->avatar) }}" data-src="{{ asset('assets/front/img/' . $invitie->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ $invitie->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $invitie->avatar) }}" data-src="{{ asset('assets/front/img/' . $invitie->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="{{ route('user.groups', $notification->group->slug) }}">
-
-					<h4 class="name">{{ $invitie->name }}</h4>
-
+				<a href="{{ route('user.groups', optional($notification->group)->slug ?? '') }}">
+					<h4 class="name">{{ $invitie->name ?? 'Unknown User' }}</h4>
 				</a>
-
 			</span>
 
-			@if($invitie->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><i class="fas fa-users" aria-hidden="true"></i> asked to join {{ $notification->group->name }}.</span>
+			@if($invitie->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><i class="fas fa-users" aria-hidden="true"></i> asked to join {{ optional($notification->group)->name ?? 'a group' }}.</span>
 
 			@endif
 
 			@elseif($notification->type == 'group_accepted')
 
 			@php
-
 			$invitie = App\User::find($notification->to_id);
             $invitor = App\User::find($notification->by_id);
-
 			@endphp
 
-			@if($invitie && $notification->group)
+			@if(isset($invitie) && isset($invitor) && isset($notification->group))
 
-			<a href="/profile/{{$invitor->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$invitor->avatar) }}" data-src="{{ asset('assets/front/img/' . $invitor->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ $invitor->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $invitor->avatar) }}" data-src="{{ asset('assets/front/img/' . $invitor->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="{{ route('user.groups', $notification->group->slug) }}">
-
-					<h4 class="name">{{ $invitor->name }}</h4>
-
+				<a href="{{ route('user.groups', optional($notification->group)->slug ?? '') }}">
+					<h4 class="name">{{ $invitor->name ?? 'Unknown User' }}</h4>
 				</a>
-
 			</span>
 
-			@if($invitie->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><i class="fas fa-users" aria-hidden="true"></i> accepted you to {{ $notification->group->name }}.</span>
+			@if($invitie->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><i class="fas fa-users" aria-hidden="true"></i> accepted you to {{ optional($notification->group)->name ?? 'a group' }}.</span>
 
 			@endif
 
 			@elseif($notification->type == 'like')
 
 			@php
-
 			$liker = App\User::find($notification->by_id);
-
 			@endphp
 
-			@if($liker && $notification->post)
+			@if(isset($liker) && isset($notification->post))
 
-			<a href="/profile/{{$liker->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$liker->avatar) }}" data-src="{{ asset('assets/front/img/' . $liker->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ $liker->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $liker->avatar) }}" data-src="{{ asset('assets/front/img/' . $liker->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="/profile/{{$liker->username}}">
-
-					<h4 class="name">{{ $liker->name }}</h4>
-
+				<a href="/profile/{{ $liker->username ?? '#' }}">
+					<h4 class="name">{{ $liker->name ?? 'Unknown User' }}</h4>
 				</a>
-
 			</span>
 
-			@if($liker->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><a href="{{ route('user.post.single', $notification->post->id) }}"><i class="fas fa-thumbs-up" aria-hidden="true"></i> liked your post.</a></span>
+			@if($liker->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><a href="{{ route('user.post.single', optional($notification->post)->id ?? 0) }}"><i class="fas fa-thumbs-up" aria-hidden="true"></i> liked your post.</a></span>
 
 			@endif
 
 			@elseif($notification->type == 'group_invite')
 
 			@php
-
 			$inviter = App\User::find($notification->by_id);
-
 			@endphp
 
-			@if($inviter && $notification->group)
+			@if(isset($inviter) && isset($notification->group))
 
-			<a href="/profile/{{$inviter->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$inviter->avatar) }}" data-src="{{ asset('assets/front/img/' . $inviter->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ $inviter->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $inviter->avatar) }}" data-src="{{ asset('assets/front/img/' . $inviter->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="{{ route('user.groups', $notification->group->slug) }}">
-
-					<h4 class="name">{{ $inviter->name }}</h4>
-
+				<a href="{{ route('user.groups', optional($notification->group)->slug ?? '') }}">
+					<h4 class="name">{{ $inviter->name ?? 'Unknown User' }}</h4>
 				</a>
-
 			</span>
 
-			@if($inviter->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><i class="fas fa-users" aria-hidden="true"></i> <a href="/groups/{{$notification->group->slug}}">invited you to join {{ $notification->group->name }}</a>.</span>
+			@if($inviter->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name"><i class="fas fa-users" aria-hidden="true"></i> <a href="/groups/{{ optional($notification->group)->slug ?? '' }}">invited you to join {{ optional($notification->group)->name ?? 'a group' }}</a>.</span>
 
 			@endif
 
 			@elseif($notification->type == 'share')
 
 			@php
-
 			$sharer = App\User::find($notification->by_id);
-
 			@endphp
 
-			@if($sharer)
+			@if(isset($sharer))
 
-			<a href="/profile/{{$sharer->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$sharer->avatar) }}" data-src="{{ asset('assets/front/img/' . $sharer->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ $sharer->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $sharer->avatar) }}" data-src="{{ asset('assets/front/img/' . $sharer->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="{{ route('profile', $sharer->username) }}">
-
-					<h4 class="name">{{ $sharer->name }} @if($sharer->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif</h4>
-
+				<a href="{{ route('profile', $sharer->username ?? '') }}">
+					<h4 class="name">{{ $sharer->name ?? 'Unknown User' }} @if($sharer->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif</h4>
 				</a>
-
 			</span>
 
 			<span class="notify-name">
-
-            <a href="{{ route('user.post.single', $notification->post_id) }}"><i class="fas fa-share-square" aria-hidden="true"></i> shared your post.</a>
-
+            <a href="{{ route('user.post.single', $notification->post_id ?? 0) }}"><i class="fas fa-share-square" aria-hidden="true"></i> shared your post.</a>
             </span>
 
 			@endif
@@ -250,23 +207,17 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 			@elseif($notification->type == 'birthday')
 
 			@php
-
 			$birthdayOf = App\User::find($notification->by_id);
-
 			@endphp
 
-			@if($birthdayOf)
+			@if(isset($birthdayOf))
 
-			<a href="/profile/{{$birthdayOf->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$birthdayOf->avatar) }}" data-src="{{ asset('assets/front/img/' . $birthdayOf->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+			<a href="/profile/{{ $birthdayOf->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $birthdayOf->avatar) }}" data-src="{{ asset('assets/front/img/' . $birthdayOf->avatar) }}"> </a>
+            <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 			<span>
-
-				<a href="{{ route('profile', $birthdayOf->username) }}">
-
-					<h4 class="name">{{ $birthdayOf->name }} @if($birthdayOf->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif </h4>
-
+				<a href="{{ route('profile', $birthdayOf->username ?? '') }}">
+					<h4 class="name">{{ $birthdayOf->name ?? 'Unknown User' }} @if($birthdayOf->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif </h4>
 				</a>
-
 			</span>
 
 			<span class="notify-name"><i class="fas fa-birthday-cake" aria-hidden="true"></i> has a birthday today.</span>
@@ -276,105 +227,72 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 			@elseif($notification->type == 'comment')
 
 				@php
-
 				$commenter = App\User::find($notification->by_id);
-
 				@endphp
 
-
-				<a href="/profile/{{$commenter->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$commenter->avatar) }}" data-src="{{ asset('assets/front/img/' . $commenter->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+                @if(isset($commenter))
+				<a href="/profile/{{ $commenter->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . $commenter->avatar) }}" data-src="{{ asset('assets/front/img/' . $commenter->avatar) }}"> </a>
+                <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 				<span>
-
-					<a href="/profile/{{$commenter->username}}">
-
-						<h4 class="name">{{ $commenter->name }}</h4>
-
-					</a>
-
-				</span>
-
-					@if($commenter->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name">
-
-						<a href="{{ route('user.post.single', $notification->post_id) }}"><i class="fas fa-comment" aria-hidden="true"></i> commented on a post that you are following.</a>
-
-						</span>
-
-
-
-
-
-			@elseif($notification->type == 'userTag')
-
-
-				<a href="/profile/{{$notification->post->user->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$notification->post->user->avatar) }}" data-src="{{ asset('assets/front/img/' . $notification->post->user->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
-				<span>
-					<a href="/profile/{{$notification->post->user->username}}">
-						<h4 class="name">{{ optional($notification->post->user)->name }} </h4>
+					<a href="/profile/{{ $commenter->username ?? '#' }}">
+						<h4 class="name">{{ $commenter->name ?? 'Unknown User' }}</h4>
 					</a>
 				</span>
-						<span class="notify-name">
 
-						<a href="{{ route('user.post.single', $notification->post_id) }}"><i class="fas fa-comment" aria-hidden="true"></i> Mentioned you in this {{$notification->post->type}}</a>
+				@if($commenter->verified == 1)<span class="verified"><i class="fas fa-check-circle"></i></span>@endif <span class="notify-name">
+					<a href="{{ route('user.post.single', $notification->post_id ?? 0) }}"><i class="fas fa-comment" aria-hidden="true"></i> commented on a post that you are following.</a>
+				</span>
+                @endif
 
-						</span>
+			@elseif($notification->type == 'userTag' && isset($notification->post) && isset($notification->post->user))
 
-
-
-		@elseif($notification->type == 'userTagComment')
-
-
-				<a href="/profile/{{@$notification->user->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .@$notification->user->avatar) }}" data-src="{{ asset('assets/front/img/' . @$notification->post->user->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+				<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}" data-src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}"> </a>
+                <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 				<span>
-					<a href="/profile/{{$notification->user->username}}">
-						<h4 class="name">{{ optional($notification->user)->name }} </h4>
+					<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}">
+						<h4 class="name">{{ optional($notification->post->user)->name ?? 'Unknown User' }} </h4>
 					</a>
 				</span>
-						<span class="notify-name">
+				<span class="notify-name">
+					<a href="{{ route('user.post.single', $notification->post_id ?? 0) }}"><i class="fas fa-comment" aria-hidden="true"></i> Mentioned you in this {{ optional($notification->post)->type ?? 'post' }}</a>
+				</span>
 
-						<a href="{{ route('user.post.single', @$notification->post_id) }}"><i class="fas fa-comment" aria-hidden="true"></i> Mentioned you in this {{@$notification->post->type}}</a>
+			@elseif($notification->type == 'userTagComment')
 
-						</span>
-
-
-
-
-			@else
-
-
-				<a href="/profile/{{$notification->post->user->username}}"><img class="profile-image" src="{{ asset('assets/front/img/' .$notification->post->user->avatar) }}" data-src="{{ asset('assets/front/img/' . $notification->post->user->avatar) }}"> </a>
-<span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+				<a href="/profile/{{ optional($notification->user)->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . optional($notification->user)->avatar) }}" data-src="{{ asset('assets/front/img/' . optional(optional($notification->post)->user)->avatar) }}"> </a>
+                <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
 				<span>
-					<a href="/profile/{{$notification->post->user->username}}">
-						<h4 class="name">{{ optional($notification->post->user)->name }} </h4>
+					<a href="/profile/{{ optional($notification->user)->username ?? '#' }}">
+						<h4 class="name">{{ optional($notification->user)->name ?? 'Unknown User' }} </h4>
 					</a>
 				</span>
-						<span class="notify-name">
+				<span class="notify-name">
+					<a href="{{ route('user.post.single', $notification->post_id ?? 0) }}"><i class="fas fa-comment" aria-hidden="true"></i> Mentioned you in this {{ optional(optional($notification->post))->type ?? 'post' }}</a>
+				</span>
 
-						<a href="{{ route('user.post.single', $notification->post_id) }}"><i class="fas fa-comment" aria-hidden="true"></i> {{$notification->type}}d this {{$notification->post->type}}</a>
+			@elseif(isset($notification->post) && isset($notification->post->user))
 
-						</span>
-
+				<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}"><img class="profile-image" src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}" data-src="{{ asset('assets/front/img/' . optional($notification->post->user)->avatar) }}"> </a>
+                <span class="messageDate">{{ \Carbon\Carbon::parse($notification->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
+				<span>
+					<a href="/profile/{{ optional($notification->post->user)->username ?? '#' }}">
+						<h4 class="name">{{ optional($notification->post->user)->name ?? 'Unknown User' }} </h4>
+					</a>
+				</span>
+				<span class="notify-name">
+					<a href="{{ route('user.post.single', $notification->post_id ?? 0) }}"><i class="fas fa-comment" aria-hidden="true"></i> {{ $notification->type ?? '' }}d this {{ optional($notification->post)->type ?? 'post' }}</a>
+				</span>
 
 			@endif
 
-
-
-
-
-		@endif
 		</div>
-
+		@endif
 		@endforeach
 
 		@else
 
 	<div class="single-notification-items">
-
 		<h4 class="not-found">No Notifications Found</h4>
-
 	</div>
 
 	@endif
@@ -393,24 +311,19 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 
 		<div class="{{ (($message->status == 0)?"active":"read") }} ">
 
-
 		<div class="single-notification-items ">
-			<a href="/profile/{{$message->fromUser->username}}/">
+			<a href="/profile/{{ optional($message->fromUser)->username ?? '#' }}/">
 			<img class="profile-image" class="profile-image" src="{{ asset('assets/front/img/' . optional($message->fromUser)->avatar) }}">
 			</a>
 			<div class="message-from">
 
-				<a href="{{ route('message', optional($message->fromUser)->username) }}/#messagePost" class="name">
+				<a href="{{ route('message', optional($message->fromUser)->username ?? '') }}/#messagePost" class="name">
 
-					 <span> {{ optional($message->fromUser)->name }}</span><br>
+					 <span> {{ optional($message->fromUser)->name ?? 'Unknown User' }}</span><br>
 					 <span class="messageDate">{{ \Carbon\Carbon::parse($message->created_at,'America/Chicago')->format('m/d/Y h:ia' )}}</span><br>
- 					<span class="notify-name"><i class="fas fa-envelope" aria-hidden="true"></i> {{ str_limit(optional($message)->content, 20, '...') }}</span>
-
-
+ 					<span class="notify-name"><i class="fas fa-envelope" aria-hidden="true"></i> {{ str_limit(optional($message)->content ?? '', 20, '...') }}</span>
 
 					</p>
-
-
 
 				</a>
 
@@ -424,9 +337,7 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 
 	@else
     	<div class="single-notification-items">
-
 		<h4 class="not-found">No New Messages Found</h4>
-
 	</div>
 	@endif
 
@@ -452,64 +363,39 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
 
 </div>
 
-
-
 @php $interest=App\Interest::allTopics(); @endphp
 
-
-
 <div id="menu-add-topic" class="menu menu-box-bottom" data-menu-effect="menu-parallax">
-
             <div class="content">
 
                 <h1 class="uppercase ultrabold top-20">Add Topic</h1>
 
                 <p class="font-11 under-heading bottom-20">
-
                     Start typing the topics you want to assign to this post.
-
                 </p>
-								<p> Selected Topics: <span class="topicList"></span><p>
-
+				<p> Selected Topics: <span class="topicList"></span><p>
 
                 <div class="search-box search-color shadow-tiny round-large bottom-20">
-
-                    <i class="fas fa-search">
-
-</i>
-
+                    <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search for topics... " data-search="">
-
                 </div>
 
                 <div class="search-results disabled-search-list">
-
                     <div class="link-list link-list-2 link-list-long-border">
-
                         @foreach($interest as $int)
-
                         <a href="#" onClick="passchecked({{$int->id}})" id="searchint{{$int->id}}" data-post="{{$int->id}}" data-filter-item="{{$int->id}}" data-filter-name="{{strtolower($int->name)}} " class="intClk">
-
                             <span>{{$int->name}}</span>
-
                         </a>
-
                         @endforeach
-
                     </div>
-
                 </div>
 
                 <div class="clear">
-
                 </div>
 
                 <a href="#" class="close-menu button button-full button-s shadow-large button-round-small bg-blue2-dark top-10">Finished</a>
-
             </div>
-
         </div>
-
 
 <!-- else, just show the dashboard button for non-logged in user -->
 @else 
@@ -519,9 +405,6 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
         </div>
     </div>
 @endif
-
-
-
 
 <script>
 /* if ('serviceWorker' in navigator) {
@@ -534,7 +417,6 @@ $countN = App\User::StaticunreadNotificationsCount($theUser->id);
     });
  }*/
 </script>
-
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100705616-1"></script>
