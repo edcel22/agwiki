@@ -1,62 +1,68 @@
 @extends('layouts.user')
 
 @section('content')
-	
-    @if($posts && count($posts))
+    @if(isset($posts) && count($posts))
         <div class="infinite-scroll">
         @foreach($posts as $post)
-                    <article class="post-content section-box">
-                        <div class="post-inner">
-                            <header class="post-header">
-                                <div class="post-data">
-                                    <div class="post-title-wrap">
-                                        <h1 class="post-title">{{ $post->title ?? 'Untitled' }}</h1>
-                                        <time class="post-datetime" datetime="{{ optional($post->created_at)->format('Y-m-d H:i:s') }}">
-                                            <span class="day">{{ optional($post->created_at)->format('d') }}</span>
-                                            <span class="month">{{ optional($post->created_at)->format('M') }}</span>
-                                        </time>
-                                    </div>
-
-                                    <div class="post-info">
-                                        <a href="{{ route('profile', optional($post->user)->username ?? '#') }}"><i class="rsicon rsicon-user"></i>by {{ optional($post->user)->name ?? 'Unknown' }}</a>
-                                        <a href="{{ route('view.like', [str_slug($post->title ?? 'post'), $post->id]) }}"><i class="rsicon rsicon-thumbs-up"></i>{{ number_format_short($post->likeCount()) }}</a>
-                                        <a href="{{ route('user.post.single', [str_slug($post->title ?? 'post'), $post->id]) }}"><i class="rsicon rsicon-comments"></i>{{ number_format_short($post->commentCount()) }}</a>
-                                        <a href="{{ route('view.share', [str_slug($post->title ?? 'post'), $post->id]) }}"><i class="rsicon rsicon-share-alt"></i>{{ number_format_short($post->shareCount()) }}</a>
-                                    </div>
+            @if(isset($post))
+                <article class="post-content section-box">
+                    <div class="post-inner">
+                        <header class="post-header">
+                            <div class="post-data">
+                                <div class="post-title-wrap">
+                                    <h1 class="post-title">{{ $post->title ?? 'Untitled' }}</h1>
+                                    <time class="post-datetime" datetime="{{ optional($post->created_at)->format('Y-m-d H:i:s') }}">
+                                        <span class="day">{{ optional($post->created_at)->format('d') }}</span>
+                                        <span class="month">{{ optional($post->created_at)->format('M') }}</span>
+                                    </time>
                                 </div>
-                            </header>
-                            <img src="{{ asset('assets/front/img/post/' . ($post->image ?? 'default.jpg')) }}" alt="{{ $post->title ?? 'Post Image' }}" style="width: 100%;height: 300px;margin-bottom: 20px;">
-                            <div class="post-editor clearfix">
+
+                                <div class="post-info">
+                                    <a href="{{ route('profile', optional($post->user)->username ?? '#') }}"><i class="rsicon rsicon-user"></i>by {{ optional($post->user)->name ?? 'Unknown' }}</a>
+                                    <a href="{{ route('view.like', [str_slug($post->title ?? 'post'), $post->id]) }}"><i class="rsicon rsicon-thumbs-up"></i>{{ number_format_short(optional($post)->likeCount() ?? 0) }}</a>
+                                    <a href="{{ route('user.post.single', [str_slug($post->title ?? 'post'), $post->id]) }}"><i class="rsicon rsicon-comments"></i>{{ number_format_short(optional($post)->commentCount() ?? 0) }}</a>
+                                    <a href="{{ route('view.share', [str_slug($post->title ?? 'post'), $post->id]) }}"><i class="rsicon rsicon-share-alt"></i>{{ number_format_short(optional($post)->shareCount() ?? 0) }}</a>
+                                </div>
+                            </div>
+                        </header>
+                        <img src="{{ asset('assets/front/img/post/' . ($post->image ?? 'default.jpg')) }}" alt="{{ $post->title ?? 'Post Image' }}" style="width: 100%;height: 300px;margin-bottom: 20px;">
+                        <div class="post-editor clearfix">
+                            @if(isset($post) && method_exists($post, 'excerpt'))
                                 {!! excerpt($post) !!}
-                            </div>
-
-                            <div class="post-info row" style="margin-top: 30px;">
-                                <div class="col-xs-3">
-                                    <i style="font-size: 30px;" class="rsicon rsicon-thumbs-up post-action{{ $post->isLiked()?' actv':'' }} like" data-post="{{ $post->id }}"></i>
-                                </div>
-                                <div class="col-xs-2">
-                                    <a href="{{ route('user.post.single', [str_slug($post->title ?? 'post'), $post->id]) }}"><i style="font-size: 30px;" class="rsicon rsicon-comments post-action comment"></i></a>
-                                </div>
-                                <div class="col-xs-2">
-                                    <i style="font-size: 30px;" class="rsicon rsicon-share-alt post-action share" data-post="{{ $post->id }}"></i>
-                                </div>
-                                <div class="col-xs-3">
-                                    <a href="{{ route('user.post.report', $post->id) }}"><i style="font-size: 30px;" class="rsicon rsicon-flag post-action report"></i></a>
-                                </div>
-                                @if(Auth::check() && $post->user_id == Auth::user()->id)
-                                    <div class="col-xs-2">
-                                        <a href="{{ route('user.post.edit', [$post->title ?? 'post', $post->id]) }}"><i style="font-size: 30px;" class="rsicon rsicon-edit post-action"></i></a>
-                                    </div>
-                                @endif
-                            </div>
+                            @else
+                                No content available
+                            @endif
                         </div>
-                    </article>
+
+                        <div class="post-info row" style="margin-top: 30px;">
+                            <div class="col-xs-3">
+                                <i style="font-size: 30px;" class="rsicon rsicon-thumbs-up post-action{{ method_exists($post, 'isLiked') && $post->isLiked() ? ' actv' : '' }} like" data-post="{{ $post->id }}"></i>
+                            </div>
+                            <div class="col-xs-2">
+                                <a href="{{ route('user.post.single', [str_slug($post->title ?? 'post'), $post->id]) }}"><i style="font-size: 30px;" class="rsicon rsicon-comments post-action comment"></i></a>
+                            </div>
+                            <div class="col-xs-2">
+                                <i style="font-size: 30px;" class="rsicon rsicon-share-alt post-action share" data-post="{{ $post->id }}"></i>
+                            </div>
+                            <div class="col-xs-3">
+                                <a href="{{ route('user.post.report', $post->id) }}"><i style="font-size: 30px;" class="rsicon rsicon-flag post-action report"></i></a>
+                            </div>
+                            @if(Auth::check() && isset($post->user_id) && $post->user_id == Auth::user()->id)
+                                <div class="col-xs-2">
+                                    <a href="{{ route('user.post.edit', [$post->title ?? 'post', $post->id]) }}"><i style="font-size: 30px;" class="rsicon rsicon-edit post-action"></i></a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </article>
+            @endif
         @endforeach
             {{ $posts->links() }}
         </div>
     @else
         <div class="section-box" style="text-align: center;">No Post Found. <a href="{{ route('user.post.new') }}">Add New Post</a></div>
     @endif
+@endsection
 
 @section('js')
     <script src="{{ asset('assets/front/js/jquery.jscroll.min.js') }}"></script>
