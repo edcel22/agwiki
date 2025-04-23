@@ -48,74 +48,62 @@
     @if(Auth::check())
     <div class="tab-content" id="tab-1">
 
-        @if($groups && count($groups)) @foreach($groups as $group) @if($group->group)
+        @if(isset($groups) && count($groups)) 
+            @foreach($groups as $group) 
+                @if(isset($group->group) && $group->group)
+                <div class="content content-box" style="border-bottom:1px solid #CCC;margin-bottom:0">
 
-        <div class="content content-box" style="border-bottom:1px solid #CCC;margin-bottom:0">
+                    <a href="{{ route('user.groups', optional($group->group)->slug ?? '#') }}">
 
-            <a href="{{ route('user.groups', optional($group->group)->slug) }}">
+                        <h3 class="top-10">{{ optional($group->group)->name ?? 'Unnamed Group' }}</h3>
 
-                <h3 class="top-10">{{ optional($group->group)->name }}</h3>
+                        <p class="description bottom-10">
+                            {{ optional($group->group)->description ?? 'No description available' }}
+                        </p>
 
-                <p class="description bottom-10">
+                    </a>
 
-                    {{ optional($group->group)->description }}
+                    <p>
+                        @if(isset($group->group) && method_exists($group->group, 'creator') && $group->group->creator())
+                            <a href="{{ route('profile', optional($group->group->creator())->username ?? '#') }}">
+                                <span><i class="fas fa-user-alt"></i>{{ optional($group->group->creator())->name ?? 'Unknown Creator' }}</span>
+                            </a>
+                        @else
+                            <span><i class="fas fa-user-alt"></i>Unknown Creator</span>
+                        @endif
 
-                </p>
+                        <span><i class="fas fa-user-check"></i>{{ number_format_short(optional($group->group)->memberCount() ?? 0) }} Members</span>
 
-            </a>
-
-            <p>
-
-                <a href="{{ route('profile', $group->group->creator()->username) }}"><span><i class="fas fa-user-alt"></i>{{ $group->group->creator()->name }}</span></a>
-
-                <span><i class="fas fa-user-check"></i>{{ number_format_short(optional($group->group)->memberCount()) }} Members</span>
-
-                <span><i class="far fa-file-alt"></i>
-
-                                 @foreach($group->group->topics as $myinterest)
-
-                                    <a href="#">{{$myinterest->name}}</a>,
-
+                        <span><i class="far fa-file-alt"></i>
+                            @if(isset($group->group->topics) && count($group->group->topics))
+                                @foreach($group->group->topics as $myinterest)
+                                    <a href="#">{{ $myinterest->name ?? 'Unknown Topic' }}</a>,
                                 @endforeach
+                            @else
+                                No topics
+                            @endif
+                        </span>
+                    </p>
 
-                                </span>
+                    <p>
+                        <br>
+                        <a href="{{ route('user.groups', optional($group->group)->slug ?? '#') }}" class="button button-xs bg-highlight bg-blue1-light"><i class="fas fa-arrow-alt-circle-right"></i> Visit Group</a>
+                        <!--<a href="#" class="button button-xs bg-highlight bg-red2-light"><i class="fas fa-times-circle"></i></a>-->
+                    </p>
 
-            </p>
-
-            <p>
-
-                <br>
-
-                <a href="{{ route('user.groups', optional($group->group)->slug) }}" class="button button-xs bg-highlight bg-blue1-light"><i class="fas fa-arrow-alt-circle-right"></i> Visit Group</a>
-
-                <!--<a href="#" class="button button-xs bg-highlight bg-red2-light"><i class="fas fa-times-circle"></i></a>-->
-
-            </p>
-
-        </div>
-
-        @endif @endforeach @else
-
-        
-
+                </div>
+                @endif 
+            @endforeach 
+        @else
             <div class="single-notification-items">
-
                 <h4 class="not-found">No Group Found</h4>
-
             </div>
-
-        
-
         @endif
 
         <div class="clear"></div>
-
         <br>
-
         <br>
-
         <br>
-
     </div>
     @endif
     <!-- My Groups tab content end -->
@@ -123,49 +111,38 @@
     <div class="tab-content" id="tab-2">
 
         <div class="search-box search-color shadow-tiny round-large bottom-20">
-
             <i class="fa fa-search"></i>
-
             <input type="text" placeholder="Search for groups... " data-search="">
-
         </div>
 
         <div class="search-results search-list">
-
             <div class="link-list link-list-2 link-list-long-border">
-
-                @if($allGroups && count($allGroups)) @foreach($allGroups as $agroup)
-
-                    @if (Auth::check())
-                        <a href="{{ route('user.groups', $agroup->slug) }}" data-filter-item="{{$agroup->id}}" data-filter-name="{{strtolower($agroup->name)}}  @foreach($agroup->topics as $groupTopic){{strtolower($groupTopic->name)}} @endforeach" class="grouplist">
-                        
-                            <span>{{$agroup->name}}</span>
-
-                            <strong></strong>
-
-                            <i class="fa fa-angle-right"></i>
-
-                        </a>
-                    @else 
-                        <a data-filter-item="{{$agroup->id}}" data-filter-name="{{strtolower($agroup->name)}}  @foreach($agroup->topics as $groupTopic){{strtolower($groupTopic->name)}} @endforeach" class="grouplist">
-                        
-                            <span style = "cursor: default;">{{$agroup->name}}</span>
-
-                            <strong></strong>
-
-                        </a>
-                    @endif
-
-                @endforeach @endif
-
+                @if(isset($allGroups) && count($allGroups)) 
+                    @foreach($allGroups as $agroup)
+                        @if(isset($agroup))
+                            @if (Auth::check())
+                                <a href="{{ route('user.groups', $agroup->slug ?? '#') }}" data-filter-item="{{$agroup->id}}" data-filter-name="{{strtolower($agroup->name ?? '')}}  @if(isset($agroup->topics) && count($agroup->topics))@foreach($agroup->topics as $groupTopic){{strtolower($groupTopic->name ?? '')}} @endforeach @endif" class="grouplist">
+                                    <span>{{$agroup->name ?? 'Unnamed Group'}}</span>
+                                    <strong></strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            @else 
+                                <a data-filter-item="{{$agroup->id}}" data-filter-name="{{strtolower($agroup->name ?? '')}}  @if(isset($agroup->topics) && count($agroup->topics))@foreach($agroup->topics as $groupTopic){{strtolower($groupTopic->name ?? '')}} @endforeach @endif" class="grouplist">
+                                    <span style = "cursor: default;">{{$agroup->name ?? 'Unnamed Group'}}</span>
+                                    <strong></strong>
+                                </a>
+                            @endif
+                        @endif
+                    @endforeach 
+                @endif
             </div>
-
         </div>
-
     </div>
 
 </div>
 
-@if(Auth::check())
-{{ $groups->links() }} @endif @endsection
+@if(Auth::check() && isset($groups))
+    {{ $groups->links() }} 
+@endif 
 
+@endsection
