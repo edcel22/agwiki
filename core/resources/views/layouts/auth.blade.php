@@ -1489,5 +1489,10 @@ function registerPopup()
 
     <script src="{{ asset('js/feed/sharepost.js') }}" defer></script>
     <script src="{{ asset('js/feed/feed.js') }}" defer></script>
+
+    <script src="https://widgets.leadconnectorhq.com/loader.js" 
+        data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" 
+        data-widget-id="67bc98483346114607cdab59">
+    </script>
 </body>
 </html>
