@@ -397,7 +397,10 @@ function registerPopup()
 
  <script type="text/javascript" src="/assets/front/js/plugins.js" async></script>
 <script type="text/javascript" src="/assets/front/js/custom.js" async></script>
-
+<script src="https://widgets.leadconnectorhq.com/loader.js" 
+        data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" 
+        data-widget-id="67bc98483346114607cdab59">
+</script>
 
 	
 </body>
