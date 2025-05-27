@@ -884,7 +884,7 @@
             </div>
         </div>
     </div> -->
-    {{-- <div id="menu-signup" class="menu menu-box-bottom" data-menu-height="300" data-menu-effect="menu-parallax">
+    {{-- <div id="menu-signup" class="menu menu-box-bottom center-register-form-new" data-menu-height="300" data-menu-effect="menu-parallax">
         <div class="content">
             <h1 class="uppercase ultrabold top-20">Register</h1>
             <p class="font-11 under-heading bottom-20">
