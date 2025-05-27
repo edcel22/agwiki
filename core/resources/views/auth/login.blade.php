@@ -2,8 +2,6 @@
 @section('css')
 @endsection
 @section('content')
- {{-- <script src="https://www.google.com/recaptcha/api.js"></script> --}}
-
 
 <style>
 	.vcontainer {
@@ -42,14 +40,9 @@
 						
 					</p>
 					<p class="center-text color-white bottom-20">
-						<a href="#" class="button button-primary button-l shadow-large right-20" data-menu="menu-signup">Sign Up</a>
+						<a href="#" class="button button-primary button-l shadow-large right-20" data-menu="menu-signup-login">Sign Up</a>
 						<a href="#" class="button button-next button-l shadow-large" data-menu="menu-signin">Login</a>
 					</p>
-					
-					
-					
-					
-					
 				</div>
 				
 				<div class="caption-overlay bg-black opacity-70"></div>
@@ -160,6 +153,8 @@
 	</div>
 	<div class="menu-hider"></div>
 </div>
+
+<!-- Forgot Password Form -->
 <div id="menu-forgot" class="menu menu-box-bottom" data-menu-height="230" data-menu-effect="menu-over">
 	<div class="content">
     	<form method="POST" action="{{ route('forgot.pass') }}">
@@ -178,6 +173,8 @@
         </form>
 	</div>
 </div>
+
+<!-- Sign In Form -->
 <div id="menu-signin" class="menu menu-box-bottom" data-menu-height="500" data-menu-effect="menu-over">
 	<div class="content">
 		<h1 class="uppercase ultrabold top-20">LOGIN</h1>
@@ -192,7 +189,7 @@
 				<i class="input-icon fa fa-at"></i>
 				<span>Email</span>
 				<em>(required)</em>
-				<input type="email" id="email" name="username" placeholder="Email" value="{{ old('username') }}" required>
+				<input type="email" id="loginEmail" name="username" placeholder="Email" value="{{ old('username') }}" required>
 			</div>
 
 			<!-- Password Input -->
@@ -200,13 +197,12 @@
 				<i class="input-icon fa fa-lock font-11"></i>
 				<span>Password</span>
 				<em>(required)</em>
-				<input type="password" id="password" name="password" placeholder="Password" required>
+				<input type="password" id="loginPassword" name="password" placeholder="Password" required>
 			</div>
-			{{-- login: login.blade.php --}}
 
-			<!-- Show Password Checkbox : login - login.blade.php  -->
+			<!-- Show Password Checkbox -->
 			<div class="top-10">
-				<input type="checkbox" id="showPasswordCheckbox" onclick="showPassword()"> Show Password
+				<input type="checkbox" id="showLoginPasswordCheckbox" onclick="showLoginPassword()"> Show Password
 			</div>
 
 			<div class="top-30">
@@ -214,7 +210,7 @@
 					<a href="#" data-menu="menu-forgot" class="left-text font-10">Forgot Password?</a>
 				</div>
 				<div class="one-half last-column">
-					<a data-menu="menu-signup" href="#" class="right-text font-10">Create Account</a>
+					<a data-menu="menu-signup-login" href="#" class="right-text font-10">Create Account</a>
 				</div>
 			</div>
 
@@ -238,13 +234,14 @@
 	</div>
 </div>
 
-<div id="menu-signup" class="menu menu-box-bottom register-login-blade-php" data-menu-height="92%" data-menu-effect="menu-parallax">
+<!-- Registration Form for Login Page (with unique IDs to avoid conflicts with sidebar) -->
+<div id="menu-signup-login" class="menu menu-box-bottom register-login-blade-php" data-menu-height="92%" data-menu-effect="menu-parallax">
 	<div class="content">
 		<h1 class="uppercase ultrabold top-20">Register</h1>
 		<p class="font-11 under-heading bottom-20">
 			Don't have an account? Register below.
 		</p>
-		<form method="POST" id="regForm" action="{{ route('register') }}">
+		<form method="POST" id="regFormLogin" action="{{ route('register') }}">
 			@csrf
 			<input style="display: none" name="field_name" type="text">
 			@if(isset($user))
@@ -253,28 +250,25 @@
 			<div class="input-style input-style-1 input-required login">
 				<span>Email</span>
 				<em>(required)</em>
-				<input class="form-control" type="email" name="email" id="email" placeholder="Email" value="{{ old('email') }}" required>
+				<input class="form-control" type="email" name="email" id="regEmailLogin" placeholder="Email" value="{{ old('email') }}" required>
 			</div>
 			
 			<div class="input-style input-style-1 input-required login">
 				<span>Password</span>
 				<em>(required)</em>
-				<input class="form-control" type="password" name="password" id="password" placeholder="Password" value="{{ old('password') }}" required>
+				<input class="form-control" type="password" name="password" id="regPasswordLogin" placeholder="Password" value="{{ old('password') }}" required>
 			</div>
 			
-			
-				<label for="tap" class="control-label">
-					<input type="checkbox" name="tap" id="tap" value="1" required=""> Agree With <a href="/tap">Terms And Policy</a></label>
+			<label for="tapLogin" class="control-label">
+				<input type="checkbox" name="tap" id="tapLogin" value="1" required=""> Agree With <a href="/tap">Terms And Policy</a>
+			</label>
 			
 			<div class="top-20 bottom-20">
 				<a href="#" data-menu="menu-signin" class="center-text font-11 color-gray2-dark">Already Registered? Sign In Here.</a>
 			</div>
 			<div class="clear"></div>
-			<!--id="ajaxSubmit" -->
-            <!--data-menu="welcome-screen"-->
-            {{-- <button  type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit'   class="g-recaptcha button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
-												 --}}
-			<button type="submit" data-sitekey="6Le_qGcqAAAAAKIVN2YKP-gtlPlw0I2J81IlruLx" data-callback='onSubmit' data-action='submit' class="button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
+			
+			<button type="submit" class="button button-full button-s shadow-large button-round-small bg-blue2-dark top-10" style="width:100%">Register</button>
 			<div class="clear"></div>
 		</form>
 		<div class="divider"></div>
@@ -282,12 +276,13 @@
 		<a href="{{ url('/login/facebook') }}" class="button bg-facebook button-l shadow-large button-icon-left"><i class="fab fa-facebook-f"></i> Log In With Facebook</a><br>
 	</div>
 </div>
+
+<!-- Welcome Screen -->
 <div id="welcome-screen" class="menu menu-box-bottom" data-menu-height="70%" data-menu-effect="menu-parallax">
 	<div class="content">
 		<h1 class="uppercase ultrabold top-20">Welcome!</h1>
 		<p class="under-heading top-20">
 			We have forwarded a link to your email that will take you to your <strong>new profile page</strong>.
-
 		</p>
 		<p>
 			Once your profile is complete, we will be able to approve your new account.
@@ -295,11 +290,12 @@
 		<p>
 			See you soon,<br>
 			Team AgWiki
-
 		</p>
 		<div class="clear"></div>
 	</div>
 </div>
+
+<!-- Menu -->
 <div id="menu-agwiki" class="menu menu-box-left" data-menu-width="300" data-menu-effect="menu-parallax">
 	<div class="nav nav-medium">
 	    <a id="page-home" href="https://go.agwiki.com/#features" >
@@ -326,42 +322,17 @@
 	    <div class="divider top-15"></div>
 	    <p>Copyright <span class="copyright-year"></span> - AgWiki <?php echo date('Y'); ?>. All rights Reserved.</p>
 	</div>
-
 </div>
 @endsection
-@section('js')
-<script>
-	function onSubmit(token) {
-		document.getElementById("regForm").submit();
-	}
 
-	$(document).ready(function(){
-		$('#ajaxSubmit').click(function(e){
-			e.preventDefault();
-			$.ajaxSetup({
-				headers: {
-					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-				}
-			});
-			$.ajax({
-				url: "{{ route('register') }}",
-				method: 'post',
-				data: {
-					email: $('#email').val(),
-				},
-				success: function(result){
-					console.log(result);
-				}
-			});
-		});
-	});
-</script>
+@section('js')
 <script src="https://cdn.plyr.io/3.3.10/plyr.js"></script>
 <script>
 	const player = new Plyr('#player');
-	function showPassword() {
-		var passwordField = document.getElementById("password");
-		var checkbox = document.getElementById("showPasswordCheckbox");
+	
+	function showLoginPassword() {
+		var passwordField = document.getElementById("loginPassword");
+		var checkbox = document.getElementById("showLoginPasswordCheckbox");
 
 		// Toggle password visibility
 		if (checkbox.checked) {
@@ -370,5 +341,20 @@
 			passwordField.type = "password";
 		}
 	}
+	
+	$(document).ready(function(){
+		// Form validation for login registration form
+		$('#regFormLogin').on('submit', function(e) {
+			var email = $('#regEmailLogin').val();
+			var password = $('#regPasswordLogin').val();
+			var terms = $('#tapLogin').is(':checked');
+			
+			if (!email || !password || !terms) {
+				e.preventDefault();
+				alert('Please fill in all required fields and agree to terms.');
+				return false;
+			}
+		});
+	});
 </script>
 @endsection
