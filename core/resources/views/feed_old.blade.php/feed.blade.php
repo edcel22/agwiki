@@ -969,7 +969,7 @@
     </div>
 </div>
 
-<div id="menu-signup" class="menu menu-box-bottom" data-menu-height="300" data-menu-effect="menu-parallax">
+<div id="menu-signup" class="menu menu-box-bottom register-feed_old-feed" data-menu-height="300" data-menu-effect="menu-parallax">
 
 	<div class="content">
 
