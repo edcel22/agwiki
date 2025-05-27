@@ -384,7 +384,7 @@
 
 
 
-<div id="menu-signup" class="menu menu-box-bottom menu-chr" data-menu-height="92%" data-menu-effect="menu-parallax">
+<div id="menu-signup" class="menu menu-box-bottom menu-chr side-register-form" data-menu-height="92%" data-menu-effect="menu-parallax">
 	<div class="content">
 		<h1 class="uppercase ultrabold top-20">Register</h1>
 		<p class="font-11 under-heading bottom-20">

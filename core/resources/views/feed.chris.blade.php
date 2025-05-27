@@ -1006,7 +1006,7 @@
         </div>
     </div>
 
-    <div id="menu-signup" class="menu menu-box-bottom" data-menu-height="300" data-menu-effect="menu-parallax">
+    <div id="menu-signup" class="menu menu-box-bottom  center-register-form" data-menu-height="300" data-menu-effect="menu-parallax">
 
         <div class="content">
 

@@ -856,7 +856,7 @@
     <div id="menu-signin" class="menu menu-box-bottom menu-chr" data-menu-height="500" data-menu-effect="menu-over">
         <div class="content">
             <h1 class="uppercase ultrabold top-20">LOGIN</h1>
-            <p class="font-11 under-heading bottom-20">
+            <p class="font-11 under-heading bottom-20 side-login-form">
                 Hello, stranger! Please enter your credentials below.
             </p>
             <form method="POST" action="{{ route('login') }}">
