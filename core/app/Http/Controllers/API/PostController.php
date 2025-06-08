@@ -8,27 +8,34 @@ use App\Interest;
 use App\Post;
 use App\Share;
 use App\User;
+use App\UserToken;
 
 class PostController extends Controller
 {
     public function store (Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'app_token' => 'required|exists:users,app_token',
+            'app_token' => 'required',
             'content' => 'required',
             'link' => 'sometimes', // imageLink or doc link
             'type' => 'required|in:article,image',
             'interest' => 'sometimes|array'
         ]);
 
-        $user = User::select('id')
-            ->where('app_token', $request->app_token)->first();
-
         if ($validator->fails()) { 
             return response([
                 'errors' => $validator->errors()->all()
             ], 400);
         }
+
+        $appToken = $request->input('app_token');
+        $userToken = UserToken::where('token', $appToken)->first();
+
+        if (!$userToken) {
+            return response()->json(['error' => 'Invalid or missing app token.'], 401);
+        }
+
+        $user = $userToken->user;
 
         $created_post = Post::create([
             'user_id' => $user->id,
