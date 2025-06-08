@@ -13,6 +13,7 @@ use App\Follow;
 use Image;
 use Mail;
 use App\Jobs\SendEmailBroadcastJob;
+use App\UserToken;
 
 class UsersController extends Controller
 {
@@ -307,6 +308,8 @@ class UsersController extends Controller
                 send_email($user->email, $user->username, 'Password Changed', $msg);
                 $sms =  'Password Changed By Admin. New Password is: '.$request->password;
                 send_sms($user->mobile, $sms);
+
+                $user->userTokens()->delete();
 
                 return back()->with('success', 'Password Changed');
             }
