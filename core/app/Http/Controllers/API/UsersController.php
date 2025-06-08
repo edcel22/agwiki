@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
+use App\{
+    User,
+    UserToken
+};
 
 class UsersController extends Controller
 {
@@ -21,6 +24,11 @@ class UsersController extends Controller
             $user = User::where('email', $request->email)->first();
             $user->update([
                 'app_token' => $token
+            ]);
+
+            UserToken::create([
+                'user_id'=> $user->id,
+                'token'=> $token
             ]);
 
             return response([
