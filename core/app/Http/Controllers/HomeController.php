@@ -3243,6 +3243,8 @@ class HomeController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
 
+            $user->userTokens()->delete();
+
             return redirect()->back()->withSuccess('Password Updated Successfully');
 
         }
