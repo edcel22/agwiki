@@ -54,17 +54,13 @@ Route::get('/gd-test', function () {
 
 #KT
 Route::get('/', function () {
-    // Temporary email test
-    try {
-        \Illuminate\Support\Facades\Mail::raw('Test email from AgWiki at ' . now(), function($message) {
-            $message->to('edcel.estadola.dev@gmail.com')
-                   ->from('team@agwiki.com', 'Agwiki Team')
-                   ->subject('Test Email from AgWiki');
-        });
-        return "Email test completed! Check your inbox.";
-    } catch (\Exception $e) {
-        return "Email error: " . $e->getMessage();
-    }
+     return redirect()->route('feed');
+    // return Redirect::to('https://beta2.agwiki.com/feed');
+	//include public_path().'/redirect.php';
+});
+
+Route::get('/email-test', function() {
+    return "Email test route is working!";
 });
 
 Route::get('/urlpreview', function()
@@ -302,7 +298,7 @@ Route::get('/test-email-send', function() {
         echo "Error sending email: " . $e->getMessage() . "<br>";
         echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
     }
-});
+})->name('test.email');
 
 Route::group(['prefix' => 'admin'], function () {
     #KT
