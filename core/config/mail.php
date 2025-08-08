@@ -16,14 +16,32 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'smtp'),//sendmail
+    'driver' => env('MAIL_DRIVER', 'smtp'),
 
-'driver' => env('MAIL_MAILER', 'postmark'),
+    'default' => env('MAIL_MAILER', 'smtp'),
 
-'postmark' => [
-    'transport' => 'postmark',
-    'token' => env('POSTMARK_TOKEN'),
-],
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
+        'postmark' => [
+            'transport' => 'postmark',
+            'token' => env('POSTMARK_TOKEN'),
+        ],
+
+        'sendmail' => [
+            'transport' => 'sendmail',
+            'path' => '/usr/sbin/sendmail -bs',
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -64,8 +82,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'info@agwiki.com'),
-        'name' => env('MAIL_FROM_NAME', 'Agwiki'),
+        'address' => env('MAIL_FROM_ADDRESS', 'team@agwiki.com'),
+        'name' => env('MAIL_FROM_NAME', 'Agwiki Team'),
     ],
 
     /*
@@ -92,15 +110,8 @@ return [
     |
     */
 
-   // 'username' => env('brandon@eatkidfriendly.com'),
-
-   // 'password' => env(''),
-   
-   'username' => env('MAIL_USERNAME','manager@agwiki.com'),
-   'password' => env('MAIL_PASSWORD','Zdm6c^80'),
-   
-   // 'username' => env('MAIL_USERNAME','agwiki'),
-   //'password' => env('MAIL_PASSWORD','sg422019@aw'),
+   'username' => env('MAIL_USERNAME'),
+   'password' => env('MAIL_PASSWORD'),
    
 
     /*
