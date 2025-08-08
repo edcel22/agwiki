@@ -807,7 +807,7 @@ AgWiki - President  <br>
 		
 			Auth::login($user);
 						
-			return redirect('/');
+			return redirect('interests?tab=add')->with('message', 'Successfully created a new account. Please add your interests to get started');
 			
 			//return view('welcome');
         }

@@ -14,7 +14,7 @@ class InterestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (Auth::check()) {
             $interests = Auth::user()->interests()->orderBy('name')->get();
@@ -43,8 +43,11 @@ class InterestController extends Controller
 		$alltopics = Interest::whereNotIn('id', $passinterest)->orderBy('name')->get();
 		$page_title = 'Topics';
 		
+		// Get the active tab from request parameter
+		$activeTab = $request->get('tab', 'my'); // Default to 'my' tab if no parameter
+		
 		//die($interests);
-		return view('topics', compact('alltopics', 'interests','page_title', 'user'));
+		return view('topics', compact('alltopics', 'interests','page_title', 'user', 'activeTab'));
     }
 	// ORIGINAL PROCESS TOPIC
 	// public function processTopic(Request $request)

@@ -142,7 +142,7 @@ class RegisterController extends Controller
 
             return session('link') !== null 
                 ? redirect(session('link'))->with('message', 'Successfully created a new account. Please fill out all details')
-                : redirect('feed')->with('message', 'Successfully created a new account. Please fill out all details');
+                : redirect('interests?tab=add')->with('message', 'Successfully created a new account. Please add your interests to get started');
 
         } catch(\Exception $e) {
             \Log::error('Registration error: ' . $e->getMessage());

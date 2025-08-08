@@ -293,7 +293,7 @@ class LoginController extends Controller
             if(session('link')!==null)
                 return redirect(session('link'))->with('message', 'Successfully created a new account. Please fill out all details');
             else
-                return redirect('feed')->with('message', 'Successfully created a new account. Please fill out all details');
+                return redirect('interests?tab=add')->with('message', 'Successfully created a new account. Please add your interests to get started');
         }
     } catch(\Exception $e) {
         \Log::error('Social login error: ' . $e->getMessage());

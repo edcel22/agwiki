@@ -5,16 +5,16 @@
 
         <div class="tab-controls tab-animated tabs-large" data-tab-items="2" data-tab-active="bg-blue1-dark">
 
-            <a href="#" data-tab-active data-tab="tab-1"><i class="fas fa-user-alt"></i> My topics</a>
+            <a href="#" {{ $activeTab === 'my' ? 'data-tab-active' : '' }} data-tab="tab-1"><i class="fas fa-user-alt"></i> My topics</a>
 
-            <a href="#" data-tab="tab-2"><i class="fas fa-plus-circle"></i> Add topics</a>
+            <a href="#" {{ $activeTab === 'add' ? 'data-tab-active' : '' }} data-tab="tab-2"><i class="fas fa-plus-circle"></i> Add topics</a>
 
         </div>
 
         <div class="clear"></div>
 
 
-        <div class="tab-content" id="tab-1">
+        <div class="tab-content {{ $activeTab === 'my' ? 'tab-active' : '' }}" id="tab-1">
 
             <h4>TOPICS (click a topic to remove it)</h4> @if($interests && count($interests))
 
@@ -52,7 +52,7 @@
 
         </div>
 
-        <div class="tab-content" id="tab-2">
+        <div class="tab-content {{ $activeTab === 'add' ? 'tab-active' : '' }}" id="tab-2">
 
             <div class="search-box search-color shadow-tiny round-large bottom-20">
 
