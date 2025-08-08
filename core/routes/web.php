@@ -63,6 +63,29 @@ Route::get('/email-test', function() {
     return "Email test route is working!";
 });
 
+Route::get('/mail-config-test', function() {
+    echo "<h2>Mail Configuration Test</h2>";
+    echo "<p>Mail Driver: " . config('mail.driver') . "</p>";
+    echo "<p>Mail Host: " . config('mail.host') . "</p>";
+    echo "<p>Mail Port: " . config('mail.port') . "</p>";
+    echo "<p>Mail Username: " . config('mail.username') . "</p>";
+    echo "<p>Mail From Address: " . config('mail.from.address') . "</p>";
+    echo "<p>Mail From Name: " . config('mail.from.name') . "</p>";
+    
+    try {
+        echo "<h3>Testing Mail Sending...</h3>";
+        \Illuminate\Support\Facades\Mail::raw('Test email from AgWiki', function($message) {
+            $message->to('edcel.estadola.dev@gmail.com')
+                   ->from('team@agwiki.com', 'Agwiki Team')
+                   ->subject('Mail Configuration Test');
+        });
+        echo "<p style='color: green;'>✅ Email sent successfully!</p>";
+    } catch (\Exception $e) {
+        echo "<p style='color: red;'>❌ Email error: " . $e->getMessage() . "</p>";
+        echo "<pre>" . $e->getTraceAsString() . "</pre>";
+    }
+});
+
 Route::get('/urlpreview', function()
 {
     include public_path().'/urlpreview.php';
