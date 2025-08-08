@@ -279,7 +279,22 @@ Route::get('/test-forgot-password', function() {
 
 /// change by dinesh end ///
 
-
+Route::get('/test-email-send', function() {
+    try {
+        echo "Testing email sending...<br>";
+        
+        \Illuminate\Support\Facades\Mail::raw('This is a test email from AgWiki at ' . now(), function($message) {
+            $message->to('edcel.estadola.dev@gmail.com')
+                   ->from('team@agwiki.com', 'Agwiki Team')
+                   ->subject('Test Email from AgWiki');
+        });
+        
+        echo "Email sent successfully!";
+    } catch (\Exception $e) {
+        echo "Error sending email: " . $e->getMessage() . "<br>";
+        echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+    }
+});
 
 Route::group(['prefix' => 'admin'], function () {
     #KT
