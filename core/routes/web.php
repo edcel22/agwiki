@@ -54,9 +54,17 @@ Route::get('/gd-test', function () {
 
 #KT
 Route::get('/', function () {
-     return redirect()->route('feed');
-    // return Redirect::to('https://beta2.agwiki.com/feed');
-	//include public_path().'/redirect.php';
+    // Temporary email test
+    try {
+        \Illuminate\Support\Facades\Mail::raw('Test email from AgWiki at ' . now(), function($message) {
+            $message->to('edcel.estadola.dev@gmail.com')
+                   ->from('team@agwiki.com', 'Agwiki Team')
+                   ->subject('Test Email from AgWiki');
+        });
+        return "Email test completed! Check your inbox.";
+    } catch (\Exception $e) {
+        return "Email error: " . $e->getMessage();
+    }
 });
 
 Route::get('/urlpreview', function()
