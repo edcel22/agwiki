@@ -179,6 +179,9 @@ Route::get('tag/{tag}', 'HomeController@tag')->name('tag');
 
 Route::get('social/{post}/share/{platform}', 'HomeController@socialShare')->name('social.share');
 
+// Special route for social media crawlers to access post content
+Route::get('crawler/post/{post}', 'HomeController@crawlerPost')->name('crawler.post');
+
 //Route::get('tap', 'FrontController@tap')->name('tap');
 //Route::get('pp', 'FrontController@pp')->name('pp');
 Route::get('links', 'HomeController@links')->name('links');

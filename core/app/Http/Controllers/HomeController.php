@@ -379,7 +379,9 @@ class HomeController extends Controller
       } elseif ($platform == 'google') {
           $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
       } elseif ($platform == 'linkedin') {
-          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($post_url) . '&summary=' . urlencode(substr($text, 0, 200));
+          // Use the crawler route for LinkedIn to ensure proper Open Graph meta tags
+          $crawler_url = route('crawler.post', $post->id);
+          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($crawler_url) . '&summary=' . urlencode(substr($text, 0, 200));
       } elseif ($platform == 'pinterest') {
           $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode($linkedin_title) . '&url=' . urlencode($post_url);
       } else {
@@ -1223,9 +1225,30 @@ class HomeController extends Controller
 			}
         }
 
-		
+        // Handle non-authenticated users and social media crawlers
         $comments = Comment::where('post_id', $post->id)->where('comment_id', 0)->get();
-		
+        
+        // For social media crawlers, ensure we have all necessary data
+        if ($this->isSocialMediaCrawler()) {
+            // Force refresh of Open Graph data for crawlers
+            $og_title = trim($og_title);
+            $og_description = trim($og_description);
+            $og_image = trim($og_image);
+            $tw_image = trim($tw_image);
+            
+            // Ensure we have valid fallbacks
+            if (empty($og_title) || $og_title == 'AgWiki Post') {
+                $og_title = $post->user->name . ' - AgWiki Post';
+            }
+            
+            if (empty($og_description)) {
+                $og_description = 'Check out this post shared by ' . $post->user->name . ' on AgWiki';
+            }
+            
+            if (empty($og_image)) {
+                $og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/assets/front/img/logo_md.png';
+            }
+        }
 		
 		
 
@@ -3351,6 +3374,88 @@ class HomeController extends Controller
         }
         
         return false;
+    }
+
+    /**
+     * Special method for social media crawlers to access post content
+     * This bypasses all authentication and provides clean Open Graph meta tags
+     */
+    public function crawlerPost(Post $post)
+    {
+        if (!$post) {
+            abort(404);
+        }
+
+        // Generate Open Graph meta tags specifically for crawlers
+        $og_title = 'AgWiki Post';
+        $og_description = 'Check out this post on AgWiki';
+        $og_image = '';
+        $tw_image = '';
+
+        if ($post->scrabingcontent != '') {
+            // Extract title from scraped content
+            $d = new \DOMDocument();
+            @$d->loadHTML($post->scrabingcontent);
+            
+            foreach($d->getElementsByTagName('h1') as $item){
+                $og_title = $item->textContent;
+                break;
+            }
+            
+            if($og_title == 'AgWiki Post') {
+                foreach($d->getElementsByTagName('h2') as $item){
+                    $og_title = $item->textContent;
+                    break;
+                }
+            }
+
+            // Extract description
+            $og_description = strip_tags($post->scrabingcontent);
+            if (strlen($og_description) > 200) {
+                $og_description = substr($og_description, 0, 200) . '...';
+            }
+
+            // Extract image
+            preg_match_all('/<img[^>]+>/i', $post->scrabingcontent, $imgTags);
+            if (!empty($imgTags[0])) {
+                preg_match('/src="([^"]+)/i', $imgTags[0][0], $imgage);
+                if (!empty($imgage[1])) {
+                    $og_image = $imgage[1];
+                    if (strpos($og_image, 'http') !== 0) {
+                        $og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($og_image, '/');
+                    }
+                }
+            }
+        } else {
+            // Use post content as fallback
+            $og_title = strip_tags(substr($post->content, 0, 60));
+            $og_description = strip_tags(substr($post->content, 0, 100));
+        }
+
+        // Ensure we have valid content
+        if (empty($og_title) || $og_title == 'AgWiki Post') {
+            $og_title = $post->user->name . ' - AgWiki Post';
+        }
+        
+        if (empty($og_description)) {
+            $og_description = 'Check out this post shared by ' . $post->user->name . ' on AgWiki';
+        }
+        
+        if (empty($og_image)) {
+            $og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/assets/front/img/logo_md.png';
+        }
+
+        // Ensure URLs are absolute
+        if (!empty($og_image) && strpos($og_image, 'http') !== 0) {
+            $og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($og_image, '/');
+        }
+
+        $tw_image = $og_image;
+        $og_url = route('crawler.post', $post->id);
+        $page_title = $og_title;
+
+        // Return a minimal view with only the essential Open Graph meta tags
+        return view('crawler-post', compact('post', 'page_title', 'og_title', 'og_description', 'og_url', 'og_image', 'tw_image'));
     }
 
 }
