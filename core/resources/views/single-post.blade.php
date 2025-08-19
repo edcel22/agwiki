@@ -10,7 +10,7 @@
 
     <meta property="og:url" content="{{ $og_url }}" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="article" />
 
     <meta property="og:title" content="{{ $og_title }}" />
 
@@ -22,15 +22,23 @@
 
     <meta property="fb:app_id" content="153590602171657" />
 
-    <meta property="og:image:width" content="200" />
+    <meta property="og:image:width" content="1200" />
 
-    <meta property="og:image:height" content="200" />
+    <meta property="og:image:height" content="630" />
 
-    <meta property="og:site_name" content="crossposting" />
+    <meta property="og:site_name" content="AgWiki" />
 
+    <!-- LinkedIn specific meta tags -->
+    <meta property="og:locale" content="en_US" />
+    <meta property="article:author" content="{{ $post->user->name }}" />
+    @if(isset($post->created_at) && $post->created_at)
+        <meta property="article:published_time" content="{{ $post->created_at->toISOString() }}" />
+    @endif
+    @if(isset($post->updated_at) && $post->updated_at)
+        <meta property="article:modified_time" content="{{ $post->updated_at->toISOString() }}" />
+    @endif
 
-
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <meta name="twitter:title" content="{{ $og_title }}" />
 

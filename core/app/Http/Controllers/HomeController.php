@@ -379,7 +379,7 @@ class HomeController extends Controller
       } elseif ($platform == 'google') {
           $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
       } elseif ($platform == 'linkedin') {
-          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($post_url);
+          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($post_url) . '&summary=' . urlencode(substr($text, 0, 200));
       } elseif ($platform == 'pinterest') {
           $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode($linkedin_title) . '&url=' . urlencode($post_url);
       } else {
@@ -1008,7 +1008,7 @@ class HomeController extends Controller
 
         
 		$tw_image ='';
-		$og_title = 'Agwiki Post';
+		$og_title = 'AgWiki Post';
 		if ($post->scrabingcontent != '') {
 			
 			$d = new \DOMDocument();
@@ -1072,8 +1072,16 @@ class HomeController extends Controller
 			//die($tw_image);
         	
 		} else {
-            $og_title = strip_tags( substr(preg_replace("/<img[^>]+\>/i", "",excerpt($post)), 0, 60));
-            $og_description = strip_tags(substr(excerpt($post), 0, 100));
+            // Use a safer approach for content extraction
+            $safe_content = '';
+            try {
+                $safe_content = excerpt($post);
+            } catch (Exception $e) {
+                $safe_content = $post->content;
+            }
+            
+            $og_title = strip_tags(substr(preg_replace("/<img[^>]+\>/i", "", $safe_content), 0, 60));
+            $og_description = strip_tags(substr($safe_content, 0, 100));
 			//die($og_description);
 
             if ($post->type == 'image') {
@@ -1109,6 +1117,46 @@ class HomeController extends Controller
 
 			}
         }
+		
+		// Ensure we have valid Open Graph data for social sharing
+		if (empty($og_title) || $og_title == 'AgWiki Post') {
+			$og_title = $post->user->name . ' - AgWiki Post';
+		}
+		
+		if (empty($og_description)) {
+			$og_description = 'Check out this post on AgWiki';
+		}
+		
+		if (empty($og_image)) {
+			$og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/assets/front/img/icon_512.png';
+		}
+		
+		// Clean up URLs to ensure they're absolute
+		if (!empty($og_image) && strpos($og_image, 'http') !== 0) {
+			$og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($og_image, '/');
+		}
+		
+		if (!empty($tw_image) && strpos($tw_image, 'http') !== 0) {
+			$tw_image = 'https://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($tw_image, '/');
+		}
+		
+		// Additional validation for social media crawlers
+		if ($this->isSocialMediaCrawler()) {
+			// Ensure we have the best possible meta tags for crawlers
+			if (strlen($og_title) < 10) {
+				$og_title = $post->user->name . ' shared a post on AgWiki';
+			}
+			
+			if (strlen($og_description) < 20) {
+				$og_description = 'Check out this interesting post shared by ' . $post->user->name . ' on AgWiki';
+			}
+			
+			// Ensure image is accessible
+			if (empty($og_image) || strpos($og_image, 'icon_512.png') !== false) {
+				$og_image = 'https://' . $_SERVER['SERVER_NAME'] . '/assets/front/img/logo_md.png';
+			}
+		}
+		
 		//die(print_r($_ENV));
 		//die($_ENV['APP_URL']. $og_image);
         $og_url = route('user.post.single', $post->id);
@@ -3278,5 +3326,31 @@ class HomeController extends Controller
 
     }
 
+    /**
+     * Check if the request is from a social media crawler
+     */
+    private function isSocialMediaCrawler()
+    {
+        $userAgent = request()->header('User-Agent');
+        if (!$userAgent) return false;
+        
+        $crawlers = [
+            'facebookexternalhit',
+            'LinkedInBot',
+            'Twitterbot',
+            'WhatsApp',
+            'TelegramBot',
+            'Slackbot',
+            'Discordbot'
+        ];
+        
+        foreach ($crawlers as $crawler) {
+            if (stripos($userAgent, $crawler) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
 }
