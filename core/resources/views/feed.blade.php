@@ -400,7 +400,7 @@
                                     </li>
                                     <li>
                                     @if (Auth::check())
-                                    <a href="/post/{{$post->id}}#commentbox">Comments ({{ number_format_short($post->commentCount()) }})</a>
+                                    <a href="/post/{{$post->id}}#commentbox">Comments. ({{ number_format_short($post->commentCount()) }})</a>
                                     @else
                                     <a onclick="return registerPopup()">Comments ({{ number_format_short($post->commentCount()) }})</a>
                                     @endif
