@@ -179,6 +179,8 @@ Route::get('tag/{tag}', 'HomeController@tag')->name('tag');
 
 Route::get('social/{post}/share/{platform}', 'HomeController@socialShare')->name('social.share');
 
+// Completely separate route for social media crawlers - NO middleware applied
+Route::get('og/{post}', 'HomeController@openGraph')->name('openGraph');
 
 
 //Route::get('tap', 'FrontController@tap')->name('tap');
