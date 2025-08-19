@@ -785,22 +785,25 @@ AgWiki - President  <br>
 			*/
 			
 			//need to email admin
-			//send_email("rpkrotz@agwiki.com", "Agwiki", 'New User For Approval', "Please validate user ".$data['email']);
-			/*$to = "rpkrotz@agwiki.com";
-			$message1 = "Please validate user ".$data['email'];
-			$subject = 'New User For Approval';
-			$headers = "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-			/*
-			Mail::send([], [], function($message) use($to, $subject, $message1)
-			{
-				//$message->setBody($message1)->to($to)->subject($subject);
-				$message->from('no-reply@agwiki.com', "Agwiki");
-				$message->subject($subject);
-				$message->setBody($message1, 'text/html');
-				$message->to($to);
-			});*/
-			//mail($to, $subject, $message1, $headers);
+			try {
+				send_email("rpkrotz@agwiki.com", "Agwiki", 'New User For Approval', "Please validate user ".$data['email']);
+				\Log::info('Admin notification email sent successfully for new user: ' . $data['email']);
+			} catch (Exception $e) {
+				\Log::error('Failed to send admin notification email: ' . $e->getMessage());
+			}
+			
+			// Also send welcome email to the new user
+			try {
+				Mail::send('emails.welcome', $data, function($message) use ($data)
+				{
+					$message->from('team@agwiki.com', "Agwiki Team");
+					$message->subject("Welcome to AgWiki - Account Created Successfully");
+					$message->to([$data['email']]);
+				});
+				\Log::info('Welcome email sent successfully to new user: ' . $data['email']);
+			} catch (Exception $e) {
+				\Log::error('Failed to send welcome email: ' . $e->getMessage());
+			}
 
             //return redirect('login')->with('alert', 'Account sent for review! ');
 		//return redirect('login')->with('alert', 'Please log in with your new account ');

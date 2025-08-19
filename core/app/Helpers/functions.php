@@ -8,29 +8,62 @@ if (! function_exists('send_email')) {
 
     function send_email($to, $name, $subject, $message1)
     {
-        $temp = Etemplate::first();
-        $gnl = General::first();
+        // Basic validation
+        if (empty($to) || empty($subject) || empty($message1)) {
+            \Log::error('send_email: Missing required parameters', ['to' => $to, 'subject' => $subject, 'message' => $message1]);
+            return;
+        }
 
-        $template = $temp->emessage;
-        
-        if($gnl->emailnotf == 1)
-        {
-            // Prepare template and message
-            $mm = str_replace("{{name}}", $name, $template);
-            $message1 = str_replace("{{message}}", $message1, $mm);
+        try {
+            $temp = Etemplate::first();
+            $gnl = General::first();
+
+            // Check if required records exist, if not use fallback values
+            if (!$temp || !$gnl) {
+                // Fallback: send email directly without template
+                Mail::send('emails.send', ['message1' => $message1], function($message) use($to, $subject) {
+                    $message->from('team@agwiki.com', 'Agwiki Team');
+                    $message->subject($subject);
+                    $message->to($to);
+                });
+                return;
+            }
+
+            $template = $temp->emessage;
             
-            $data = array('message1' => $message1);
-            
-            // Use Laravel's Mail facade with configuration from .env
-            Mail::send('emails.send', $data, function($message) use($to, $subject, $gnl)
+            if($gnl->emailnotf == 1)
             {
-                // Use the from address and name from .env
-                $message->from(env('MAIL_FROM_ADDRESS'), $gnl->title);
-                $message->subject($subject);
-                $message->to($to);
+                // Prepare template and message
+                $mm = str_replace("{{name}}", $name, $template);
+                $message1 = str_replace("{{message}}", $message1, $mm);
                 
-                // No need for Postmark-specific headers when using SES
-            });
+                $data = array('message1' => $message1);
+                
+                // Use Laravel's Mail facade with configuration from .env
+                Mail::send('emails.send', $data, function($message) use($to, $subject, $gnl)
+                {
+                    // Use the from address and name with fallback
+                    $fromAddress = 'team@agwiki.com';
+                    $fromName = $gnl->title ?: 'Agwiki Team';
+                    
+                    $message->from($fromAddress, $fromName);
+                    $message->subject($subject);
+                    $message->to($to);
+                });
+            }
+        } catch (Exception $e) {
+            // Log the error and try to send a basic email
+            \Log::error('Error in send_email function: ' . $e->getMessage());
+            
+            try {
+                Mail::raw($message1, function($message) use($to, $subject) {
+                    $message->from('team@agwiki.com', 'Agwiki Team');
+                    $message->subject($subject);
+                    $message->to($to);
+                });
+            } catch (Exception $e2) {
+                \Log::error('Failed to send fallback email: ' . $e2->getMessage());
+            }
         }
     }
 }

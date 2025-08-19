@@ -317,11 +317,72 @@ Route::get('/test-email-send', function() {
         });
         
         echo "Email sent successfully!";
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         echo "Error sending email: " . $e->getMessage() . "<br>";
         echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
     }
 })->name('test.email');
+
+Route::get('/test-email-config', function() {
+    try {
+        echo "<h2>Email Configuration Test</h2><br>";
+        
+        // Check environment variables
+        echo "<h3>Environment Variables:</h3>";
+        echo "MAIL_DRIVER: " . env('MAIL_DRIVER', 'NOT SET') . "<br>";
+        echo "MAIL_MAILER: " . env('MAIL_MAILER', 'NOT SET') . "<br>";
+        echo "MAIL_HOST: " . env('MAIL_HOST', 'NOT SET') . "<br>";
+        echo "MAIL_PORT: " . env('MAIL_PORT', 'NOT SET') . "<br>";
+        echo "MAIL_USERNAME: " . env('MAIL_USERNAME', 'NOT SET') . "<br>";
+        echo "MAIL_PASSWORD: " . (env('MAIL_PASSWORD') ? 'SET' : 'NOT SET') . "<br>";
+        echo "MAIL_ENCRYPTION: " . env('MAIL_ENCRYPTION', 'NOT SET') . "<br>";
+        echo "MAIL_FROM_ADDRESS: " . env('MAIL_FROM_ADDRESS', 'NOT SET') . "<br>";
+        echo "MAIL_FROM_NAME: " . env('MAIL_FROM_NAME', 'NOT SET') . "<br><br>";
+        
+        // Check database tables
+        echo "<h3>Database Tables:</h3>";
+        try {
+            $gnl = \App\General::first();
+            if ($gnl) {
+                echo "General table: OK (ID: {$gnl->id})<br>";
+                echo "Title: " . ($gnl->title ?: 'NOT SET') . "<br>";
+                echo "Email notifications enabled: " . ($gnl->emailnotf ? 'YES' : 'NO') . "<br>";
+            } else {
+                echo "General table: EMPTY or NOT FOUND<br>";
+            }
+        } catch (Exception $e) {
+            echo "General table error: " . $e->getMessage() . "<br>";
+        }
+        
+        try {
+            $temp = \App\Etemplate::first();
+            if ($temp) {
+                echo "Etemplate table: OK (ID: {$temp->id})<br>";
+                echo "Sender: " . ($temp->esender ?: 'NOT SET') . "<br>";
+                echo "Message template: " . (strlen($temp->emessage) > 0 ? 'SET (' . strlen($temp->emessage) . ' chars)' : 'NOT SET') . "<br>";
+            } else {
+                echo "Etemplate table: EMPTY or NOT FOUND<br>";
+            }
+        } catch (Exception $e) {
+            echo "Etemplate table error: " . $e->getMessage() . "<br>";
+        }
+        
+        // Test send_email function
+        echo "<h3>Testing send_email function:</h3>";
+        try {
+            send_email('edcel.estadola.dev@gmail.com', 'Test User', 'Test Subject', 'This is a test message');
+            echo "send_email function: SUCCESS<br>";
+        } catch (Exception $e) {
+            echo "send_email function: FAILED - " . $e->getMessage() . "<br>";
+        }
+        
+        echo "<br>Test completed!";
+        
+    } catch (Exception $e) {
+        echo "Error in test: " . $e->getMessage() . "<br>";
+        echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+    }
+})->name('test.email.config');
 
 Route::group(['prefix' => 'admin'], function () {
     #KT
