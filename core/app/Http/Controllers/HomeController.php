@@ -379,9 +379,7 @@ class HomeController extends Controller
       } elseif ($platform == 'google') {
           $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
       } elseif ($platform == 'linkedin') {
-          // Use the crawler route for LinkedIn to ensure proper Open Graph meta tags
-          $crawler_url = route('crawler.post', $post->id);
-          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($crawler_url) . '&summary=' . urlencode(substr($text, 0, 200));
+          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($post_url) . '&summary=' . urlencode(substr($text, 0, 200));
       } elseif ($platform == 'pinterest') {
           $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode($linkedin_title) . '&url=' . urlencode($post_url);
       } else {
@@ -964,6 +962,11 @@ class HomeController extends Controller
 
         if (!$post) return redirect()->back()->withErrors('Post Not Found');
 		
+		// Check if this is a social media crawler and handle differently
+		if ($this->isSocialMediaCrawler()) {
+			return $this->handleSocialMediaCrawler($post);
+		}
+		
 		//die('test');
 
         //$pos = strpos($post->scrabingcontent, '<p class="excerpt">') + 14;
@@ -1066,7 +1069,7 @@ class HomeController extends Controller
 			
 			if($tw_image =='') $tw_image = $fb_image ;
 			
-			if(!strstr($tw_image,'http'))
+			if(!strpos($tw_image,'http'))
             	$tw_image = 'https://'.$_SERVER['SERVER_NAME'].'/' . $tw_image;
 			
 			
@@ -1113,7 +1116,7 @@ class HomeController extends Controller
 				if(sizeof($new_tw_image)>1)
 					$tw_image = 'https://'.$_SERVER['SERVER_NAME'].'/' . @$new_tw_image[0].'/content/'.'twitter_'.@$new_tw_image[1];
 				else
-					$tw_image = $fb_image;
+					$tw_image = 'https://'.$_SERVER['SERVER_NAME'].'/' . @$new_tw_image[0].'/content/'.'twitter_'.@$new_tw_image[1];
 					
 					//die($og_image);
 
@@ -3376,17 +3379,14 @@ class HomeController extends Controller
         return false;
     }
 
-    /**
-     * Special method for social media crawlers to access post content
-     * This bypasses all authentication and provides clean Open Graph meta tags
-     */
-    public function crawlerPost(Post $post)
-    {
-        if (!$post) {
-            abort(404);
-        }
 
-        // Generate Open Graph meta tags specifically for crawlers
+
+    /**
+     * Handle social media crawlers specifically
+     */
+    private function handleSocialMediaCrawler(Post $post)
+    {
+        // Generate clean Open Graph meta tags for crawlers
         $og_title = 'AgWiki Post';
         $og_description = 'Check out this post on AgWiki';
         $og_image = '';
@@ -3451,10 +3451,10 @@ class HomeController extends Controller
         }
 
         $tw_image = $og_image;
-        $og_url = route('crawler.post', $post->id);
+        $og_url = route('user.post.single', $post->id);
         $page_title = $og_title;
 
-        // Return a minimal view with only the essential Open Graph meta tags
+        // Return the crawler view with clean meta tags
         return view('crawler-post', compact('post', 'page_title', 'og_title', 'og_description', 'og_url', 'og_image', 'tw_image'));
     }
 
