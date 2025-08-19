@@ -345,6 +345,31 @@ class HomeController extends Controller
           $text = html_entity_decode($text);
           $text = urlencode($text);
 
+        // Extract better title for LinkedIn sharing
+        $linkedin_title = 'AgWiki Post';
+        if ($post->scrabingcontent != '') {
+            $d = new \DOMDocument();
+            @$d->loadHTML($post->scrabingcontent);
+            foreach($d->getElementsByTagName('h1') as $item){
+                $linkedin_title = $item->textContent;
+                break;
+            }
+            if ($linkedin_title == 'AgWiki Post') {
+                foreach($d->getElementsByTagName('h2') as $item){
+                    $linkedin_title = $item->textContent;
+                    break;
+                }
+            }
+        } else {
+            $linkedin_title = strip_tags(substr(preg_replace("/<img[^>]+\>/i", "", excerpt($post)), 0, 60));
+        }
+        
+        // Clean up the title
+        $linkedin_title = trim($linkedin_title);
+        if (empty($linkedin_title) || $linkedin_title == 'AgWiki Post') {
+            $linkedin_title = 'Post by ' . $post->user->name;
+        }
+
                      
 
       if ($platform == 'facebook') {
@@ -354,9 +379,9 @@ class HomeController extends Controller
       } elseif ($platform == 'google') {
           $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
       } elseif ($platform == 'linkedin') {
-          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode('Post Of ' . $post->user->name) . '&source=' . url('/') . '&url=' . urlencode($post_url);
+          $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($post_url);
       } elseif ($platform == 'pinterest') {
-          $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode('Post Of ' . $post->user->name) . '&url=' . urlencode($post_url);
+          $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode($linkedin_title) . '&url=' . urlencode($post_url);
       } else {
           return redirect()->back();
       }
@@ -3033,10 +3058,10 @@ class HomeController extends Controller
 		}
 		
 		$replace = array(
-				"‘" => "'",
-				"’" => "'",
-				"”" => '"',
-				"“" => '"',
+				"'" => "'",
+				"'" => "'",
+				'"' => '"',
+				'"' => '"',
 				"–" => "-",
 				"—" => "-",
 				"…" => "&#8230;"
