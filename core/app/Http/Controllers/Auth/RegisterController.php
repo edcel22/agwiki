@@ -15,12 +15,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Mail;
-use App\Traits\MauticApiTrait;
 
 class RegisterController extends Controller
 {
     use RegistersUsers;
-    use MauticApiTrait;
 
     protected $redirectTo = '/home';
 
@@ -63,7 +61,8 @@ class RegisterController extends Controller
                 return redirect('/login')->with('message', 'User is already registered, please login');
             }
 
-            // Handle Mautic Integration
+            // Handle Mautic Integration - TEMPORARILY DISABLED due to API errors
+            /*
             try {
                 $email = $request->email;
                 
@@ -106,6 +105,9 @@ class RegisterController extends Controller
                 \Log::error('Mautic API Error: ' . $e->getMessage());
                 // Continue execution even if Mautic fails
             }
+            */
+            
+            \Log::info('Mautic API integration temporarily disabled - proceeding with user creation');
 
             // Create user
             $email_hash = explode('@', $request->email);
@@ -127,16 +129,25 @@ class RegisterController extends Controller
             }
 
             // Send admin notification
-            $data = array(
-                'to' => "rpkrotz@agwiki.com",
-                'newuser' => $request->email
-            );
+            try {
+                send_email("rpkrotz@agwiki.com", "Agwiki", 'New User For Approval', "Please validate user ".$request->email);
+                \Log::info('Admin notification email sent successfully for new user: ' . $request->email);
+            } catch (\Exception $e) {
+                \Log::error('Failed to send admin notification email: ' . $e->getMessage());
+            }
             
-            Mail::send('emails.notifyadmin', $data, function($message) use ($data) {
-                $message->from('no-reply@agwiki.com', "Agwiki")
-                        ->subject("User Signup " . $data['newuser'])
-                        ->to([$data['to']]);
-            });
+            // Send welcome email to the new user
+            try {
+                $data = array('email' => $request->email, 'name' => $placeHoldername);
+                Mail::send('emails.welcome', $data, function($message) use ($data) {
+                    $message->from('team@agwiki.com', "Agwiki Team");
+                    $message->subject("Welcome to AgWiki - Account Created Successfully");
+                    $message->to([$data['email']]);
+                });
+                \Log::info('Welcome email sent successfully to new user: ' . $data['email']);
+            } catch (\Exception $e) {
+                \Log::error('Failed to send welcome email: ' . $e->getMessage());
+            }
 
             Auth::login($user);
 

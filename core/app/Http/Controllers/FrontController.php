@@ -788,7 +788,7 @@ AgWiki - President  <br>
 			try {
 				send_email("rpkrotz@agwiki.com", "Agwiki", 'New User For Approval', "Please validate user ".$data['email']);
 				\Log::info('Admin notification email sent successfully for new user: ' . $data['email']);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				\Log::error('Failed to send admin notification email: ' . $e->getMessage());
 			}
 			
@@ -801,7 +801,7 @@ AgWiki - President  <br>
 					$message->to([$data['email']]);
 				});
 				\Log::info('Welcome email sent successfully to new user: ' . $data['email']);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				\Log::error('Failed to send welcome email: ' . $e->getMessage());
 			}
 

@@ -51,7 +51,7 @@ if (! function_exists('send_email')) {
                     $message->to($to);
                 });
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Log the error and try to send a basic email
             \Log::error('Error in send_email function: ' . $e->getMessage());
             
@@ -61,7 +61,7 @@ if (! function_exists('send_email')) {
                     $message->subject($subject);
                     $message->to($to);
                 });
-            } catch (Exception $e2) {
+            } catch (\Exception $e2) {
                 \Log::error('Failed to send fallback email: ' . $e2->getMessage());
             }
         }

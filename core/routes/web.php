@@ -317,7 +317,7 @@ Route::get('/test-email-send', function() {
         });
         
         echo "Email sent successfully!";
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         echo "Error sending email: " . $e->getMessage() . "<br>";
         echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
     }
@@ -350,7 +350,7 @@ Route::get('/test-email-config', function() {
             } else {
                 echo "General table: EMPTY or NOT FOUND<br>";
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "General table error: " . $e->getMessage() . "<br>";
         }
         
@@ -363,7 +363,7 @@ Route::get('/test-email-config', function() {
             } else {
                 echo "Etemplate table: EMPTY or NOT FOUND<br>";
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Etemplate table error: " . $e->getMessage() . "<br>";
         }
         
@@ -372,17 +372,145 @@ Route::get('/test-email-config', function() {
         try {
             send_email('edcel.estadola.dev@gmail.com', 'Test User', 'Test Subject', 'This is a test message');
             echo "send_email function: SUCCESS<br>";
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "send_email function: FAILED - " . $e->getMessage() . "<br>";
         }
         
         echo "<br>Test completed!";
         
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         echo "Error in test: " . $e->getMessage() . "<br>";
         echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
     }
 })->name('test.email.config');
+
+Route::get('/debug-db', function() {
+    try {
+        echo "<h2>Database Debug</h2><br>";
+        
+        // Check if we can connect to database
+        echo "<h3>Database Connection:</h3>";
+        try {
+            \DB::connection()->getPdo();
+            echo "Database connection: OK<br>";
+        } catch (Exception $e) {
+            echo "Database connection: FAILED - " . $e->getMessage() . "<br>";
+            return;
+        }
+        
+        // Check generals table
+        echo "<h3>Generals Table:</h3>";
+        try {
+            $count = \DB::table('generals')->count();
+            echo "Total records: {$count}<br>";
+            
+            if ($count > 0) {
+                $gnl = \DB::table('generals')->first();
+                echo "First record ID: {$gnl->id}<br>";
+                echo "Title: " . ($gnl->title ?: 'NULL') . "<br>";
+                echo "Email notifications: " . ($gnl->emailnotf ?: 'NULL') . "<br>";
+            } else {
+                echo "Table is empty!<br>";
+            }
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage() . "<br>";
+        }
+        
+        // Check etemplates table
+        echo "<h3>Etemplates Table:</h3>";
+        try {
+            $count = \DB::table('etemplates')->count();
+            echo "Total records: {$count}<br>";
+            
+            if ($count > 0) {
+                $temp = \DB::table('etemplates')->first();
+                echo "First record ID: {$temp->id}<br>";
+                echo "Sender: " . ($temp->esender ?: 'NULL') . "<br>";
+                echo "Message template length: " . strlen($temp->emessage) . " chars<br>";
+            } else {
+                echo "Table is empty!<br>";
+            }
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage() . "<br>";
+        }
+        
+        // Check users table
+        echo "<h3>Users Table:</h3>";
+        try {
+            $count = \DB::table('users')->count();
+            echo "Total users: {$count}<br>";
+            
+            if ($count > 0) {
+                $user = \DB::table('users')->latest()->first();
+                echo "Latest user: {$user->email} (created: {$user->created_at})<br>";
+            }
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage() . "<br>";
+        }
+        
+        echo "<br>Debug completed!";
+        
+    } catch (\Exception $e) {
+        echo "Error in debug: " . $e->getMessage() . "<br>";
+        echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+    }
+})->name('debug.db');
+
+Route::get('/fix-db', function() {
+    try {
+        echo "<h2>Fixing Database Tables</h2><br>";
+        
+        // Check and fix generals table
+        echo "<h3>Generals Table:</h3>";
+        try {
+            $count = \DB::table('generals')->count();
+            if ($count == 0) {
+                \DB::table('generals')->insert([
+                    'title' => 'AgWiki',
+                    'emailnotf' => 1,
+                    'smsnotf' => 1,
+                    'emailver' => 1,
+                    'smsver' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                echo "Generals table populated with default data<br>";
+            } else {
+                echo "Generals table already has data<br>";
+            }
+        } catch (\Exception $e) {
+            echo "Error with generals table: " . $e->getMessage() . "<br>";
+        }
+        
+        // Check and fix etemplates table
+        echo "<h3>Etemplates Table:</h3>";
+        try {
+            $count = \DB::table('etemplates')->count();
+            if ($count == 0) {
+                \DB::table('etemplates')->insert([
+                    'esender' => 'team@agwiki.com',
+                    'emessage' => '<p>Hello {{name}},</p><p>{{message}}</p><p>Best regards,<br>AgWiki Team</p>',
+                    'smsapi' => '',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                echo "Etemplates table populated with default data<br>";
+            } else {
+                echo "Etemplates table already has data<br>";
+            }
+        } catch (\Exception $e) {
+            echo "Error with etemplates table: " . $e->getMessage() . "<br>";
+        }
+        
+        echo "<br>Database fix completed!<br>";
+        echo "<a href='/debug-db'>Check database status again</a><br>";
+        echo "<a href='/test-email-config'>Test email configuration</a><br>";
+        
+    } catch (\Exception $e) {
+        echo "Error in fix: " . $e->getMessage() . "<br>";
+        echo "Stack trace: <pre>" . $e->getTraceAsString() . "</pre>";
+    }
+})->name('fix.db');
 
 Route::group(['prefix' => 'admin'], function () {
     #KT
