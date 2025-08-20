@@ -39,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapOpenGraphRoutes();
+
         //
     }
 
@@ -54,6 +56,18 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
+    }
+
+    /**
+     * Define the "open-graph" routes.
+     * These routes bypass ALL middleware for social media crawlers.
+     *
+     * @return void
+     */
+    protected function mapOpenGraphRoutes()
+    {
+        Route::namespace($this->namespace)
+             ->group(base_path('routes/open-graph.php'));
     }
 
     /**
