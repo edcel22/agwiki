@@ -39,25 +39,22 @@
     <meta name="robots" content="noindex, nofollow" />
 </head>
 <body>
-    <!-- Minimal content for crawlers -->
-    <div style="display: none;">
+    <!-- Content for crawlers and human users -->
+    <div style="padding: 20px; font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
         <h1>{{ $og_title }}</h1>
         <p>{{ $og_description }}</p>
-        <img src="{{ $og_image }}" alt="{{ $og_title }}" />
-        <p>Shared by {{ $post->user->name }} on AgWiki</p>
+        @if(!empty($og_image))
+            <img src="{{ $og_image }}" alt="{{ $og_title }}" style="max-width: 100%; height: auto; margin: 20px 0;" />
+        @endif
+        <p><strong>Shared by {{ $post->user->name }} on AgWiki</strong></p>
         <p>View the full post at: <a href="{{ route('user.post.single', $post->id) }}">{{ route('user.post.single', $post->id) }}</a></p>
+        
+        <!-- Additional content for better crawler understanding -->
+        <div style="margin-top: 30px; padding: 20px; background-color: #f5f5f5; border-radius: 5px;">
+            <h2>About this post</h2>
+            <p>This is a post shared on AgWiki, a platform for agricultural knowledge sharing and community building.</p>
+            <p>To view the complete post with full content and interact with the community, please visit the link above.</p>
+        </div>
     </div>
-    
-    <!-- Redirect to actual post for human users -->
-    <script>
-        // Only redirect if this is not a social media crawler
-        if (!/facebookexternalhit|LinkedInBot|Twitterbot|WhatsApp|TelegramBot|Slackbot|Discordbot/i.test(navigator.userAgent)) {
-            window.location.href = '{{ route('user.post.single', $post->id) }}';
-        }
-    </script>
-    
-    <noscript>
-        <meta http-equiv="refresh" content="0;url={{ route('user.post.single', $post->id) }}">
-    </noscript>
 </body>
 </html>
