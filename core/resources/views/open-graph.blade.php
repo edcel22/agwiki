@@ -16,6 +16,11 @@
     <meta property="og:site_name" content="AgWiki" />
     <meta property="og:locale" content="en_US" />
     
+    <!-- Facebook specific meta tags -->
+    <meta property="fb:app_id" content="" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="{{ $og_title }}" />
+    
     <!-- LinkedIn specific meta tags -->
     <meta property="article:author" content="{{ $post->user->name }}" />
     @if(isset($post->created_at) && $post->created_at)
@@ -30,6 +35,7 @@
     <meta name="twitter:title" content="{{ $og_title }}" />
     <meta name="twitter:description" content="{{ $og_description }}" />
     <meta name="twitter:image" content="{{ $tw_image }}" />
+    <meta name="twitter:image:alt" content="{{ $og_title }}" />
     
     <!-- Additional Meta Tags -->
     <meta name="description" content="{{ $og_description }}" />
@@ -37,6 +43,10 @@
     
     <!-- Prevent indexing of this Open Graph page -->
     <meta name="robots" content="noindex, nofollow" />
+    
+    <!-- Additional social media meta tags -->
+    <meta name="author" content="{{ $post->user->name }}" />
+    <meta name="publisher" content="AgWiki" />
 </head>
 <body>
     <!-- Content for crawlers and human users -->

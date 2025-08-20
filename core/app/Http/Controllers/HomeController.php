@@ -372,21 +372,33 @@ class HomeController extends Controller
 
                      
 
-      if ($platform == 'facebook') {
-          $link = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($post_url).'&quote='.$text;
-      } elseif ($platform == 'twitter') {
-          $link = 'https://twitter.com/intent/tweet?url=' . urlencode($post_url).'&text='.$text;
-      } elseif ($platform == 'google') {
-          $link = 'https://plus.google.com/share?url=' . urlencode($post_url);
+              if ($platform == 'facebook') {
+            // Use the Open Graph route for Facebook to ensure proper meta tag access
+            $og_url = route('openGraph', $post->id);
+            $link = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($og_url).'&quote='.$text;
+              } elseif ($platform == 'twitter') {
+            // Use the Open Graph route for Twitter to ensure proper meta tag access
+            $og_url = route('openGraph', $post->id);
+            $link = 'https://twitter.com/intent/tweet?url=' . urlencode($og_url).'&text='.$text;
+              } elseif ($platform == 'google') {
+            // Use the Open Graph route for Google+ to ensure proper meta tag access
+            $og_url = route('openGraph', $post->id);
+            $link = 'https://plus.google.com/share?url=' . urlencode($og_url);
       } elseif ($platform == 'linkedin') {
           // Use the Open Graph route for LinkedIn to ensure proper meta tag access
           $og_url = route('openGraph', $post->id);
           $link = 'https://www.linkedin.com/shareArticle?mini=true&title=' . urlencode($linkedin_title) . '&source=' . url('/') . '&url=' . urlencode($og_url) . '&summary=' . urlencode(substr($text, 0, 200));
-      } elseif ($platform == 'pinterest') {
-          $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode($linkedin_title) . '&url=' . urlencode($post_url);
-      } else {
-          return redirect()->back();
-      }
+              } elseif ($platform == 'pinterest') {
+            // Use the Open Graph route for Pinterest to ensure proper meta tag access
+            $og_url = route('openGraph', $post->id);
+            $link = 'https://pinterest.com/pin/create/button/?description=' . urlencode($linkedin_title) . '&url=' . urlencode($og_url);
+              } elseif ($platform == 'whatsapp') {
+            // Use the Open Graph route for WhatsApp to ensure proper meta tag access
+            $og_url = route('openGraph', $post->id);
+            $link = 'https://wa.me/?text=' . urlencode($linkedin_title . ' - ' . $og_url);
+        } else {
+            return redirect()->back();
+        }
 		
 		//Sdie($post_url . ' '.$text );
 
