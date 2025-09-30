@@ -196,7 +196,10 @@
 
 						<input type="hidden" name="fav" value="{{$_GET['fav']}}">
 					@endif
+                    @if (isset($_GET['postId']))
 
+						<input type="hidden" name="postId" value="{{$_GET['postId']}}">
+					@endif
 
 					<button id="feedSearch" type="submit" class="button button-m button-round-small bg-blue1-light shadow-small">
 									<i class="fas fa-search"></i> Search

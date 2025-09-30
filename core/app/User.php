@@ -152,6 +152,13 @@ class User extends Authenticatable
             ->orderBy('favorites.id', 'DESC')
             ->paginate(10);
         $shares->setPath('');
+    } elseif (isset($_GET['postId'])) {
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->where('shares.post_id', $_GET['postId'])
+            ->paginate(1);
+        $shares->setPath('');
     } elseif (isset($_GET['search'])) {
         $shares = Share::join('posts', 'shares.post_id', '=', 'posts.id')
             ->select('shares.*', 'posts.pinned') // Include pinned for ordering
@@ -312,6 +319,13 @@ class User extends Authenticatable
             ->orderBy('posts.pinned', 'DESC') // Prioritize pinned posts
             ->orderBy('favorites.id', 'DESC')
             ->paginate(10);
+        $shares->setPath('');
+    } elseif (isset($_GET['postId'])) {
+        $shares = Share::distinct('shares.post_id')
+            ->join('posts', 'shares.post_id', '=', 'posts.id')
+            ->where('shares.active', 1) // Include active filter
+            ->where('shares.post_id', $_GET['postId'])
+            ->paginate(1);
         $shares->setPath('');
     } elseif (isset($_GET['search'])) {
         $shares = Share::distinct('shares.post_id')
