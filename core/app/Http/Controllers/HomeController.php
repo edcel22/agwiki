@@ -269,6 +269,8 @@ class HomeController extends Controller
 
         $page_title = 'Feed';
 
+        // dd($page_title);
+
         if (Auth::check()) {
             $user = Auth::user();
 
