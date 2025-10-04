@@ -10,6 +10,10 @@ use App\User;
 class Post extends Model
 {
     protected $guarded = [];
+
+    protected $casts = [
+        'link_preview' => 'array',
+    ];
 	
 	public function interests(){
     	return $this->belongsToMany('App\Interest')->withPivot('interest_id');

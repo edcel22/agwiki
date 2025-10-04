@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\UsersController;
+use App\Post;
 use Illuminate\Http\Request;
 
 /*
@@ -24,3 +25,4 @@ Route::post('login', [UsersController::class,'login']);
 Route::post('create-post', [PostController::class,'store']);
 Route::delete('delete-post/{post}', [PostController::class, 'destroy']);
 Route::get('get-interests', [PostController::class, 'getInterests']);
+Route::get('get-link-preview', [PostController::class, 'getLinkPreview']);
