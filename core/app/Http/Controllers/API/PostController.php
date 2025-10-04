@@ -110,6 +110,12 @@ class PostController extends Controller
             ], 400);
         }
 
+        if (!$post->from_api) {
+            return response([
+                'errors' => ['You cannot delete post that are not posted from api.']
+            ], 400);
+        }
+
         $sharePost = Share::where('post_id', $request->post_id)->first();
         if ($sharePost) {
             $sharePost->delete();
