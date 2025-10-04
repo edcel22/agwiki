@@ -10,19 +10,22 @@ use App\Share;
 use App\User;
 use App\UserToken;
 
+use App\Services\UrlLinkScraper;
+
 class PostController extends Controller
 {
-    public function store (Request $request)
+    public function store(Request $request, UrlLinkScraper $scraper)
     {
         $validator = \Validator::make($request->all(), [
             'app_token' => 'required',
             'content' => 'required',
             'link' => 'sometimes', // imageLink or doc link
             'type' => 'required|in:article,image',
-            'interest' => 'sometimes|array'
+            'interest' => 'sometimes|array',
+            'is_link_type' => 'sometimes|boolean'
         ]);
 
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
             return response([
                 'errors' => $validator->errors()->all()
             ], 400);
@@ -37,19 +40,28 @@ class PostController extends Controller
 
         $user = $userToken->user;
 
+        $scrabingcontent = "";
+
+        $isLinkTypePost = isset($request->is_link_type) && $request->is_link_type;
+
+        if ($isLinkTypePost) {
+            $scrabingcontent = $scraper->fetch($request->link);
+        }
+
         $created_post = Post::create([
             'user_id' => $user->id,
             'content' => $request->content,
             'type' => $request->type,
             'from_api' => true,
             'link' => $request->link,
+            'scrabingcontent' => $scrabingcontent,
         ]);
         $created_post->interests()->attach($request->interest);
 
         $share = Share::create([
             'post_id' => $created_post->id,
             'user_id' => $user->id,
-			'group_id' => 0,
+            'group_id' => 0,
         ]);
 
         return response([
@@ -77,12 +89,13 @@ class PostController extends Controller
         ]);
     }
 
-    public function destroy (Request $request, Post $post) {
-         $validator = \Validator::make($request->all(), [
+    public function destroy(Request $request, Post $post)
+    {
+        $validator = \Validator::make($request->all(), [
             'app_token' => 'required',
         ]);
 
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
             return response([
                 'errors' => $validator->errors()->all()
             ], 400);
