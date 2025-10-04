@@ -10,4 +10,5 @@ return array(
     'Postmark\\' => array($vendorDir . '/wildbit/postmark-php/src', $vendorDir . '/wildbit/swiftmailer-postmark/src'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

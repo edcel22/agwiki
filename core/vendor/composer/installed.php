@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'd61e6e619cead2e6904bf9efc85ac305743158a6',
+        'reference' => '43577e0a59949f246cfdeeb51ada2ac6e3517d2b',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -119,6 +119,15 @@
             'install_path' => __DIR__ . '/../erusev/parsedown',
             'aliases' => array(),
             'reference' => 'cb17b6477dfff935958ba01325f2e8a2bfa6dab3',
+            'dev_requirement' => false,
+        ),
+        'ezyang/htmlpurifier' => array(
+            'pretty_version' => 'v4.10.0',
+            'version' => '4.10.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../ezyang/htmlpurifier',
+            'aliases' => array(),
+            'reference' => 'd85d39da4576a6934b72480be6978fb10c860021',
             'dev_requirement' => false,
         ),
         'fideloper/proxy' => array(
@@ -418,7 +427,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'd61e6e619cead2e6904bf9efc85ac305743158a6',
+            'reference' => '43577e0a59949f246cfdeeb51ada2ac6e3517d2b',
             'dev_requirement' => false,
         ),
         'laravel/nexmo-notification-channel' => array(
@@ -522,6 +531,15 @@
             'replaced' => array(
                 0 => '*',
             ),
+        ),
+        'mews/purifier' => array(
+            'pretty_version' => '2.1.4',
+            'version' => '2.1.4.0',
+            'type' => 'package',
+            'install_path' => __DIR__ . '/../mews/purifier',
+            'aliases' => array(),
+            'reference' => 'ab70b25543a1afb3bcd0285d09e063fd268bf344',
+            'dev_requirement' => false,
         ),
         'mockery/mockery' => array(
             'pretty_version' => '1.3.6',
