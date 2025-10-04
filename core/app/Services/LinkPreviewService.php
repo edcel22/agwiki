@@ -10,14 +10,15 @@ class LinkPreviewService
 {
     public function fetch(string $url): array
     {
+        // Keep your original headers to preserve the working YouTube behavior
         $client = new Client([
             'timeout' => 8.0,
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (compatible; LinkPreviewBot/1.0; +https://app.postingautomation.com)',
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             ],
             'allow_redirects' => true,
-            'http_errors' => false,
+            'http_errors'     => false,
         ]);
 
         $res = $client->get($url);
@@ -36,16 +37,16 @@ class LinkPreviewService
         $xpath = new DOMXPath($doc);
 
         // Helpers
-        $meta = function(string $property, bool $isName = false) use ($xpath) {
+        $meta = function (string $property, bool $isName = false) use ($xpath) {
             $attr = $isName ? 'name' : 'property';
             $node = $xpath->query("//meta[@{$attr}='{$property}']/@content")->item(0);
             return $node ? trim($node->nodeValue) : null;
         };
-        $firstText = function(string $query) use ($xpath) {
+        $firstText = function (string $query) use ($xpath) {
             $node = $xpath->query($query)->item(0);
             return $node ? trim($node->textContent) : null;
         };
-        $firstAttr = function(string $query, string $attr) use ($xpath) {
+        $firstAttr = function (string $query, string $attr) use ($xpath) {
             $node = $xpath->query($query)->item(0);
             return $node ? trim($node->getAttribute($attr)) : null;
         };
@@ -58,11 +59,11 @@ class LinkPreviewService
         $type        = $meta('og:type');
         $favicon     = $firstAttr("//link[@rel='icon' or @rel='shortcut icon'][1]", 'href');
 
-        // NEW: try to get a player from meta
+        // Try player from meta
         $player = $meta('og:video') ?: $meta('og:video:url') ?: $meta('twitter:player', true);
 
         // Normalize relative URLs
-        $normalizeUrl = function($maybeUrl) use ($url) {
+        $normalizeUrl = function ($maybeUrl) use ($url) {
             if (!$maybeUrl) return null;
             if (preg_match('#^https?://#i', $maybeUrl)) return $maybeUrl;
             if (strpos($maybeUrl, '//') === 0) {
@@ -81,7 +82,7 @@ class LinkPreviewService
         $favicon = $normalizeUrl($favicon);
         $player  = $normalizeUrl($player);
 
-        // NEW: if no meta player, build one from the URL for common providers
+        // If no meta player, build one manually for common providers
         if (!$player) {
             if ($yt = $this->youtubeId($url)) {
                 $player = "https://www.youtube.com/embed/{$yt}?rel=0&showinfo=0";
@@ -92,7 +93,7 @@ class LinkPreviewService
             } elseif ($tt = $this->tiktokId($url)) {
                 $player = "https://www.tiktok.com/embed/v2/{$tt}";
             } elseif ($ig = $this->instagramEmbedUrl($url)) {
-                $player = $ig; // already an /embed/ URL
+                $player = $ig;
             } elseif ($this->isTwitterUrl($url)) {
                 $player = 'https://twitframe.com/show?url=' . rawurlencode($url);
             } elseif ($this->isFacebookUrl($url)) {
@@ -100,16 +101,46 @@ class LinkPreviewService
             }
         }
 
+        // -----------------------
+        // DAILYMOTION TITLE FIX
+        // -----------------------
+        $host = parse_url($url, PHP_URL_HOST);
+        $isDm = (bool) preg_match('~(dailymotion\.com|dai\.ly)~i', (string) $host);
+        $badTitle = empty($title) || preg_match('~^dailymotion$~i', (string) $title);
+
+        if ($isDm && $badTitle) {
+            // 1) Try scraping <h1 id="media-title">
+            $h1Node = $xpath->query("//h1[@id='media-title']")->item(0);
+            if ($h1Node) {
+                $title = trim($h1Node->textContent);
+            }
+
+            // 2) If still bad, try Dailymotion oEmbed
+            if (empty($title) || preg_match('~^dailymotion$~i', (string) $title)) {
+                if ($o = $this->oembedFetch($url)) {
+                    if (!empty($o['title'])) {
+                        $title = $o['title'];
+                    }
+                    if (empty($image) && !empty($o['thumbnail_url'])) {
+                        $image = $normalizeUrl($o['thumbnail_url']);
+                    }
+                    if (empty($player) && !empty($o['html']) && preg_match('~src="([^"]+)"~i', $o['html'], $m)) {
+                        $player = $normalizeUrl($m[1]);
+                    }
+                }
+            }
+        }
+
         return [
-            'ok'         => true,
-            'url'        => $url,
-            'title'      => $title,
-            'description'=> $description,
-            'image'      => $image,
-            'site_name'  => $siteName,
-            'type'       => $type,
-            'favicon'    => $favicon,
-            'player'     => $player, // NEW
+            'ok'          => true,
+            'url'         => $url,
+            'title'       => $title,
+            'description' => $description,
+            'image'       => $image,
+            'site_name'   => $siteName,
+            'type'        => $type,
+            'favicon'     => $favicon,
+            'player'      => $player,
         ];
     }
 
@@ -121,33 +152,74 @@ class LinkPreviewService
         if (preg_match('~[?&]v=([A-Za-z0-9_-]{6,})~', $url, $m)) return preg_replace('~[^A-Za-z0-9_-].*$~', '', $m[1]);
         return null;
     }
+
     private function vimeoId($url)
     {
         if (preg_match('~vimeo\.com/(?:video/)?([0-9]+)~', $url, $m)) return $m[1];
         return null;
     }
+
     private function dailymotionId($url)
     {
         if (preg_match('~dailymotion\.com/video/([A-Za-z0-9]+)~', $url, $m)) return $m[1];
+        // support short links like https://dai.ly/x9rlwuc
+        if (preg_match('~dai\.ly/([A-Za-z0-9]+)~i', $url, $m)) return $m[1];
         return null;
     }
+
     private function tiktokId($url)
     {
         if (preg_match('~/video/([0-9]+)~', $url, $m) && preg_match('~tiktok\.com~i', $url)) return $m[1];
         return null;
     }
+
     private function instagramEmbedUrl($url)
     {
         if (preg_match('~instagram\.com/(p|reel)/([A-Za-z0-9_-]+)/?~', $url, $m))
-            return 'https://www.instagram.com/'.$m[1].'/'.$m[2].'/embed/';
+            return 'https://www.instagram.com/' . $m[1] . '/' . $m[2] . '/embed/';
         return null;
     }
+
     private function isTwitterUrl($url)
     {
         return (bool) preg_match('~(twitter\.com|x\.com)/[^/]+/status/\d+~i', $url);
     }
+
     private function isFacebookUrl($url)
     {
         return (bool) preg_match('~facebook\.com~i', $url);
+    }
+
+    private function oembedFetch($url)
+    {
+        $endpoints = [
+            '~(youtube\.com|youtu\.be)~i'   => 'https://www.youtube.com/oembed?format=json&url=',
+            '~vimeo\.com~i'                 => 'https://vimeo.com/api/oembed.json?url=',
+            '~(dailymotion\.com|dai\.ly)~i' => 'https://www.dailymotion.com/services/oembed?format=json&url=',
+            '~(twitter\.com|x\.com)~i'      => 'https://publish.twitter.com/oembed?omit_script=1&hide_thread=1&url=',
+        ];
+
+        foreach ($endpoints as $pattern => $base) {
+            if (preg_match($pattern, $url)) {
+                try {
+                    $http = new Client(['timeout' => 6.0, 'http_errors' => false]);
+                    $res  = $http->get($base . rawurlencode($url), [
+                        'headers' => [
+                            'User-Agent' => 'Mozilla/5.0 (compatible; LinkPreviewBot/1.0; +https://app.postingautomation.com)',
+                            'Accept'     => 'application/json,text/*;q=0.8',
+                        ],
+                    ]);
+                    if ($res->getStatusCode() >= 200 && $res->getStatusCode() < 400) {
+                        $json = json_decode((string) $res->getBody(), true);
+                        if (is_array($json)) return $json; // title, thumbnail_url, html, etc.
+                    }
+                } catch (\Throwable $e) {
+                    // swallow and continue
+                }
+                break;
+            }
+        }
+
+        return null;
     }
 }
