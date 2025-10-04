@@ -10,7 +10,6 @@ class LinkPreviewService
 {
     public function fetch(string $url): array
     {
-        // Keep your original headers to preserve the working YouTube behavior
         $client = new Client([
             'timeout' => 8.0,
             'headers' => [
@@ -58,9 +57,7 @@ class LinkPreviewService
         $siteName    = $meta('og:site_name') ?: parse_url($url, PHP_URL_HOST);
         $type        = $meta('og:type');
         $favicon     = $firstAttr("//link[@rel='icon' or @rel='shortcut icon'][1]", 'href');
-
-        // Try player from meta
-        $player = $meta('og:video') ?: $meta('og:video:url') ?: $meta('twitter:player', true);
+        $player      = $meta('og:video') ?: $meta('og:video:url') ?: $meta('twitter:player', true);
 
         // Normalize relative URLs
         $normalizeUrl = function ($maybeUrl) use ($url) {
@@ -82,7 +79,7 @@ class LinkPreviewService
         $favicon = $normalizeUrl($favicon);
         $player  = $normalizeUrl($player);
 
-        // If no meta player, build one manually for common providers
+        // Build manual players if missing
         if (!$player) {
             if ($yt = $this->youtubeId($url)) {
                 $player = "https://www.youtube.com/embed/{$yt}?rel=0&showinfo=0";
@@ -101,34 +98,14 @@ class LinkPreviewService
             }
         }
 
-        // -----------------------
-        // DAILYMOTION TITLE FIX
-        // -----------------------
+        // --- Site-specific fallback hooks ---
         $host = parse_url($url, PHP_URL_HOST);
-        $isDm = (bool) preg_match('~(dailymotion\.com|dai\.ly)~i', (string) $host);
-        $badTitle = empty($title) || preg_match('~^dailymotion$~i', (string) $title);
-
-        if ($isDm && $badTitle) {
-            // 1) Try scraping <h1 id="media-title">
-            $h1Node = $xpath->query("//h1[@id='media-title']")->item(0);
-            if ($h1Node) {
-                $title = trim($h1Node->textContent);
-            }
-
-            // 2) If still bad, try Dailymotion oEmbed
-            if (empty($title) || preg_match('~^dailymotion$~i', (string) $title)) {
-                if ($o = $this->oembedFetch($url)) {
-                    if (!empty($o['title'])) {
-                        $title = $o['title'];
-                    }
-                    if (empty($image) && !empty($o['thumbnail_url'])) {
-                        $image = $normalizeUrl($o['thumbnail_url']);
-                    }
-                    if (empty($player) && !empty($o['html']) && preg_match('~src="([^"]+)"~i', $o['html'], $m)) {
-                        $player = $normalizeUrl($m[1]);
-                    }
-                }
-            }
+        if (preg_match('~(youtube\.com|youtu\.be)~i', $host)) {
+            $this->applyYoutubeFallbacks($xpath, $url, $normalizeUrl, $title, $image, $player);
+        } elseif (preg_match('~(dailymotion\.com|dai\.ly)~i', $host)) {
+            $this->applyDailymotionFallbacks($xpath, $url, $normalizeUrl, $title, $image, $player);
+        } elseif (preg_match('~tiktok\.com~i', $host)) {
+            $this->applyTiktokFallbacks($xpath, $url, $normalizeUrl, $title, $image, $player);
         }
 
         return [
@@ -144,7 +121,42 @@ class LinkPreviewService
         ];
     }
 
-    // ------- provider helpers (PHP 7 friendly) -------
+    // ----------------- SITE FALLBACKS -----------------
+    private function applyYoutubeFallbacks(DOMXPath $xpath, string $url, callable $normalizeUrl, &$title, &$image, &$player)
+    {
+        // Usually OG tags work fine, but we can extend later if needed
+        if (empty($title)) {
+            $node = $xpath->query('//title')->item(0);
+            if ($node) $title = trim($node->textContent);
+        }
+    }
+
+    private function applyDailymotionFallbacks(DOMXPath $xpath, string $url, callable $normalizeUrl, &$title, &$image, &$player)
+    {
+        $badTitle = empty($title) || preg_match('~^dailymotion$~i', (string) $title);
+        if ($badTitle) {
+            $h1Node = $xpath->query("//h1[@id='media-title']")->item(0);
+            if ($h1Node) {
+                $title = trim($h1Node->textContent);
+            }
+            if (empty($title) || preg_match('~^dailymotion$~i', (string) $title)) {
+                if ($o = $this->oembedFetch($url)) {
+                    if (!empty($o['title'])) $title = $o['title'];
+                    if (empty($image) && !empty($o['thumbnail_url'])) $image = $normalizeUrl($o['thumbnail_url']);
+                    if (empty($player) && !empty($o['html']) && preg_match('~src="([^"]+)"~i', $o['html'], $m)) {
+                        $player = $normalizeUrl($m[1]);
+                    }
+                }
+            }
+        }
+    }
+
+    private function applyTiktokFallbacks(DOMXPath $xpath, string $url, callable $normalizeUrl, &$title, &$image, &$player)
+    {
+        // TODO: once you inspect TikTok DOM, add logic here
+    }
+
+    // ----------------- UTILITIES -----------------
     private function youtubeId($url)
     {
         if (preg_match('~youtu\.be/([A-Za-z0-9_-]{6,})~', $url, $m)) return $m[1];
@@ -152,39 +164,32 @@ class LinkPreviewService
         if (preg_match('~[?&]v=([A-Za-z0-9_-]{6,})~', $url, $m)) return preg_replace('~[^A-Za-z0-9_-].*$~', '', $m[1]);
         return null;
     }
-
     private function vimeoId($url)
     {
         if (preg_match('~vimeo\.com/(?:video/)?([0-9]+)~', $url, $m)) return $m[1];
         return null;
     }
-
     private function dailymotionId($url)
     {
         if (preg_match('~dailymotion\.com/video/([A-Za-z0-9]+)~', $url, $m)) return $m[1];
-        // support short links like https://dai.ly/x9rlwuc
         if (preg_match('~dai\.ly/([A-Za-z0-9]+)~i', $url, $m)) return $m[1];
         return null;
     }
-
     private function tiktokId($url)
     {
         if (preg_match('~/video/([0-9]+)~', $url, $m) && preg_match('~tiktok\.com~i', $url)) return $m[1];
         return null;
     }
-
     private function instagramEmbedUrl($url)
     {
         if (preg_match('~instagram\.com/(p|reel)/([A-Za-z0-9_-]+)/?~', $url, $m))
             return 'https://www.instagram.com/' . $m[1] . '/' . $m[2] . '/embed/';
         return null;
     }
-
     private function isTwitterUrl($url)
     {
         return (bool) preg_match('~(twitter\.com|x\.com)/[^/]+/status/\d+~i', $url);
     }
-
     private function isFacebookUrl($url)
     {
         return (bool) preg_match('~facebook\.com~i', $url);
@@ -198,7 +203,6 @@ class LinkPreviewService
             '~(dailymotion\.com|dai\.ly)~i' => 'https://www.dailymotion.com/services/oembed?format=json&url=',
             '~(twitter\.com|x\.com)~i'      => 'https://publish.twitter.com/oembed?omit_script=1&hide_thread=1&url=',
         ];
-
         foreach ($endpoints as $pattern => $base) {
             if (preg_match($pattern, $url)) {
                 try {
@@ -211,15 +215,13 @@ class LinkPreviewService
                     ]);
                     if ($res->getStatusCode() >= 200 && $res->getStatusCode() < 400) {
                         $json = json_decode((string) $res->getBody(), true);
-                        if (is_array($json)) return $json; // title, thumbnail_url, html, etc.
+                        if (is_array($json)) return $json;
                     }
                 } catch (\Throwable $e) {
-                    // swallow and continue
                 }
                 break;
             }
         }
-
         return null;
     }
 }
