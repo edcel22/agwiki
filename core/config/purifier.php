@@ -103,24 +103,84 @@ return [
         ],
     ],
     'profiles' => [
+        // 'link_preview' => [
+        //     'HTML.SafeIframe' => true,
+        //     'URI.SafeIframeRegexp' => '%^(https?:)?//('
+        //         . '([a-z0-9-]+\.)?youtube\.com/|'         // www.youtube.com/embed/...
+        //         . 'youtu\.be/|'                           // short links (in case)
+        //         . 'player\.vimeo\.com/|'                  // Vimeo
+        //         . '([a-z0-9-]+\.)?dailymotion\.com/|'     // Dailymotion
+        //         . '([a-z0-9-]+\.)?tiktok\.com/|'          // TikTok
+        //         . '([a-z0-9-]+\.)?instagram\.com/|'       // Instagram /embed/
+        //         . '([a-z0-9-]+\.)?facebook\.com/|'        // FB video plugin
+        //         . 'twitframe\.com/'                       // X/Twitter proxy
+        //         . ')%ix',
+        //     'HTML.Allowed' => 'div,p,br,span,a,img,iframe,h1,h2,h3,h4,h5,h6',
+        //     'CSS.AllowedProperties' => 'width,height,min-height',
+        //     'Attr.AllowedFrameTargets' => ['_blank'],
+        //     'HTML.TargetBlank' => true,
+        //     'AutoFormat.AutoParagraph' => false,
+        //     'AutoFormat.RemoveEmpty' => true,
+        // ],
         'link_preview' => [
-            'HTML.SafeIframe' => true,
-            'URI.SafeIframeRegexp' => '%^(https?:)?//('
-                . '([a-z0-9-]+\.)?youtube\.com/|'         // www.youtube.com/embed/...
-                . 'youtu\.be/|'                           // short links (in case)
-                . 'player\.vimeo\.com/|'                  // Vimeo
-                . '([a-z0-9-]+\.)?dailymotion\.com/|'     // Dailymotion
-                . '([a-z0-9-]+\.)?tiktok\.com/|'          // TikTok
-                . '([a-z0-9-]+\.)?instagram\.com/|'       // Instagram /embed/
-                . '([a-z0-9-]+\.)?facebook\.com/|'        // FB video plugin
-                . 'twitframe\.com/'                       // X/Twitter proxy
-                . ')%ix',
-            'HTML.Allowed' => 'div,p,br,span,a,img,iframe,h1,h2,h3,h4,h5,h6',
-            'CSS.AllowedProperties' => 'width,height,min-height',
-            'Attr.AllowedFrameTargets' => ['_blank'],
-            'HTML.TargetBlank' => true,
-            'AutoFormat.AutoParagraph' => false,
-            'AutoFormat.RemoveEmpty' => true,
+            'HTML.Doctype'           => 'HTML5',
+            'Core.Encoding'          => 'UTF-8',
+            'HTML.SafeIframe'        => true,
+            'URI.DisableExternalResources' => false,
+            'URI.DisableResources'   => false,
+
+            // allow only the players you render (adjust as needed)
+            'URI.SafeIframeRegexp'   =>
+            '%^(https?:)?//('
+                . 'www\.youtube\.com/embed/|youtube\.com/embed/|'
+                . 'player\.vimeo\.com/video/|'
+                . 'www\.dailymotion\.com/embed/video/|dailymotion\.com/embed/video/|'
+                . 'www\.tiktok\.com/embed/|tiktok\.com/embed/|'
+                . 'www\.instagram\.com/.+/embed/|instagram\.com/.+/embed/|'
+                . 'www\.facebook\.com/plugins/video\.php|facebook\.com/plugins/video\.php|'
+                . 'twitframe\.com/show'
+                . ')%',
+
+            // allow common iframe attrs used by your renderer
+            'HTML.AllowedElements'   => 'a, p, br, div, h1, h2, h3, img, span, iframe',
+            'HTML.AllowedAttributes' => implode(',', [
+                // links
+                'a.href',
+                'a.target',
+                'a.rel',
+                // images
+                'img.src',
+                'img.alt',
+                'img.title',
+                'img.width',
+                'img.height',
+                'img.style',
+                // div/span/p/h*
+                'div.class',
+                'div.style',
+                'span.class',
+                'span.style',
+                'p.class',
+                'p.style',
+                'h2.class',
+                // iframe
+                'iframe.src',
+                'iframe.width',
+                'iframe.height',
+                'iframe.frameborder',
+                'iframe.allowfullscreen',
+                'iframe.title',
+                'iframe.style',
+                'iframe.allow',
+                'iframe.referrerpolicy',
+            ]),
+
+            // optional: allow target="_blank" safely
+            'Attr.AllowedFrameTargets' => ['_blank', '_self'],
+
+            // optional hardening
+            'HTML.Trusted'           => true,
+            'Cache.SerializerPath'   => storage_path('purifier'),
         ],
     ],
 
