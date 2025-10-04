@@ -22,4 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('login', [UsersController::class,'login']);
 Route::post('create-post', [PostController::class,'store']);
+Route::delete('delete-post/{post}', [PostController::class, 'destroy']);
 Route::get('get-interests', [PostController::class, 'getInterests']);

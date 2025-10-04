@@ -76,4 +76,48 @@ class PostController extends Controller
             'interests' => $interests,
         ]);
     }
+
+    public function destroy (Request $request, Post $post) {
+         $validator = \Validator::make($request->all(), [
+            'app_token' => 'required',
+        ]);
+
+        if ($validator->fails()) { 
+            return response([
+                'errors' => $validator->errors()->all()
+            ], 400);
+        }
+
+        $appToken = $request->input('app_token');
+        $userToken = UserToken::where('token', $appToken)->first();
+
+        if (!$userToken) {
+            return response()->json(['error' => 'Invalid or missing app token.'], 401);
+        }
+
+        // check if post matches the account
+        // $post = Post::where('post_id', $request->post_id);
+
+        if (!$post) {
+            return response([
+                'errors' => ['Post does not exist']
+            ], 400);
+        }
+
+        if ($userToken->user->id != $post->user_id) {
+            return response([
+                'errors' => ['You are not allowed to delete this post.']
+            ], 400);
+        }
+
+        $sharePost = Share::where('post_id', $request->post_id)->first();
+        if ($sharePost) {
+            $sharePost->delete();
+        }
+        $post->delete();
+
+        return response([
+            'message' => 'Post deleted successfully.'
+        ]);
+    }
 }
