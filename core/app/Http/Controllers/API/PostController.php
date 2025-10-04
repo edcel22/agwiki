@@ -16,51 +16,6 @@ use App\UserToken;
 
 class PostController extends Controller
 {
-    public function storeV1(Request $request)
-    {
-        $validator = \Validator::make($request->all(), [
-            'app_token' => 'required',
-            'content' => 'required',
-            'link'      => 'required_if:type,link|url', // imageLink or doc link
-            'type'      => 'required|in:article,image,link',
-            'interest' => 'sometimes|array'
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                'errors' => $validator->errors()->all()
-            ], 400);
-        }
-
-        $appToken = $request->input('app_token');
-        $userToken = UserToken::where('token', $appToken)->first();
-
-        if (!$userToken) {
-            return response()->json(['error' => 'Invalid or missing app token.'], 401);
-        }
-
-        $user = $userToken->user;
-
-        $created_post = Post::create([
-            'user_id' => $user->id,
-            'content' => $request->content,
-            'type' => $request->type,
-            'from_api' => true,
-            'link' => $request->link,
-        ]);
-        $created_post->interests()->attach($request->interest);
-
-        $share = Share::create([
-            'post_id' => $created_post->id,
-            'user_id' => $user->id,
-            'group_id' => 0,
-        ]);
-
-        return response([
-            'record' => $created_post
-        ]);
-    }
-
     public function store(Request $request, LinkPreviewService $previewer)
     {
         $validator = \Validator::make($request->all(), [
@@ -115,15 +70,14 @@ class PostController extends Controller
         ]);
     }
 
-    public function storev3(Request $request, LinkPreviewService $previewer)
+    public function getLinkPreview(Request $request, LinkPreviewService $previewer)
     {
+
         $validator = \Validator::make($request->all(), [
-            'app_token' => 'required',
-            'content'   => 'required',
-            'link'      => 'required|url',
-            'type'      => 'required|in:article,image,link', // keep your allowed values
-            'interest'  => 'sometimes|array',
+            'app_token'    => 'required',
+            'link'         => 'required|url', // image, docs, url links
         ]);
+
         if ($validator->fails()) {
             return response(['errors' => $validator->errors()->all()], 400);
         }
@@ -132,41 +86,10 @@ class PostController extends Controller
         if (!$userToken) {
             return response()->json(['error' => 'Invalid or missing app token.'], 401);
         }
-        $user = $userToken->user;
 
-        // Build preview + rendered HTML with iframe (if applicable)
-        $preview = $previewer->fetch($request->link);
-        $rawHtml = LinkPreviewRenderer::render($preview, $request->link);
+        $scrabingcontent = $this->crawlAndRender($request->link, $previewer);
 
-        // sanitize to keep only allowed tags/hosts (see step 4)
-        try {
-            $scrabingcontent = Purifier::clean($rawHtml, 'link_preview');
-        } catch (\Throwable $e) {
-            // safe fallback if purifier not ready yet
-            $allowed = '<div><p><br><span><a><img><iframe><h1><h2><h3><h4><h5><h6>';
-            $scrabingcontent = strip_tags($rawHtml, $allowed);
-        }
-
-        $created_post = Post::create([
-            'user_id'         => $user->id,
-            'content'         => $request->content, // caption only
-            'type'            => 'article',         // store as article with preview block
-            'from_api'        => true,
-            'link'            => $request->link,    // original URL
-            'scrabingcontent' => $scrabingcontent,  // <-- iframe-inclusive HTML
-        ]);
-
-        if ($request->filled('interest')) {
-            $created_post->interests()->attach($request->interest);
-        }
-
-        Share::create([
-            'post_id'  => $created_post->id,
-            'user_id'  => $user->id,
-            'group_id' => 0,
-        ]);
-
-        return response(['record' => $created_post]);
+        return $scrabingcontent;
     }
 
     public function getInterests(Request $request)
