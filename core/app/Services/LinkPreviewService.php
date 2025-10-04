@@ -153,8 +153,44 @@ class LinkPreviewService
 
     private function applyTiktokFallbacks(DOMXPath $xpath, string $url, callable $normalizeUrl, &$title, &$image, &$player)
     {
-        // TODO: once you inspect TikTok DOM, add logic here
+        // TikTok usually lacks proper og:title, so scrape description
+        $badTitle = empty($title) || preg_match('~^tiktok$~i', (string) $title);
+
+        if ($badTitle) {
+            // Grab description container text
+            $descNode = $xpath->query("//*[@data-e2e='video-desc']")->item(0);
+            if ($descNode) {
+                $text = trim($descNode->textContent);
+                if (!empty($text)) {
+                    $title = $text;
+                }
+            }
+
+            // As a backup, check og:description
+            if (empty($title)) {
+                $ogDescNode = $xpath->query("//meta[@property='og:description']/@content")->item(0);
+                if ($ogDescNode) {
+                    $title = trim($ogDescNode->nodeValue);
+                }
+            }
+
+            // Fallback to oEmbed if still no title
+            if (empty($title)) {
+                if ($o = $this->oembedFetch($url)) {
+                    if (!empty($o['title'])) {
+                        $title = $o['title'];
+                    }
+                    if (empty($image) && !empty($o['thumbnail_url'])) {
+                        $image = $normalizeUrl($o['thumbnail_url']);
+                    }
+                    if (empty($player) && !empty($o['html']) && preg_match('~src="([^"]+)"~i', $o['html'], $m)) {
+                        $player = $normalizeUrl($m[1]);
+                    }
+                }
+            }
+        }
     }
+
 
     // ----------------- UTILITIES -----------------
     private function youtubeId($url)
