@@ -20,14 +20,13 @@ class PostController extends Controller
     public function store(Request $request, LinkPreviewService $previewer, PostContentService $contentService)
     {
         $validator = \Validator::make($request->all(), [
-            'app_token'    => 'required',
-            'type'         => 'required|in:article,image,link',
-            'is_link_type'   => 'sometimes|boolean',
-            'link'         => 'sometimes|url', // image, docs, url links
-            'content'      => 'required_unless:is_link_type,1|nullable|string',
-            'interest'     => 'sometimes|array',
+            'app_token'     => 'required',
+            'type'          => 'required|in:article,image,link',
+            'is_link_type'  => 'sometimes',     // we’ll cast inside the service
+            'link'          => 'sometimes|url',
+            'content'       => 'required_unless:is_link_type,1|nullable|string',
+            'interest'      => 'sometimes|array',
         ]);
-
         if ($validator->fails()) {
             return response(['errors' => $validator->errors()->all()], 400);
         }
@@ -38,20 +37,16 @@ class PostController extends Controller
         }
         $user = $userToken->user;
 
-        $isPostLinkType = isset($request->is_link_type) && $request->is_link_type;
-        $scrabingcontent = null;
-
-        if ($isPostLinkType && $request->filled('link')) {
-            $scrabingcontent = $contentService->crawlAndRender($request->link, $previewer);
-        }
+        // 🔹 Get final, ready-to-save values from the service
+        $payload = $contentService->prepareForStore($request, $previewer);
 
         $created_post = Post::create([
-            'user_id'        => $user->id,
-            'content'        => $request->input('content', ''),    // caption or empty
-            'type'           => $request->input('type'),           // 'link' | 'article' | 'image'
-            'from_api'       => true,
-            'link'           => $isPostLinkType ? $request->input('link') : $request->input('link', ''),
-            'scrabingcontent' => $scrabingcontent,
+            'user_id'         => $user->id,
+            'content'         => $payload['content'],
+            'type'            => $request->input('type'),
+            'from_api'        => true,
+            'link'            => $payload['link'],
+            'scrabingcontent' => $payload['scrabingcontent'],
         ]);
 
         if ($request->filled('interest')) {
@@ -66,19 +61,17 @@ class PostController extends Controller
 
         return response([
             'record' => $created_post,
-            // optionally also return the rendered HTML so FE can render instantly:
-            'html'   => $scrabingcontent,
+            'html'   => $payload['scrabingcontent'],
         ]);
     }
 
     public function getLinkPreview(Request $request, LinkPreviewService $previewer, PostContentService $contentService)
     {
-
         $validator = \Validator::make($request->all(), [
-            'app_token'    => 'required',
-            'link'         => 'required|url', // image, docs, url links
+            'app_token' => 'required',
+            'link'      => 'required|url',
+            'caption'   => 'sometimes|nullable|string', // optional
         ]);
-
         if ($validator->fails()) {
             return response(['errors' => $validator->errors()->all()], 400);
         }
@@ -88,9 +81,8 @@ class PostController extends Controller
             return response()->json(['error' => 'Invalid or missing app token.'], 401);
         }
 
-        $scrabingcontent = $contentService->crawlAndRender($request->link, $previewer);
-
-        return $scrabingcontent;
+        // 🔹 Service returns final HTML
+        return $contentService->previewForLink($request, $previewer);
     }
 
     public function getInterests(Request $request)
