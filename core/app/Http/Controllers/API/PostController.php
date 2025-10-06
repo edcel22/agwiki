@@ -22,9 +22,9 @@ class PostController extends Controller
         $validator = \Validator::make($request->all(), [
             'app_token'     => 'required',
             'type'          => 'required|in:article,image,link',
-            'is_link_type'  => 'sometimes',     // we’ll cast inside the service
+            'is_link_type'  => 'sometimes',
             'link'          => 'sometimes|url',
-            'content'       => 'required_unless:is_link_type,1|nullable|string',
+            'content'       => 'sometimes|string',
             'interest'      => 'sometimes|array',
         ]);
         if ($validator->fails()) {
