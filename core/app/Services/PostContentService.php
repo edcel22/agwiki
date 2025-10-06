@@ -27,7 +27,7 @@ class PostContentService
         }
 
         return [
-            'content'         => $cleanCaption,
+            'content'         => $isLinkType ? $cleanCaption : $rawCaption,
             'link'            => $link,
             'scrabingcontent' => $scrabingcontent,
         ];
