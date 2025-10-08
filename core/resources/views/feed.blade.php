@@ -535,13 +535,34 @@
                                         $scrapRaw = $post->scrabingcontent ?? '';
                                         // Some feeds store HTML as entities; decode once so tags work (or can be stripped)
                                         $scrapHtml = $scrapRaw !== '' ? html_entity_decode($scrapRaw, ENT_QUOTES | ENT_HTML5) : '';
+
+                                        $articleClass = $isInner ? '' : 'article-img';
                                     @endphp
 
                                     <br>
                                     @if($post->type == 'article')
                                         @if($post->scrabingcontent!='')
+                                            <p>LOREM IP</p>
                                             {{-- <p class="scrabingcontent article-img">{!! $post->scrabingcontent !!}</p> --}}
-                                            
+                                            @php
+                                                // Decode entities so &lt;a&gt; becomes real <a> tags
+                                                $scrapHtml = html_entity_decode($post->scrabingcontent, ENT_QUOTES | ENT_HTML5);
+
+                                                // Remove entire <a>…</a> (including text) ONLY inside <p class="linkContent">…</p>
+                                                $scrapHtml = preg_replace_callback(
+                                                    '/(<p[^>]*class="[^"]*linkContent[^"]*"[^>]*>)(.*?)(<\/p>)/is',
+                                                    function ($matches) {
+                                                        // Strip <a> tags AND their contents entirely
+                                                        $inner = preg_replace('#<a\b[^>]*>.*?</a>#is', '', $matches[2]);
+                                                        // Also collapse extra spaces
+                                                        $inner = trim(preg_replace('/\s+/', ' ', $inner));
+                                                        return $matches[1] . $inner . $matches[3];
+                                                    },
+                                                    $scrapHtml
+                                                );
+                                            @endphp
+
+                                            <div class="scrabingcontent article-img">{!! $scrapHtml !!}</div>
                                         @else
                                             @if($isInner)
                                                 <p>{!! $post->content !!}</p>
