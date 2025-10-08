@@ -299,7 +299,7 @@
 							<img data-user="{{$theSharer->user_id}}" src="{{ asset('assets/front/img/' . optional($theSharer->user)->avatar) }}" class="profile-image" alt="{{ optional($theSharer->user)->name }}">
                             <a href="{{ route('profile', optional($theSharer->user)->username) }}" class="user">{{ optional($theSharer->user)->name }}</a>
                             <br>
-                            <date>shared this {{ $post->type }} {{ $theSharer->created_at->diffForHumans() }}</date>
+                            <date>shared this{{ $post->type }} {{ $theSharer->created_at->diffForHumans() }}</date>
 
 							@endif
 
@@ -494,7 +494,7 @@
                                     <b class="user">{{ optional($share->user)->name }}</b>
                                 @endif
                                 <br>
-                                <date>shared this {{ $post->type }} {{ $share->created_at->diffForHumans() }}</date>
+                                <date>shared this 2 {{ $post->type }} {{ $share->created_at->diffForHumans() }}</date>
 
 
 
@@ -517,11 +517,70 @@
                                     </span>
                                     @endif
                                 <article>
-                                    <br> @if($post->type == 'article') @if($post->scrabingcontent!='')
-                                    <p class="scrabingcontent article-img">{!! $post->scrabingcontent !!}</p>
-                                    @else
-                                    <p class="article-img">{!! excerpt($post) !!}</p>
-                                    @endif @elseif($post->type == 'image')
+                                    @php
+                                        $isInner = request()->has('postId') && (int)request('postId') === (int)$post->id;
+                                        $fullHtml = $post->content;
+                                        $hasAnchor = stripos($fullHtml, '<a') !== false;
+
+                                        $plain     = trim(preg_replace('/<[^>]+>/', '', $fullHtml));
+                                        $tooLong   = mb_strlen($plain) > 700;
+                                        $excerptHtml = excerpt($post);
+                                        $excerptNoLinks = preg_replace('#<a[^>]*>(.*?)</a>#si', '$1', $excerptHtml);
+                                        $innerUrl = "/post/{$post->id}";
+                                        $excerptNoLinks = preg_replace(
+                                            '/(?:\s|&nbsp;)*(?:…|\.\.\.)?\s*Read(?:\s|&nbsp;)*More\s*$/iu',
+                                            '',
+                                            trim($excerptNoLinks)
+                                        );
+                                        $scrapRaw = $post->scrabingcontent ?? '';
+                                        // Some feeds store HTML as entities; decode once so tags work (or can be stripped)
+                                        $scrapHtml = $scrapRaw !== '' ? html_entity_decode($scrapRaw, ENT_QUOTES | ENT_HTML5) : '';
+
+                                        $articleClass = $isInner ? '' : 'article-img';
+                                    @endphp
+
+                                    <br>
+                                    @if($post->type == 'article')
+                                        @if($post->scrabingcontent!='')
+                                            {{-- <p class="scrabingcontent article-img">{!! $post->scrabingcontent !!}</p> --}}
+                                            @php
+                                                // Decode entities so &lt;a&gt; becomes real <a> tags
+                                                $scrapHtml = html_entity_decode($post->scrabingcontent, ENT_QUOTES | ENT_HTML5);
+
+                                                // Remove entire <a>…</a> (including text) ONLY inside <p class="linkContent">…</p>
+                                                $scrapHtml = preg_replace_callback(
+                                                    '/(<p[^>]*class="[^"]*linkContent[^"]*"[^>]*>)(.*?)(<\/p>)/is',
+                                                    function ($matches) {
+                                                        // Strip <a> tags AND their contents entirely
+                                                        $inner = preg_replace('#<a\b[^>]*>.*?</a>#is', '', $matches[2]);
+                                                        // Also collapse extra spaces
+                                                        $inner = trim(preg_replace('/\s+/', ' ', $inner));
+                                                        return $matches[1] . $inner . $matches[3];
+                                                    },
+                                                    $scrapHtml
+                                                );
+                                            @endphp
+
+                                            <div class="scrabingcontent article-img">{!! $scrapHtml !!}</div>
+                                        @else
+                                            @if($isInner)
+                                                <p>{!! $post->content !!}</p>
+                                            @else
+                                                @if($hasAnchor)
+                                                    @if($tooLong)
+                                                        <p class="article-img">
+                                                            {!! $excerptNoLinks !!}
+                                                            <a href="{{ $innerUrl }}" class="pull-right readmore rm1">Read More</a>
+                                                        </p>
+                                                    @else
+                                                        <p class="article-img">{!! $post->content !!}</p>
+                                                    @endif
+                                                @else
+                                                    <p class="article-img">{!! excerpt($post) !!}</p>
+                                                @endif
+                                            @endif
+                                        @endif
+                                    @elseif($post->type == 'image')
                                     <p class="article-img">{!! excerpt($post) !!}</p>
                                     <br>
                                     <?php
