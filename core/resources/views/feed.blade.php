@@ -516,29 +516,29 @@
                                     @endforeach
                                     </span>
                                     @endif
-                                <article>
-                                    @php
-                                        $isInner = request()->has('postId') && (int)request('postId') === (int)$post->id;
-                                        $fullHtml = $post->content;
-                                        $hasAnchor = stripos($fullHtml, '<a') !== false;
+                                @php
+                                    $isInner = request()->has('postId') && (int)request('postId') === (int)$post->id;
+                                    $fullHtml = $post->content;
+                                    $hasAnchor = stripos($fullHtml, '<a') !== false;
 
-                                        $plain     = trim(preg_replace('/<[^>]+>/', '', $fullHtml));
-                                        $tooLong   = mb_strlen($plain) > 700;
-                                        $excerptHtml = excerpt($post);
-                                        $excerptNoLinks = preg_replace('#<a[^>]*>(.*?)</a>#si', '$1', $excerptHtml);
-                                        $innerUrl = "/post/{$post->id}";
-                                        $excerptNoLinks = preg_replace(
-                                            '/(?:\s|&nbsp;)*(?:…|\.\.\.)?\s*Read(?:\s|&nbsp;)*More\s*$/iu',
-                                            '',
-                                            trim($excerptNoLinks)
-                                        );
-                                        $scrapRaw = $post->scrabingcontent ?? '';
-                                        // Some feeds store HTML as entities; decode once so tags work (or can be stripped)
-                                        $scrapHtml = $scrapRaw !== '' ? html_entity_decode($scrapRaw, ENT_QUOTES | ENT_HTML5) : '';
+                                    $plain     = trim(preg_replace('/<[^>]+>/', '', $fullHtml));
+                                    $tooLong   = mb_strlen($plain) > 700;
+                                    $excerptHtml = excerpt($post);
+                                    $excerptNoLinks = preg_replace('#<a[^>]*>(.*?)</a>#si', '$1', $excerptHtml);
+                                    $innerUrl = "/post/{$post->id}";
+                                    $excerptNoLinks = preg_replace(
+                                        '/(?:\s|&nbsp;)*(?:…|\.\.\.)?\s*Read(?:\s|&nbsp;)*More\s*$/iu',
+                                        '',
+                                        trim($excerptNoLinks)
+                                    );
+                                    $scrapRaw = $post->scrabingcontent ?? '';
+                                    // Some feeds store HTML as entities; decode once so tags work (or can be stripped)
+                                    $scrapHtml = $scrapRaw !== '' ? html_entity_decode($scrapRaw, ENT_QUOTES | ENT_HTML5) : '';
 
-                                        $articleClass = $isInner ? '' : 'article-img';
-                                    @endphp
-
+                                    $articleClass = $isInner ? '' : 'article-img';
+                                    $innerStyle = $isInner ? "position: relative; z-index: 99" : "";
+                                @endphp
+                                <article style="{{ $innerStyle }}">
                                     <br>
                                     @if($post->type == 'article')
                                         @if($post->scrabingcontent!='')
@@ -560,8 +560,15 @@
                                                     $scrapHtml
                                                 );
                                             @endphp
-
-                                            <div class="scrabingcontent article-img">{!! $scrapHtml !!}</div>
+                                            
+                                            @if($tooLong)
+                                                <p class="article-imgage">
+                                                    {!! $excerptNoLinks !!}
+                                                    <a href="{{ $innerUrl }}" class="pull-right readmore rm1">Read More</a>
+                                                </p>
+                                            @else
+                                                <div class="scrabingcontent {{$articleClass}}">{!! $scrapHtml !!}</div>
+                                            @endif
                                         @else
                                             @if($isInner)
                                                 <p>{!! $post->content !!}</p>
