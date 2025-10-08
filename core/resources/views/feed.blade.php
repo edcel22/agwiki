@@ -535,8 +535,10 @@
                                     // Some feeds store HTML as entities; decode once so tags work (or can be stripped)
                                     $scrapHtml = $scrapRaw !== '' ? html_entity_decode($scrapRaw, ENT_QUOTES | ENT_HTML5) : '';
 
-                                    $articleClass = $isInner ? '' : 'article-img';
-                                    $innerStyle = $isInner ? "position: relative; z-index: 99" : "";
+                                    $isFullLink = $isInner || $post->scrabingcontent!=''; // link is either Youtube or having a scrabing content, and inner if postId is present in url box
+
+                                    $articleClass = $isFullLink ? '' : 'article-img';
+                                    $innerStyle = $isFullLink ? "position: relative; z-index: 99" : ""; // make readmore clickable
                                 @endphp
                                 <article style="{{ $innerStyle }}">
                                     <br>
@@ -561,14 +563,7 @@
                                                 );
                                             @endphp
                                             
-                                            @if($tooLong)
-                                                <p class="article-imgage">
-                                                    {!! $excerptNoLinks !!}
-                                                    <a href="{{ $innerUrl }}" class="pull-right readmore rm1">Read More</a>
-                                                </p>
-                                            @else
-                                                <div class="scrabingcontent {{$articleClass}}">{!! $scrapHtml !!}</div>
-                                            @endif
+                                            <div class="scrabingcontent {{$articleClass}}">{!! $scrapHtml !!}</div>
                                         @else
                                             @if($isInner)
                                                 <p>{!! $post->content !!}</p>
