@@ -542,7 +542,6 @@
                                     <br>
                                     @if($post->type == 'article')
                                         @if($post->scrabingcontent!='')
-                                            <p>LOREM IP</p>
                                             {{-- <p class="scrabingcontent article-img">{!! $post->scrabingcontent !!}</p> --}}
                                             @php
                                                 // Decode entities so &lt;a&gt; becomes real <a> tags
