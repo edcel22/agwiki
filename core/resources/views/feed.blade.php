@@ -449,7 +449,7 @@
 
                             <div>
 
-                                    @php
+                                @php
 
                                 $theSharer = '';
 
@@ -495,9 +495,6 @@
                                 @endif
                                 <br>
                                 <date>shared this 2 {{ $post->type }} {{ $share->created_at->diffForHumans() }}</date>
-
-
-
                                     @if($share->user_id != $post->user->id)
 
                                     <div style="clear:both"></div>
@@ -506,7 +503,6 @@
                                     <date>shared this {{ $post->type }} {{ $post->created_at->diffForHumans() }}</date>
 
                                     @endif
-
                                 <br> @if($postTopics[0]->interests->count() > 0)
                                 <span>Topics:
                                     @foreach($postTopics as $theinterest)
@@ -541,103 +537,101 @@
                                     $innerStyle = $isFullLink ? "position: relative; z-index: 99" : ""; // make readmore clickable
                                 @endphp
                                 <article style="{{ $innerStyle }}">
-                                    <br>
-                                    @if($post->type == 'article')
-                                        @if($post->scrabingcontent!='')
-                                            {{-- <p class="scrabingcontent article-img">{!! $post->scrabingcontent !!}</p> --}}
-                                            @php
-                                                // Decode entities so &lt;a&gt; becomes real <a> tags
-                                                $scrapHtml = html_entity_decode($post->scrabingcontent, ENT_QUOTES | ENT_HTML5);
+                                    <div class="post-body">
+                                        <br>
+                                        @if($post->type == 'article')
+                                            @if($post->scrabingcontent!='')
+                                                {{-- <p class="scrabingcontent article-img">{!! $post->scrabingcontent !!}</p> --}}
+                                                @php
+                                                    // Decode entities so &lt;a&gt; becomes real <a> tags
+                                                    $scrapHtml = html_entity_decode($post->scrabingcontent, ENT_QUOTES | ENT_HTML5);
 
-                                                // Remove entire <a>…</a> (including text) ONLY inside <p class="linkContent">…</p>
-                                                $scrapHtml = preg_replace_callback(
-                                                    '/(<p[^>]*class="[^"]*linkContent[^"]*"[^>]*>)(.*?)(<\/p>)/is',
-                                                    function ($matches) {
-                                                        // Strip <a> tags AND their contents entirely
-                                                        $inner = preg_replace('#<a\b[^>]*>.*?</a>#is', '', $matches[2]);
-                                                        // Also collapse extra spaces
-                                                        $inner = trim(preg_replace('/\s+/', ' ', $inner));
-                                                        return $matches[1] . $inner . $matches[3];
-                                                    },
-                                                    $scrapHtml
-                                                );
-                                            @endphp
-                                            
-                                            <div class="scrabingcontent {{$articleClass}}">{!! $scrapHtml !!}</div>
-                                        @else
-                                            @if($isInner)
-                                                <p>{!! $post->content !!}</p>
+                                                    // Remove entire <a>…</a> (including text) ONLY inside <p class="linkContent">…</p>
+                                                    $scrapHtml = preg_replace_callback(
+                                                        '/(<p[^>]*class="[^"]*linkContent[^"]*"[^>]*>)(.*?)(<\/p>)/is',
+                                                        function ($matches) {
+                                                            // Strip <a> tags AND their contents entirely
+                                                            $inner = preg_replace('#<a\b[^>]*>.*?</a>#is', '', $matches[2]);
+                                                            // Also collapse extra spaces
+                                                            $inner = trim(preg_replace('/\s+/', ' ', $inner));
+                                                            return $matches[1] . $inner . $matches[3];
+                                                        },
+                                                        $scrapHtml
+                                                    );
+                                                @endphp
+                                                
+                                                <div class="scrabingcontent {{$articleClass}}">{!! $scrapHtml !!}</div>
                                             @else
-                                                @if($hasAnchor)
-                                                    @if($tooLong)
-                                                        <p class="article-img">
-                                                            {!! $excerptNoLinks !!}
-                                                            <a href="{{ $innerUrl }}" class="pull-right readmore rm1">Read More</a>
-                                                        </p>
-                                                    @else
-                                                        <p class="article-img">{!! $post->content !!}</p>
-                                                    @endif
+                                                @if($isInner)
+                                                    <p>{!! $post->content !!}</p>
                                                 @else
-                                                    <p class="article-img">{!! excerpt($post) !!}</p>
+                                                    @if($hasAnchor)
+                                                        @if($tooLong)
+                                                            <p class="article-img">
+                                                                {!! $excerptNoLinks !!}
+                                                                <a href="{{ $innerUrl }}" class="pull-right readmore rm1">Read More</a>
+                                                            </p>
+                                                        @else
+                                                            <p class="article-img">{!! $post->content !!}</p>
+                                                        @endif
+                                                    @else
+                                                        <p class="article-img">{!! excerpt($post) !!}</p>
+                                                    @endif
                                                 @endif
                                             @endif
-                                        @endif
-                                    @elseif($post->type == 'image')
-                                    <p class="article-img">{!! excerpt($post) !!}</p>
-                                    <br>
-                                    <?php
-                                        $postLink = $post->from_api ? $post->link : asset('assets/front/content/' . $post->link);
-                                    ?>
-                                    <img src="{{ $postLink }}" class="img-responsive imgclickcls preload-image responsive-image" data-toggle="modal" data-target="#imageModal"> @elseif($post->type == 'video')
-                                    <p>{!! excerpt($post) !!}</p>
-                                    <br>
-                                    <video class="player" playsinline controls id="{{ str_random(20) }}" style="width: 100%;">
-                                        <source src="{{ asset('assets/front/content/' . $post->link) }}" type="video/mp4">
-                                    </video>
-                                    @elseif($post->type == 'audio')
-                                    <p>{!! excerpt($post) !!}</p>
-                                    <br>
-                                    <audio class="player" controls id="{{ str_random(20) }}" style="width: 100%;">
-                                        <source src="{{ asset('assets/front/content/' . $post->link) }}" type="audio/mp3">
-                                    </audio>
-                                    @elseif($post->type == 'youtube')
-                                    <p>{!! excerpt($post) !!}</p>
-                                    <br>
-                                    <div class="plyr__video-embed player">
-                                        <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $post->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay">
-                                        </iframe>
-                                    </div>
-                                    @elseif($post->type == 'vimeo')
-                                    <p>{!! excerpt($post) !!}</p>
-                                    <br>
-                                    <div class="plyr__video-embed player">
-                                        <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $post->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay">
-                                        </iframe>
-                                    </div>
-                                    @elseif($post->type == 'doc')
-                                    <p>{!! excerpt($post) !!}</p>
-                                    <br>
-                                    <div class="doc">
-                                    <div style="overflow: hidden;">
-                                            {{ $post->link }}
-                                            <a target="_blank" href="{{ asset('assets/front/content/' . $post->link) }}" class="top-10 pull-right button button-xs button-round-small shadow-small button-primary" download >Download</a>
-                                    </div>
-                                </div>
-                                    @elseif($post->type == 'feed')
-                                    <p>{!! excerpt($post) !!}</p>
-                                    @if(!strstr($post->content,'Read More') && !strstr($post->scrabingcontent,'Read More'))
-
+                                        @elseif($post->type == 'image')
+                                        <p class="article-img">{!! excerpt($post) !!}</p>
                                         <br>
-                                        <a href="/ajaxpage?url={{ $post->link }}" rel="modal:open" class="pull-right readmore rm2" download>Read More</a> @endif
-                                    @endif	
-                                    
-                                    
-                                    
+                                        <?php
+                                            $postLink = $post->from_api ? $post->link : asset('assets/front/content/' . $post->link);
+                                        ?>
+                                        <img src="{{ $postLink }}" class="img-responsive imgclickcls preload-image responsive-image" data-toggle="modal" data-target="#imageModal"> @elseif($post->type == 'video')
+                                        <p>{!! excerpt($post) !!}</p>
+                                        <br>
+                                        <video class="player" playsinline controls id="{{ str_random(20) }}" style="width: 100%;">
+                                            <source src="{{ asset('assets/front/content/' . $post->link) }}" type="video/mp4">
+                                        </video>
+                                        @elseif($post->type == 'audio')
+                                        <p>{!! excerpt($post) !!}</p>
+                                        <br>
+                                        <audio class="player" controls id="{{ str_random(20) }}" style="width: 100%;">
+                                            <source src="{{ asset('assets/front/content/' . $post->link) }}" type="audio/mp3">
+                                        </audio>
+                                        @elseif($post->type == 'youtube')
+                                        <p>{!! excerpt($post) !!}</p>
+                                        <br>
+                                        <div class="plyr__video-embed player">
+                                            <iframe id="{{ str_random(20) }}" src="https://www.youtube.com/embed/{{ $post->link }}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay">
+                                            </iframe>
+                                        </div>
+                                        @elseif($post->type == 'vimeo')
+                                        <p>{!! excerpt($post) !!}</p>
+                                        <br>
+                                        <div class="plyr__video-embed player">
+                                            <iframe id="{{ str_random(20) }}" src="https://player.vimeo.com/video/{{ $post->link }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media" allowfullscreen allowtransparency allow="autoplay">
+                                            </iframe>
+                                        </div>
+                                        @elseif($post->type == 'doc')
+                                        <p>{!! excerpt($post) !!}</p>
+                                        <br>
+                                        <div class="doc">
+                                        <div style="overflow: hidden;">
+                                                {{ $post->link }}
+                                                <a target="_blank" href="{{ asset('assets/front/content/' . $post->link) }}" class="top-10 pull-right button button-xs button-round-small shadow-small button-primary" download >Download</a>
+                                        </div>
+                                        </div>
+                                        @elseif($post->type == 'feed')
+                                        <p>{!! excerpt($post) !!}</p>
+                                        @if(!strstr($post->content,'Read More') && !strstr($post->scrabingcontent,'Read More'))
+
+                                            <br>
+                                            <a href="/ajaxpage?url={{ $post->link }}" rel="modal:open" class="pull-right readmore rm2" download>Read More</a> @endif
+                                        @endif	
+                                    </div>
                                 </article>
-                                
                             </div>
-                            <div class="post-addons likes">
-                            <ul>
+                            <div class="post-addons likes" style="border: none;">
+                            <ul style="border-top: 1px solid #CCC;">
                                 <li>
                                     <div class="single-input-wrapper">
                                         @if (Auth::check())
@@ -1841,5 +1835,24 @@
                 } 
             }
         </script>
+        <style>
+            .post-addons {
+                clear: both;
+            }
+
+            /* clearfix for any floated elements inside the article/scraped content */
+            .scrabingcontent::after,
+            .article-img::after,
+            article::after {
+                content: "";
+                display: block;
+                clear: both;
+            }
+            .post-body::after {
+                content: "";
+                display: block;
+                clear: both;
+            }
+        </style>
     @endsection
 
