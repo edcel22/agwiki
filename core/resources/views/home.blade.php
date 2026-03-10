@@ -317,6 +317,16 @@ if (Auth::check()) {
 
                     </div>
 
+                    <!-- Broadstreet: Home - Education -->
+                    <div style="text-align:center; margin: 10px 0;">
+                        <broadstreet-zone zone-id='184399'></broadstreet-zone>
+                    </div>
+
+                    <!-- Broadstreet: Advertorial -->
+                    <div style="text-align:center; margin: 10px 0;">
+                        <broadstreet-zone zone-id='184408'></broadstreet-zone>
+                    </div>
+
                     <div class="landing-footer">
                         <span class="center-text color-theme font-10 opacity-40">Copyright <span class="copyright-year"></span> AgWiki. All rights Reserved</span>
                     </div>

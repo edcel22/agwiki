@@ -2,6 +2,10 @@
 
 <div class="page-content ">
 
+        <!-- Broadstreet: Topic Pages Leaderboard -->
+        <div style="text-align:center; margin-bottom:10px;">
+            <broadstreet-zone zone-id='184403'></broadstreet-zone>
+        </div>
 
         <div class="tab-controls tab-animated tabs-large" data-tab-items="2" data-tab-active="bg-blue1-dark">
 
@@ -44,12 +48,18 @@
 
             <div class="clear"></div>
 
-            <br>
+            <!-- Broadstreet: Topic Pages Square -->
+            <div style="text-align:center; margin: 10px 0;">
+                <broadstreet-zone zone-id='184404'></broadstreet-zone>
+            </div>
 
             <br>
 
-            <br>
+        </div>
 
+        <!-- Broadstreet: Topic Pages Interior Banner -->
+        <div style="text-align:center; margin: 10px 0;">
+            <broadstreet-zone zone-id='184406'></broadstreet-zone>
         </div>
 
         <div class="tab-content {{ $activeTab === 'add' ? 'tab-active' : '' }}" id="tab-2">
@@ -80,6 +90,11 @@
 
                 </div>
 
+            </div>
+
+            <!-- Broadstreet: Topic Pages Skyscraper -->
+            <div style="text-align:center; margin-top:10px;">
+                <broadstreet-zone zone-id='184405'></broadstreet-zone>
             </div>
 
         </div>

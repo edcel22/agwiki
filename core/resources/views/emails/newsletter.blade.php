@@ -339,6 +339,10 @@
 <span style="font-family:arial, sans-serif; font-size:10px; line-height:20px; color:#dddddd;"> | </span>
 <a href="https://go.agwiki.com/" rel="noopener noreferrer" style="font-family: 'Open Sans', Verdana, Arial, sans-serif; font-size:10px; line-height:20px; color:#212121; text-transform: uppercase; text-decoration:underline;" target="_blank">about</a>
 <span style="font-family:arial, sans-serif; font-size:10px; line-height:20px; color:#dddddd;"> | </span>
+<!-- Broadstreet: Email Banner -->
+<a href="https://ad.broadstreetads.com/zone_static/184410/click/0?"><img src="https://ad.broadstreetads.com/zone_static/184410/image/0?" style="max-width: 100%; display:block; margin: 10px auto;" /></a>
+<!-- Broadstreet: Email Advertorial -->
+<a href="https://ad.broadstreetads.com/zone_static/184411/click/0?"><img src="https://ad.broadstreetads.com/zone_static/184411/image/0?" style="max-width: 100%; display:block; margin: 10px auto;" /></a>
 <a href="https://{{$_SERVER['SERVER_NAME']}}/unsubscribe/{{$username}}" style="font-family: 'Open Sans', Verdana, Arial, sans-serif; font-size:10px; line-height:20px; color:#212121; text-transform: uppercase; text-decoration:underline;" target="_blank">Unsubscribe</a></div>
 </td>
 </tr>

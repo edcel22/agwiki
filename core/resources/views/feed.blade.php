@@ -749,6 +749,11 @@
                         <broadstreet-zone zone-id='184402'></broadstreet-zone>
                     </div>
 
+                    <!-- Broadstreet: In App Video -->
+                    <div style="text-align:center; margin: 10px 0;">
+                        <broadstreet-zone zone-id='184409'></broadstreet-zone>
+                    </div>
+
                      @if(isset($ads[0]->link))
                     	@foreach($ads as $ad)
                         	<div class="post">
