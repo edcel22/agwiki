@@ -37,4 +37,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script src="/js/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="/js/jquery.modal.min.css" />
 <meta name="facebook-domain-verification" content="ipwvd2s82st6k2j7f5yc0am6rgp2ao" />
+
+<!-- Broadstreet Ads -->
+<script src="https://cdn.broadstreetads.com/init-2.min.js"></script>
+<script>broadstreet.watch({ networkId: 10257 })</script>
+<!-- End Broadstreet Ads -->
    

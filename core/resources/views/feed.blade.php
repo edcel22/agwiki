@@ -223,8 +223,13 @@
                 
                 @if (isset($shares))
                 @if($shares && count($shares))
+                <!-- Broadstreet: Main Feed Leaderboard -->
+                <div style="text-align:center; margin-bottom:10px;">
+                    <broadstreet-zone zone-id='184400'></broadstreet-zone>
+                </div>
+
                 <div class="post-loop-inner infinite-scroll">
-                    @foreach($shares as $share) 
+                    @foreach($shares as $share)
                         {{-- <p>{{ $share->id }} - Pinned: {{ $share->post->pinned }}</p> --}}
                         @if($share->post && $share->post->group_id == 0) 
                             @php 
@@ -722,16 +727,28 @@
                             </div>
                         </div>
                         <div class="divider divider-margins"></div>
-                       
-                   
-                        @endif 
-                        @endif 
+
+                        @if($loop->iteration == 5)
+                        <!-- Broadstreet: Main Feed Interior -->
+                        <div class="post" style="text-align:center;">
+                            <small style="display:block; color:#999; margin-bottom:5px;">Advertisement</small>
+                            <broadstreet-zone zone-id='184401'></broadstreet-zone>
+                        </div>
+                        @endif
+
+                        @endif
+                        @endif
                         @endif
                         @endforeach
 
                     
                     
                     
+                    <!-- Broadstreet: Main Feed Medium Rectangle -->
+                    <div style="text-align:center; margin: 10px 0;">
+                        <broadstreet-zone zone-id='184402'></broadstreet-zone>
+                    </div>
+
                      @if(isset($ads[0]->link))
                     	@foreach($ads as $ad)
                         	<div class="post">
